@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import javax.swing.Timer;
 
-public class Ball implements ActionListener, Serializable {
+public class Ball implements Serializable, ActionListener {
 
 	private static final long serialVersionUID = -4238822915986025242L;
 
@@ -37,7 +37,6 @@ public class Ball implements ActionListener, Serializable {
     	this.dimension = dimension;
     	this.wallPosition = wallPosition;
     	diameter = 30;
-    	
     	timer = new Timer(5, this);
     	timer.start();
     }
@@ -52,8 +51,8 @@ public class Ball implements ActionListener, Serializable {
 			dimension,
 			wallPosition);
     }
-    
-    @Override
+
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		x += dx;
         y += dy;
@@ -86,10 +85,6 @@ public class Ball implements ActionListener, Serializable {
         	}
     	}
 	}
-    
-    public void stop() {
-    	timer.stop();
-    }
 	
     public int getX() {
     	return x;
@@ -119,5 +114,9 @@ public class Ball implements ActionListener, Serializable {
 	public String toString() {
 		return "p("+ x + "," + y + ") | v(" + dx + "," + dy + ")";
 	}
+	
+	public void stop() {
+    	timer.stop();
+    }
 	
 }

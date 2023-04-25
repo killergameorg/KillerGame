@@ -1,8 +1,10 @@
 package clients.animation;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -40,13 +42,27 @@ public class Animation extends JFrame implements P2PCommListener {
     	
     	Canvas canvas = new Canvas() {
 			private static final long serialVersionUID = -1477647394211129637L;
-
+			
+			@Override
+			public void update(Graphics g) {
+				paint(g);
+			}
+			
 			@Override
     		public void paint(Graphics g) {
-    			super.paint(g);
-    			ballsList.forEach(b -> {
-    				b.paint(g);
+				// Dibuja en el canvas de respaldo
+		        Image offscreen = createImage(getWidth(), getHeight());
+		        Graphics offscreenGraphics = offscreen.getGraphics();
+		        offscreenGraphics.setColor(getBackground());
+		        offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
+		        offscreenGraphics.setColor(Color.RED);
+		        ballsList.forEach(b -> {
+    				b.paint(offscreenGraphics);
     			});
+		        
+		        // Dibuja el canvas de respaldo en el canvas visible
+		        g.drawImage(offscreen, 0, 0, null);
+    			
     		}
     	};
     	add(canvas);
@@ -77,6 +93,8 @@ public class Animation extends JFrame implements P2PCommListener {
 				canvas.repaint();
 			}
 		});
+        t.start();
+        new Thread(() -> createBall()).start();
     }
     
     private void abortAnimation() {
@@ -94,11 +112,11 @@ public class Animation extends JFrame implements P2PCommListener {
 	}
     
     private void createBall() {
-    	packBall(new Ball(this, windowDimension, wallPosition));
+    	ballsList.add(new Ball(this, windowDimension, wallPosition));
     }
     
 	private void createBall(int x, int y, int dx, int dy) {
-    	packBall(new Ball(this, x, y, dx, dy, windowDimension, wallPosition));
+		ballsList.add(new Ball(this, x, y, dx, dy, windowDimension, wallPosition));
     }
     
 	@Override
@@ -128,10 +146,6 @@ public class Animation extends JFrame implements P2PCommListener {
 			createBall();
 		}
 	}
-
-	private void packBall(Ball ball) {
-    	ballsList.add(ball);
-    }
 	
 	public void setComm(ConnectionController comm) {
 		this.comm = comm;

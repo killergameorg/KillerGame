@@ -7,7 +7,7 @@ import communications.ConnectionController;
 public class Main {
 	
 	public static void main(String[] args) {
-		startAutoMessenger();
+		startAnimation();
 	}
 	
 	@SuppressWarnings("unused")
