@@ -22,17 +22,19 @@ class ConnectionManager implements Runnable {
 	}
 
 	private void handleFrame(Frame frame) {
-		if(controller.controlPeerMessageId(frame.getSourceIp(), frame.getId())) {
-			switch(frame.getFrameType()) {
+		if (controller.controlPeerMessageId(frame.getSourceIp(), frame.getId())) {
+			switch (frame.getFrameType()) {
 			case MESSAGE:
 				// El paquete es nuestro. Lo matamos
-				if(frame.getSourceIp().equals(localIp)) return;
-				// El paquete va para nosotros o es un flood. Enviar el payload y la remoteIp de origen al controlador para tratarlo.
-				if(frame.getTargetIp().equals(localIp) || frame.getTargetIp().equals("*")) {
+				if (frame.getSourceIp().equals(localIp))
+					return;
+				// El paquete va para nosotros o es un flood. Enviar el payload y la remoteIp de
+				// origen al controlador para tratarlo.
+				if (frame.getTargetIp().equals(localIp) || frame.getTargetIp().equals("*")) {
 					controller.pushMessage(frame.getSourceIp(), frame.getPayload());
 				}
 				// Reenviar si no es para nosotros
-				if(!frame.getTargetIp().equals(localIp)) {
+				if (!frame.getTargetIp().equals(localIp)) {
 					controller.send(frame);
 				}
 				break;
@@ -49,7 +51,7 @@ class ConnectionManager implements Runnable {
 			}
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -68,7 +70,7 @@ class ConnectionManager implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	void stop() {
 		active = false;
 		try {
