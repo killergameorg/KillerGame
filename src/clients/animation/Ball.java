@@ -1,11 +1,10 @@
 package clients.animation;
 
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.Timer;
@@ -16,107 +15,118 @@ public class Ball implements Serializable, ActionListener {
 
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(Ball.class.getClass().getName());
-	
+
 	private int x;
 	private int y;
 	private int dx;
 	private int dy;
 	private int diameter;
-	
-	private transient Dimension dimension;
-	private transient Animation controller;
-	private transient Set<WallPosition> wallPosition;
+	private Color color;
+
+	private transient AnimationViewer animationController;
 	private transient Timer timer;
-    
-    public Ball(Animation controller, int x, int y, int dx, int dy, Dimension dimension, Set<WallPosition> wallPosition) {
-    	this.controller = controller;
-    	this.x = x;
-    	this.y = y;
-    	this.dx = dx;
-    	this.dy = dy;
-    	this.dimension = dimension;
-    	this.wallPosition = wallPosition;
-    	diameter = 30;
-    	timer = new Timer(5, this);
-    	timer.start();
-    }
-    
-    public Ball(Animation controller, Dimension dimension, Set<WallPosition> wallPosition) {
-    	this(
-			controller,
-			(int)(Math.random()*dimension.width),
-			(int)(Math.random()*dimension.height),
-			Math.random() >= 0.5? 1 : -1,
-			Math.random() >= 0.5? 1 : -1,
-			dimension,
-			wallPosition);
-    }
+
+	public Ball(AnimationViewer animationController, int x, int y, int dx, int dy, Color color) {
+		this.animationController = animationController;
+		this.x = x;
+		this.y = y;
+		this.dx = dx;
+		this.dy = dy;
+		this.color = color;
+		;
+		diameter = 30;
+		timer = new Timer(5, this);
+		timer.start();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		x += dx;
-        y += dy;
+		// Obtener las dimensiones del contenedor
+		int containerWidth = animationController.getWidth();
+		int containerHeight = animationController.getHeight();
 
-        if(x < 0) {
-        	if(wallPosition.contains(WallPosition.LEFT)) {
-        		dx = -dx;
-        	} else {
-        		controller.ballOutOfLimits(this);
-        	}
-        } else if(x > dimension.width - diameter) {
-        	if(wallPosition.contains(WallPosition.RIGHT)) {
-        		dx = -dx;
-        	} else {
-        		controller.ballOutOfLimits(this);
-        	}
-        }
-        
-        if(y < 0) {
-        	if(wallPosition.contains(WallPosition.UP)) {
-        		dy = -dy;
-        	} else {
-        		controller.ballOutOfLimits(this);
-        	}
-        } else if(y > dimension.height - diameter) {
-    		if(wallPosition.contains(WallPosition.DOWN)) { 
-    			dy = -dy;
-			}  else {
-				controller.ballOutOfLimits(this);
-        	}
-    	}
+		// Actualizar la posición de la bola según la velocidad
+		x += dx;
+		y += dy;
+
+		// Verificar si la bola ha colisionado con las paredes laterales
+		if (x < 0) {
+			if (animationController.leftHasWall()) {
+				// Colisión con la pared izquierda
+				x = 0;
+				dx = -dx; // Invertir la dirección horizontal
+			} else {
+				// Informa al controlador que la bola salió por la izquierda
+				animationController.ballOutOfLimits(this, Edge.LEFT);
+			}
+		} else if (x + diameter > containerWidth) {
+			if (animationController.rightHasWall()) {
+				// Colisión con la pared derecha
+				x = containerWidth - diameter;
+				dx = -dx; // Invertir la dirección horizontal
+			} else {
+				// Informa al controlador que la bola salió por la derecha
+				animationController.ballOutOfLimits(this, Edge.RIGHT);
+			}
+		}
+
+		// Verificar si la bola ha colisionado con las paredes superior e inferior
+		if (y < 0) {
+			if (animationController.upHasWall()) {
+				// Colisión con la pared superior
+				y = 0;
+				dy = -dy; // Invertir la dirección vertical
+			} else {
+				// Informa al controlador que la bola salió por la parte superior
+				animationController.ballOutOfLimits(this, Edge.UP);
+			}
+		} else if (y + diameter > containerHeight) {
+			if (animationController.downHasWall()) {
+				// Colisión con la pared inferior
+				y = containerHeight - diameter;
+				dy = -dy; // Invertir la dirección vertical
+			} else {
+				// Informa al controlador que la bola salió por la parte inferior
+				animationController.ballOutOfLimits(this, Edge.DOWN);
+			}
+		}
 	}
-	
-    public int getX() {
-    	return x;
-    }
-    
-    public int getY() {
-    	return y;
-    }
-    
-    public int getSpeedX() {
-    	return dx;
-    }
-    
-    public int getSpeedY() {
-    	return dy;
-    }
-    
-    public int getDiameter() {
-    	return diameter;
-    }
-    
+
+	public Color getColor() {
+		return color;
+	}
+
+	public int getDiameter() {
+		return diameter;
+	}
+
+	public int getSpeedX() {
+		return dx;
+	}
+
+	public int getSpeedY() {
+		return dy;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	public void paint(Graphics g) {
-	    g.fillOval(x, y, diameter, diameter);
+		g.fillOval(x, y, diameter, diameter);
 	}
-	
+
+	public void stop() {
+		timer.stop();
+	}
+
 	@Override
 	public String toString() {
-		return "p("+ x + "," + y + ") | v(" + dx + "," + dy + ")";
+		return "p(" + x + "," + y + ") | v(" + dx + "," + dy + ")";
 	}
-	
-	public void stop() {
-    	timer.stop();
-    }
-	
+
 }
