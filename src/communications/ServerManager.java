@@ -9,14 +9,13 @@ class ServerManager implements Runnable {
 	private boolean alive;
 	private ConnectionController controller;
 	private ServerSocket serverSocket;
-	
-	
+
 	public ServerManager(ConnectionController controller, int serverPort) throws IOException {
 		serverSocket = new ServerSocket(serverPort);
 		this.controller = controller;
 		alive = true;
 	}
-	
+
 	public void run() {
 		try {
 			while (alive) {
@@ -27,12 +26,13 @@ class ServerManager implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	void stop() {
 		alive = false;
 		try {
 			serverSocket.close();
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 	}
-	
+
 }
