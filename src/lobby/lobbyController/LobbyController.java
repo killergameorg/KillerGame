@@ -1,6 +1,7 @@
 package lobby.lobbyController;
 
-import lobby.Account;
+import maincontroller.Account;
+import lobby.MasterOrder;
 import lobby.MasterStatus;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
@@ -26,6 +27,10 @@ public class LobbyController {
 
     public void removeAccount(Account account) {
         lobbyModel.removeAccount(account);
+    }
+
+    public void reciveMasterMsg(Account account, MasterOrder order) {
+        lobbyModel.reciveMasterMsg(account, order);
     }
 
     // Getter y Setters

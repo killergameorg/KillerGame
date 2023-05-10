@@ -1,4 +1,4 @@
-package src;
+package lobby.lobbyView;
 
 import javax.swing.*;
 import java.awt.*;
