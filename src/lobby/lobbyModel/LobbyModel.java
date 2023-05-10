@@ -3,6 +3,7 @@ package lobby.lobbyModel;
 import java.util.ArrayList;
 
 import lobby.Account;
+import lobby.MasterOrder;
 import lobby.Team;
 
 public class LobbyModel {
@@ -74,6 +75,40 @@ public class LobbyModel {
                 account.setTeam(Team.Red);
             }
         }
+    }
+
+    public void reciveMasterMsg(Account account, MasterOrder order) {
+        if (account.getId() == roomMasterId) {
+            switch (order) {
+                case LEFT:
+                    beforeGameRulePosition(order);
+                    break;
+                case RIGHT:
+                    nextGameRulePosition(order);
+                    break;
+                case OK:
+                    plusGameRuleValue(order);
+                    break;
+                case BACK:
+                    minusGameRuleValue(order);
+                    break;
+            }
+        }
+    }
+
+    public void nextGameRulePosition(MasterOrder order) {
+        this.selectedRule += 1;
+    }
+
+    public void beforeGameRulePosition(MasterOrder order) {
+        this.selectedRule -= 1;
+    }
+
+    public void minusGameRuleValue(MasterOrder order) {
+
+    }
+
+    public void plusGameRuleValue(MasterOrder order) {
 
     }
 

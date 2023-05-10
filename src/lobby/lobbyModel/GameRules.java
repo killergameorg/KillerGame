@@ -7,7 +7,7 @@ public class GameRules {
     private int life;
     private int bulletDamage;
     private int map;
-   
+
     // Datos estaticos
     private int defaultDamage;
     private int maxPlayer;
