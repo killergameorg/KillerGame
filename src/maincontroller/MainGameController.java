@@ -2,7 +2,7 @@ package maincontroller;
 
 import java.util.ArrayList;
 
-import lobby.GameRules;
+import lobby.lobbyModel.GameRules;
 
 public class MainGameController {
 

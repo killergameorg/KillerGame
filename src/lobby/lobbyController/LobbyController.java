@@ -1,6 +1,6 @@
 package lobby.lobbyController;
 
-import lobby.Account;
+import maincontroller.Account;
 import lobby.MasterOrder;
 import lobby.MasterStatus;
 import lobby.lobbyModel.LobbyModel;

@@ -2,26 +2,30 @@ package lobby.lobbyModel;
 
 import java.util.ArrayList;
 
-import lobby.Account;
+import maincontroller.Account;
+import lobby.LOBBYSECTION;
 import lobby.MasterOrder;
-import lobby.Team;
+import maincontroller.Team;
 
 public class LobbyModel {
 
     // Atributos
     private int selectedRule;
+    private LOBBYSECTION lobbysection;
     private ArrayList<Account> players;
-    private int idNextPlayers;
-    private int roomMasterId;
+    private Long idNextPlayers;
+    private Long roomMasterId;
     private GameRules gameRules;
+    private int[] gameRulesValues;
 
     // Constructor
     public LobbyModel() {
         this.selectedRule = 0;
+        this.lobbysection = LOBBYSECTION.values()[0];
         this.players = new ArrayList<Account>();
-        this.idNextPlayers = 0;
-        this.roomMasterId = -1;
-        this.gameRules = new GameRules(100, 10, 0);
+        this.idNextPlayers = 0L;
+        this.roomMasterId = -1L;
+        this.gameRulesValues = new int[] { 100, 10, 0 };
     }
 
     // Metodos
@@ -45,7 +49,7 @@ public class LobbyModel {
                     if (players.size() > 1) {
                         roomMasterId = players.get(i + 1).getId();
                     } else {
-                        roomMasterId = -1;
+                        roomMasterId = -1L;
                     }
                 }
                 players.remove(i);
@@ -57,7 +61,7 @@ public class LobbyModel {
         int redTeam = 0;
         int blueTeam = 0;
         for (Account existingPlayer : players) {
-            if (existingPlayer.getTeam() == Team.Red) {
+            if (existingPlayer.getTeam() == Team.RED) {
                 redTeam += 1;
             } else {
                 blueTeam += 1;
@@ -65,14 +69,14 @@ public class LobbyModel {
         }
 
         if (redTeam > blueTeam) {
-            account.setTeam(Team.Blue);
+            account.setTeam(Team.BLUE);
         } else if (redTeam < blueTeam) {
-            account.setTeam(Team.Red);
+            account.setTeam(Team.RED);
         } else if (redTeam == blueTeam) {
             if (Math.random() > 0.5) {
-                account.setTeam(Team.Blue);
+                account.setTeam(Team.BLUE);
             } else {
-                account.setTeam(Team.Red);
+                account.setTeam(Team.RED);
             }
         }
     }
@@ -97,19 +101,27 @@ public class LobbyModel {
     }
 
     public void nextGameRulePosition(MasterOrder order) {
-        this.selectedRule += 1;
+        this.selectedRule = Math.floorMod(selectedRule + 1, gameRulesValues.length);
     }
 
     public void beforeGameRulePosition(MasterOrder order) {
-        this.selectedRule -= 1;
+        this.selectedRule = Math.floorMod(selectedRule - 1, gameRulesValues.length);
     }
 
     public void minusGameRuleValue(MasterOrder order) {
-
+        if (lobbysection == LOBBYSECTION.MAP) {
+            gameRulesValues[selectedRule] = Math.floorMod(gameRulesValues[selectedRule] - 1, gameRulesValues.length);
+        } else {
+            gameRulesValues[selectedRule] -= 1;
+        }
     }
 
     public void plusGameRuleValue(MasterOrder order) {
-
+        if (lobbysection == LOBBYSECTION.MAP) {
+            gameRulesValues[selectedRule] = Math.floorMod(gameRulesValues[selectedRule] + 1, gameRulesValues.length);
+        } else {
+            gameRulesValues[selectedRule] += 1;
+        }
     }
 
     // Getter y Setters
@@ -129,28 +141,44 @@ public class LobbyModel {
         this.players = players;
     }
 
-    public int getidNextPlayers() {
-        return idNextPlayers;
-    }
-
-    public void setidNextPlayers(int idNextPlayers) {
-        this.idNextPlayers = idNextPlayers;
-    }
-
-    public int getRoomMasterId() {
-        return roomMasterId;
-    }
-
-    public void setRoomMasterId(int roomMasterId) {
-        this.roomMasterId = roomMasterId;
-    }
-
     public GameRules getGameRules() {
         return gameRules;
     }
 
     public void setGameRules(GameRules gameRules) {
         this.gameRules = gameRules;
+    }
+
+    public Long getIdNextPlayers() {
+        return idNextPlayers;
+    }
+
+    public void setIdNextPlayers(Long idNextPlayers) {
+        this.idNextPlayers = idNextPlayers;
+    }
+
+    public Long getRoomMasterId() {
+        return roomMasterId;
+    }
+
+    public void setRoomMasterId(Long roomMasterId) {
+        this.roomMasterId = roomMasterId;
+    }
+
+    public int[] getGameRulesValues() {
+        return gameRulesValues;
+    }
+
+    public void setGameRulesValues(int[] gameRulesValues) {
+        this.gameRulesValues = gameRulesValues;
+    }
+
+    public LOBBYSECTION getDinamicRules() {
+        return lobbysection;
+    }
+
+    public void setDinamicRules(LOBBYSECTION lobbysection) {
+        this.lobbysection = lobbysection;
     }
 
 }

@@ -1,12 +1,14 @@
 package lobby.lobbyModel;
 
+import lobby.Maps;
+
 public class GameRules {
 
     // Atributos
     // Datos que se puede modificar
     private int life;
     private int bulletDamage;
-    private int map;
+    private Maps map;
 
     // Datos estaticos
     private int defaultDamage;
@@ -23,7 +25,7 @@ public class GameRules {
     private double maxSpeed;
 
     // Constructor
-    public GameRules(int life, int bulletDamage, int map) {
+    public GameRules(int life, int bulletDamage, Maps map) {
         // Datos que se puede modificar
         this.life = life;
         this.bulletDamage = bulletDamage;
@@ -60,14 +62,7 @@ public class GameRules {
         this.bulletDamage = bulletDamage;
     }
 
-    public int getMap() {
-        return map;
-    }
-
-    public void setMap(int map) {
-        this.map = map;
-    }
-
+    
     public int getMaxPlayer() {
         return maxPlayer;
     }
@@ -162,6 +157,14 @@ public class GameRules {
 
     public void setDefaultDamage(int defaultDamage) {
         this.defaultDamage = defaultDamage;
+    }
+
+    public Maps getMap() {
+        return map;
+    }
+
+    public void setMap(Maps map) {
+        this.map = map;
     }
 
 
