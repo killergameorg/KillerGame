@@ -1,7 +1,6 @@
 package clients.animation;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
@@ -11,8 +10,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
-
-import clients.animation.messages.BallMessage;
 
 public class AnimationViewer extends JFrame {
 
@@ -31,28 +28,34 @@ public class AnimationViewer extends JFrame {
 		// Retorna un objeto Color con los valores aleatorios generados
 		return new Color(red, green, blue);
 	}
+
 	private AnimationController controller;
 	private Set<Ball> ballsList;
-	private Dimension windowDimension;
 	private Timer t;
 
 	private int numBalls;
+	private int msRefresh;
+	private int ballMaxSpeed;
 
-	public AnimationViewer(AnimationController controller, int numBalls) {
+	public AnimationViewer(AnimationController controller, int numBalls, int ballMaxSpeed, int msRefresh) {
 		this.controller = controller;
 		this.numBalls = numBalls;
-		windowDimension = new Dimension(400, 400);
+		this.msRefresh = msRefresh;
+		this.ballMaxSpeed = ballMaxSpeed;
+		
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+//		setUndecorated(true);
+		
 		ballsList = new HashSet<>();
 
 		Viewer canvas = new Viewer(ballsList);
 		add(canvas);
 
-		setSize(windowDimension);
 		setTitle("Pelota Rebotando");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
-		t = new Timer(5, new ActionListener() {
+		t = new Timer(msRefresh, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canvas.repaint();
@@ -71,34 +74,18 @@ public class AnimationViewer extends JFrame {
 
 	public void ballOutOfLimits(Ball ball, Edge edge) {
 		ball.stop();
-		BallMessage message = new BallMessage();
-		message.ball = ball;
-		switch (edge) {
-		case UP:
-			message.from = Edge.DOWN;
-			break;
-		case RIGHT:
-			message.from = Edge.LEFT;
-			break;
-		case DOWN:
-			message.from = Edge.UP;
-			break;
-		case LEFT:
-			message.from = Edge.RIGHT;
-			break;
-		}
-		controller.sendFlood(message);
+		controller.ballOutOfLimits(ball, edge);
 		ballsList.remove(ball);
 	}
 
 	private void createBall() {
 		createBall((int) (Math.random() * this.getWidth()), (int) (Math.random() * this.getHeight()),
-				(int) Math.round(Math.random() * 4) - 2, (int) Math.round(Math.random() * 4) - 2,
+				(int) Math.round(Math.random() * ballMaxSpeed * 2) - ballMaxSpeed, (int) Math.round(Math.random() * ballMaxSpeed * 2) - ballMaxSpeed,
 				generateRandomColor());
 	}
 
 	void createBall(int x, int y, int dx, int dy, Color color) {
-		ballsList.add(new Ball(this, x, y, dx, dy, color));
+		ballsList.add(new Ball(this, x, y, dx, dy, color, msRefresh));
 	}
 
 	public boolean downHasWall() {

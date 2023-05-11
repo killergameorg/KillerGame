@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -16,18 +16,27 @@ import javax.swing.Timer;
 import clients.asteroids.messages.AccelerateShipMessage;
 import clients.asteroids.messages.RotateShipMessage;
 
-public class AsteroidsViewer extends JFrame implements KeyListener {
+public class AsteroidsViewer extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(AsteroidsViewer.class.getClass().getName());
 	
+	private static Color generateRandomColor() {
+		Random random = new Random();
+		// Genera un valor aleatorio para cada componente RGB
+		int red = random.nextInt(256);
+		int green = random.nextInt(256);
+		int blue = random.nextInt(256);
+
+		// Retorna un objeto Color con los valores aleatorios generados
+		return new Color(red, green, blue);
+	}
 	private AsteroidsController controller;
 	private Set<Ship> shipList;
-	private Timer t;
 	
-	int id;
+	private Timer t;
 	
 	private int msRefresh;
 	
@@ -41,7 +50,7 @@ public class AsteroidsViewer extends JFrame implements KeyListener {
 		
 		Viewer canvas = new Viewer(shipList);
 		add(canvas);
-		addKeyListener(this);
+		addKeyListener(new ShipController(this));
 		setTitle("Asteroids clon");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -53,96 +62,48 @@ public class AsteroidsViewer extends JFrame implements KeyListener {
 			}
 		});
 	}
-		
-	private void createShip() {
-		createShip(getWidth()/2, getHeight()/2, 0, 0, 0);
+	
+	public void accelerateShip(int shipId, boolean accelerate) {
+		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == shipId).findFirst();
+		if(myShip.isPresent()) {
+    		myShip.get().doAcceleration(accelerate);
+    	} else {
+    		AccelerateShipMessage message = new AccelerateShipMessage();
+    		message.shipId = shipId;
+    		message.accelerate = accelerate;
+    		controller.sendShipControlMessage(message);
+    	}
 	}
 	
-	void createShip(double x, double y, double dx, double dy, double rotation) {
-		shipList.add(new Ship(controller, x, y, dx, dy, rotation, Color.BLACK, getWidth(), getHeight(), msRefresh));
+	int createShip(double x, double y, double dx, double dy, double rotation, Color color) {
+		Ship ship = new Ship(this, x, y, dx, dy, rotation, color, getWidth(), getHeight(), msRefresh);
+		ship.id = ship.hashCode();
+		shipList.add(ship);
+		return ship.hashCode();
 	}
 	
+	void createShip(int id, double x, double y, double dx, double dy, double rotation, Color color) {
+		Ship ship = new Ship(this, x, y, dx, dy, rotation, color, getWidth(), getHeight(), msRefresh);
+		ship.id = id;
+		shipList.add(ship);
+	}
+
 	public boolean downHasWall() {
 		return controller.downHasWall();
 	}
+
+	public int getNewShip() {
+		return createShip((int) (Math.random() * this.getWidth()), (int) (Math.random() * this.getHeight()), 0, 0, 0, generateRandomColor());
+	}
 	
-	@Override
-	public void keyPressed(KeyEvent e) {
-		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == id).findFirst();
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-        	if(myShip.isPresent()) {
-        		myShip.get().doAcceleration(true);
-        	} else {
-        		AccelerateShipMessage message = new AccelerateShipMessage();
-        		message.shipId = id;
-        		message.accelerate = true;
-        		controller.sendShipControlMessage(message);
-        	}
-            break;
-        case KeyEvent.VK_LEFT:
-        	if(myShip.isPresent()) {
-        		myShip.get().rotateCounterClockWise();
-        	} else {
-        		RotateShipMessage message = new RotateShipMessage();
-        		message.shipId = id;
-        		message.rotation = -1;
-        		controller.sendShipControlMessage(message);
-        	}
-            break;
-        case KeyEvent.VK_RIGHT:
-        	if(myShip.isPresent()) {
-        		myShip.get().rotateClockWise();
-        	} else {
-        		RotateShipMessage message = new RotateShipMessage();
-        		message.shipId = id;
-        		message.rotation = 1;
-        		controller.sendShipControlMessage(message);
-        	}
-            break;
-        }
-    }
+    public Optional<Ship> getShip(int shipId) {
+		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == shipId).findFirst();
+		return myShip;
+	}
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-		Optional<Ship> myShip = getShip(id);
-        switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-        	if(myShip.isPresent()) {
-        		myShip.get().doAcceleration(false);
-        	} else {
-        		AccelerateShipMessage message = new AccelerateShipMessage();
-        		message.shipId = id;
-    			message.accelerate = false;
-        		controller.sendShipControlMessage(message);
-        	}
-            break;
-        case KeyEvent.VK_LEFT:
-        	if(myShip.isPresent()) {
-        		myShip.get().stopRotation();
-        	} else {
-        		RotateShipMessage message = new RotateShipMessage();
-        		message.shipId = id;
-        		message.rotation = 0;
-        		controller.sendShipControlMessage(message);
-        	}
-            break;
-        case KeyEvent.VK_RIGHT:
-        	if(myShip.isPresent()) {
-        		myShip.get().stopRotation();
-        	} else {
-        		RotateShipMessage message = new RotateShipMessage();
-        		message.shipId = id;
-        		message.rotation = 0;
-        		controller.sendShipControlMessage(message);
-        	}
-            break;
-        }
-    }
+    public void keyTyped(KeyEvent e) {}
 
-	public void keyTyped(KeyEvent e) {}
-
-	public boolean leftHasWall() {
+    public boolean leftHasWall() {
 		return controller.leftHasWall();
 	}
 
@@ -150,24 +111,54 @@ public class AsteroidsViewer extends JFrame implements KeyListener {
 		return controller.rightHasWall();
 	}
 	
-    public void shipOutOfLimits(Ship ship, Edge edge) {
-		controller.shipOutOfLimits(ship, edge);
+	public void rotateClockWiseShip(int shipId) {
+		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == shipId).findFirst();
+		if(myShip.isPresent()) {
+    		myShip.get().rotateClockWise();
+    	} else {
+    		RotateShipMessage message = new RotateShipMessage();
+    		message.shipId = shipId;
+    		message.rotation = 1;
+    		controller.sendShipControlMessage(message);
+    	}
+	}
+
+	public void rotateCounterClockWiseShip(int shipId) {
+		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == shipId).findFirst();
+		if(myShip.isPresent()) {
+    		myShip.get().rotateCounterClockWise();
+    	} else {
+    		RotateShipMessage message = new RotateShipMessage();
+    		message.shipId = shipId;
+    		message.rotation = -1;
+    		controller.sendShipControlMessage(message);
+    	}
+	}
+	
+	public void shipOutOfLimits(Ship ship, Edge edge) {
 		ship.stopAnimation();
+		controller.shipOutOfLimits(ship, edge);
 		shipList.remove(ship);
 	}
-
-    public void startAnimation() {
-		createShip();
+	
+	public void startAnimation() {
 		t.start();
 	}
-
-    public boolean upHasWall() {
+	
+	public void stopRotation(int shipId) {
+		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == shipId).findFirst();
+		if(myShip.isPresent()) {
+    		myShip.get().stopRotation();
+    	} else {
+    		RotateShipMessage message = new RotateShipMessage();
+    		message.shipId = shipId;
+    		message.rotation = 0;
+    		controller.sendShipControlMessage(message);
+    	}
+	}
+	
+	public boolean upHasWall() {
 		return controller.upHasWall();
 	}
-
-	public Optional<Ship> getShip(int shipId) {
-		Optional<Ship> myShip = shipList.stream().filter(ship -> ship.id == shipId).findFirst();
-		return myShip;
-	}
-
+	
 }

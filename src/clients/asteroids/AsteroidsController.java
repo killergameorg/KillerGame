@@ -98,15 +98,29 @@ public class AsteroidsController implements P2PCommListener{
 				break;
 			}
 
-			viewer.createShip(x, y, ship.dx, ship.dy, ship.da);
+			viewer.createShip(ship.id, x, y, ship.dx, ship.dy, ship.da, ship.getColor());
 		} else if (message instanceof AccelerateShipMessage) {
 			AccelerateShipMessage m = (AccelerateShipMessage) message;
-			viewer.getShip(m.shipId).ifPresent(ship -> {
-				
-			});
+			Optional<Ship> ship = viewer.getShip(m.shipId);
+			if(ship.isPresent()) {
+				ship.get().doAcceleration(m.accelerate);
+			}
 		} else if (message instanceof RotateShipMessage) {
 			RotateShipMessage m = (RotateShipMessage) message;
 			Optional<Ship> ship = viewer.getShip(m.shipId);
+			if(ship.isPresent()) {
+				switch(m.rotation) {
+				case -1:
+					ship.get().rotateCounterClockWise();
+					break;
+				case 0:
+					ship.get().stopRotation();
+					break;
+				case 1:
+					ship.get().rotateClockWise();
+					break;
+				}
+			}
 		} else if (message instanceof IdMessage) {
 			IdMessage m = (IdMessage) message;
 			int peerId = m.id;
@@ -145,7 +159,6 @@ public class AsteroidsController implements P2PCommListener{
 	public void shipOutOfLimits(Ship ship, Edge edge) {
 		String ip = neighbour[edge.ordinal()];
 		ShipMessage message = new ShipMessage();
-
 		message.ship = ship;
 		switch (edge) {
 		case UP:
