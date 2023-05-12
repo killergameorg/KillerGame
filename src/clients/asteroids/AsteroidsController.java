@@ -1,32 +1,36 @@
-package clients.animation;
+package clients.asteroids;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Properties;
 
-import clients.animation.messages.BallMessage;
-import clients.animation.messages.IdMessage;
+import clients.asteroids.messages.AccelerateShipMessage;
+import clients.asteroids.messages.IdMessage;
+import clients.asteroids.messages.RotateShipMessage;
+import clients.asteroids.messages.ShipMessage;
 import communications.ConnectionController;
 import communications.P2PCommListener;
 
-public class AnimationController implements P2PCommListener {
+public class AsteroidsController implements P2PCommListener{
 
 	private int id;
 
 	private ConnectionController comm;
-	private AnimationViewer viewer;
+	private AsteroidsViewer viewer;
 	private String[] neighbour;
 
-	public AnimationController() {
+	public AsteroidsController() {
 		neighbour = new String[4];
 
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream(new File("animation.properties")));
-			int numBalls = Integer.parseInt(properties.getProperty("num_balls"));
+			properties.load(new FileInputStream(new File("asteroids.properties")));
 			id = Integer.parseInt(properties.getProperty("id"));
-			viewer = new AnimationViewer(this, numBalls);
+			int msRefresh = Integer.parseInt(properties.getProperty("ms_refresh"));
+			viewer = new AsteroidsViewer(this, msRefresh);
+			viewer.startAnimation();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -50,29 +54,6 @@ public class AnimationController implements P2PCommListener {
 		neighbour[neighbourIndex] = ip;
 	}
 
-	public void ballOutOfLimits(Ball ball, Edge edge) {
-		String ip = neighbour[edge.ordinal()];
-		BallMessage message = new BallMessage();
-
-		message.ball = ball;
-		switch (edge) {
-		case UP:
-			message.from = Edge.DOWN;
-			break;
-		case RIGHT:
-			message.from = Edge.LEFT;
-			break;
-		case DOWN:
-			message.from = Edge.UP;
-			break;
-		case LEFT:
-			message.from = Edge.RIGHT;
-			break;
-		}
-
-		comm.sendPrivate(ip, message);
-	}
-
 	public boolean downHasWall() {
 		return neighbour[Edge.DOWN.ordinal()] == null;
 	}
@@ -93,34 +74,56 @@ public class AnimationController implements P2PCommListener {
 
 	@Override
 	public void onIncomingMessage(String ip, Object message) {
-		if (message instanceof BallMessage) {
-			BallMessage ballMessage = (BallMessage) message;
+		if (message instanceof ShipMessage) {
+			ShipMessage m = (ShipMessage) message;
 
-			Edge from = ballMessage.from;
-			Ball ball = ballMessage.ball;
+			Edge from = m.from;
+			Ship ship = m.ship;
 
-			int x = ball.getX();
-			int y = ball.getY();
+			double x = ship.x;
+			double y = ship.y;
 
 			switch (from) {
 			case UP:
 				y = 0;
 				break;
 			case RIGHT:
-				x = viewer.getWidth() - ball.getDiameter();
+				x = viewer.getWidth();
 				break;
 			case DOWN:
-				y = viewer.getHeight() - ball.getDiameter();
+				y = viewer.getHeight();
 				break;
 			case LEFT:
 				x = 0;
 				break;
 			}
 
-			viewer.createBall(x, y, ball.getSpeedX(), ball.getSpeedY(), ball.getColor());
+			viewer.createShip(ship.id, x, y, ship.dx, ship.dy, ship.da, ship.getColor());
+		} else if (message instanceof AccelerateShipMessage) {
+			AccelerateShipMessage m = (AccelerateShipMessage) message;
+			Optional<Ship> ship = viewer.getShip(m.shipId);
+			if(ship.isPresent()) {
+				ship.get().doAcceleration(m.accelerate);
+			}
+		} else if (message instanceof RotateShipMessage) {
+			RotateShipMessage m = (RotateShipMessage) message;
+			Optional<Ship> ship = viewer.getShip(m.shipId);
+			if(ship.isPresent()) {
+				switch(m.rotation) {
+				case -1:
+					ship.get().rotateCounterClockWise();
+					break;
+				case 0:
+					ship.get().stopRotation();
+					break;
+				case 1:
+					ship.get().rotateClockWise();
+					break;
+				}
+			}
 		} else if (message instanceof IdMessage) {
-			IdMessage idMessage = (IdMessage) message;
-			int peerId = idMessage.id;
+			IdMessage m = (IdMessage) message;
+			int peerId = m.id;
 			addNeighbour(ip, peerId);
 		}
 	}
@@ -145,15 +148,42 @@ public class AnimationController implements P2PCommListener {
 		return neighbour[Edge.RIGHT.ordinal()] == null;
 	}
 
+	public void sendShipControlMessage(Object message) {
+		comm.sendFlood(message);
+	}
+
 	public void setComm(ConnectionController comm) {
 		this.comm = comm;
+	}
+
+	public void shipOutOfLimits(Ship ship, Edge edge) {
+		String ip = neighbour[edge.ordinal()];
+		ShipMessage message = new ShipMessage();
+		message.ship = ship;
+		switch (edge) {
+		case UP:
+			message.from = Edge.DOWN;
+			break;
+		case RIGHT:
+			message.from = Edge.LEFT;
+			break;
+		case DOWN:
+			message.from = Edge.UP;
+			break;
+		case LEFT:
+			message.from = Edge.RIGHT;
+			break;
+		}
+
+		comm.sendPrivate(ip, message);
 	}
 
 	public void startAnimation() {
 		viewer.startAnimation();
 	}
-
+	
 	public boolean upHasWall() {
 		return neighbour[Edge.UP.ordinal()] == null;
 	}
+
 }

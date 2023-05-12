@@ -81,10 +81,10 @@ public class ConnectionController {
 			properties.load(new FileInputStream(new File(FILE_PROPERTIES)));
 
 			serverPort = Integer.valueOf(properties.getProperty("server_port"));
-
+			reconnectionPeers = new ArrayList<>();
+			
 			String peersIp = properties.getProperty("peers");
 			if (peersIp != null) {
-				reconnectionPeers = new ArrayList<>();
 				for (String ip : peersIp.split(",")) {
 					reconnectionPeers.add(ip);
 				}
