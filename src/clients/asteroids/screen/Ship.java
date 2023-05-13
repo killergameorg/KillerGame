@@ -1,4 +1,4 @@
-package clients.asteroids;
+package clients.asteroids.screen;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -20,11 +20,11 @@ public class Ship extends Triangle implements ActionListener {
 	double x, y, dx, dy, da;
     int id;
     
-    private transient AsteroidsViewer controller;
+    private transient ScreenViewer controller;
     private transient Timer t;
     private transient int windowWidth, windowHeight;
     
-    public Ship(AsteroidsViewer controller, double x, double y, double dx, double dy, double da, Color color, int windowWith, int windowHeight, int msRefresh) {
+    public Ship(ScreenViewer controller, double x, double y, double dx, double dy, double da, Color color, int windowWith, int windowHeight, int msRefresh) {
     	super(new Point(0, -20), new Point(10, 10), new Point(-10, 10));
     	this.controller = controller;
     	this.x = x;

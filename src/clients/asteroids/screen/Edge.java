@@ -1,4 +1,4 @@
-package clients.asteroids;
+package clients.asteroids.screen;
 
 public enum Edge {
 	UP, DOWN, LEFT, RIGHT

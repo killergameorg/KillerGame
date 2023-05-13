@@ -1,4 +1,4 @@
-package clients.asteroids;
+package clients.asteroids.screen;
 
 import java.awt.Color;
 import java.awt.Point;

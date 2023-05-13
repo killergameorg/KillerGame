@@ -76,14 +76,14 @@ public class ConnectionController {
      * Initializes a new instance of the `ConnectionController` class.
      */
 	public ConnectionController() {
-		Properties properties = new Properties();
+		var properties = new Properties();
 		try {
 			properties.load(new FileInputStream(new File(FILE_PROPERTIES)));
 
 			serverPort = Integer.valueOf(properties.getProperty("server_port"));
 			reconnectionPeers = new ArrayList<>();
 			
-			String peersIp = properties.getProperty("peers");
+			var peersIp = properties.getProperty("peers");
 			if (peersIp != null) {
 				for (String ip : peersIp.split(",")) {
 					reconnectionPeers.add(ip);
@@ -94,7 +94,7 @@ public class ConnectionController {
 			peerMessageControl = new Hashtable<>();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.warning("El archivo " + FILE_PROPERTIES + " no ha sido encontrado.");
 			System.exit(-1);
 		}
 	}
@@ -106,23 +106,23 @@ public class ConnectionController {
      * @throws IOException If an I/O error occurs while adding the connection.
      */
 	void addConnection(Socket socket) throws IOException {
-		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-		ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-		ConnectionData connection = new ConnectionData(socket, in, out);
-		String remoteIp = socket.getInetAddress().getHostAddress();
+		var out = new ObjectOutputStream(socket.getOutputStream());
+		var in = new ObjectInputStream(socket.getInputStream());
+		var connection = new ConnectionData(socket, in, out);
+		var remoteIp = socket.getInetAddress().getHostAddress();
+		
 		if (!connectedPeers.containsKey(remoteIp)) {
 			setLocalIp(socket.getLocalAddress().getHostAddress());
 			connectedPeers.put(remoteIp, connection);
 			// Inicia un hilo para recibir objetos entrantes del cliente destino
-			Thread hilo = new Thread(new ConnectionManager(this, getLocalIp(), remoteIp, in));
-			hilo.start();
+			new Thread(new ConnectionManager(this, getLocalIp(), remoteIp, in)).start();
 			if (commListener != null)
 				commListener.onNewConnection(socket.getInetAddress().getHostAddress());
 		} else {
 			try {
 				socket.close();
 			} catch (IOException e) {
+				// Fallo en el cierre del socket. No hacer nada, el GC se encargará de él. 
 			}
 		}
 	}
@@ -194,17 +194,14 @@ public class ConnectionController {
 	 * 	Initializes the ConnectionController by starting the server thread and the reconnection thread.
 	 */
 	public void initialize() {
-		Thread hiloServidor;
 		try {
-			hiloServidor = new Thread(new ServerManager(this, serverPort));
-			hiloServidor.start();
+			new Thread(new ServerManager(this, serverPort)).start();
 		} catch (IOException e) {
 			LOGGER.warning("[FATAL] No se puede crear el socket de servidor. La aplicación se va a cerrar.");
-			e.printStackTrace();
 			System.exit(-1);
 		}
 
-		Thread hiloReconector = new Thread(() -> {
+		new Thread(() -> {
 			while (true) {
 				if (reconnectionPeers.size() > connectedPeers.size()) {
 					reconnectionPeers.forEach(ip -> {
@@ -213,17 +210,17 @@ public class ConnectionController {
 								connect(ip);
 							}
 						} catch (IOException e) {
-							e.printStackTrace();
+							LOGGER.info("No se pudo conectar con el peer " + ip);
 						}
 					});
 				}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
+					// Un evento despertó el sleep. No hacer caso.
 				}
 			}
-		});
-		hiloReconector.start();
+		}).start();
 	}
 
 	/**
@@ -232,10 +229,11 @@ public class ConnectionController {
 	 */
 	void killConnection(String ip, boolean intentional) {
 		if (connectedPeers.containsKey(ip)) {
-			ConnectionData peer = connectedPeers.get(ip);
+			var peer = connectedPeers.get(ip);
 			try {
 				peer.socket.close();
 			} catch (IOException e) {
+				// Fallo en el cierre del socket. No hacer nada, el GC se encargará de él.
 			}
 			connectedPeers.remove(ip);
 			resetPeerMessageId(ip);
@@ -256,8 +254,9 @@ public class ConnectionController {
 	 * param payload The message payload.
 	 */
 	void pushMessage(String sourceIp, Object payload) {
-		if (commListener != null)
+		if (commListener != null) {
 			commListener.onIncomingMessage(sourceIp, payload);
+		}
 	}
 
 	/**
@@ -285,12 +284,12 @@ public class ConnectionController {
 	 * @param frame The message to send.
 	 */
 	void send(Frame frame) {
-		String ip = frame.getTargetIp();
+		var ip = frame.getTargetIp();
 		if (connectedPeers.containsKey(ip)) {
 			try {
 				sendMessage(connectedPeers.get(ip), frame);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.info("Error en el envío hacia " + ip + ". Se procederá a matar la conexión.");
 				killConnection(ip, false);
 			}
 		} else {
@@ -298,7 +297,7 @@ public class ConnectionController {
 				try {
 					sendMessage(conn, frame);
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOGGER.info("Error en el envío hacia " + ipPeer + ". Se procederá a matar la conexión.");
 					killConnection(ipPeer, false);
 				}
 			});
@@ -334,7 +333,7 @@ public class ConnectionController {
 	 * @throws IOException if there is an error writing the frame to the ObjectOutputStream
 	 */
 	private void sendMessage(ConnectionData connection, Frame frame) throws IOException {
-		ObjectOutputStream out = connection.outStream;
+		var out = connection.outStream;
 		out.writeObject(frame);
 		out.flush();
 	}

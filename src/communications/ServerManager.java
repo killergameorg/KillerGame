@@ -3,6 +3,7 @@ package communications;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 /**
  * A class to manage a server that listens for incoming connections on a given port and 
@@ -12,6 +13,10 @@ import java.net.Socket;
  */
 class ServerManager implements Runnable {
 
+	/** The logger for this class. */
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = Logger.getLogger(ServerManager.class.getClass().getName());
+	
 	/** A flag to indicate if the server is currently running. */
 	private boolean alive;
 	
@@ -45,7 +50,7 @@ class ServerManager implements Runnable {
 				controller.addConnection(socket);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.warning("Ocurrió en la conexión del servidor con un cliente.");
 		}
 	}
 
@@ -57,6 +62,7 @@ class ServerManager implements Runnable {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
+			// Fallo en el cierre del socket. No hacer nada, el GC se encargará de él. 
 		}
 	}
 
