@@ -20,11 +20,19 @@ public abstract class Frame implements Serializable {
 
 	private static final long serialVersionUID = 8929688478778125237L;
 
+	/** The type of communication frame represented by this object. */
 	private FrameType frameType;
+	
+	/** The unique identifier of the communication frame. */
 	private Long id;
+	
+	/** The source IP address of the communication frame. */
 	private String sourceIp;
+	
+	/** The destination IP address of the communication frame. */
 	private String targetIp;
 
+	/** The payload carried by the communication frame. */
 	private Object payload;
 
 	/**

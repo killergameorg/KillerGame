@@ -1,13 +1,14 @@
 package main;
 
 import clients.animation.AnimationController;
+import clients.asteroids.AsteroidsController;
 import clients.automessenger.Messenger;
 import communications.ConnectionController;
 
 public class Main {
 
 	public static void main(String[] args) {
-		startAnimation();
+		startAsteroids();
 	}
 
 	@SuppressWarnings("unused")
@@ -26,6 +27,15 @@ public class Main {
 		Messenger messenger = new Messenger();
 		messenger.setComm(conn);
 		conn.setCommListener(messenger);
+		conn.initialize();
+	}
+	
+	@SuppressWarnings("unused")
+	static private void startAsteroids() {
+		ConnectionController conn = new ConnectionController();
+		AsteroidsController asteroids = new AsteroidsController();
+		asteroids.setComm(conn);
+		conn.setCommListener(asteroids);
 		conn.initialize();
 	}
 
