@@ -1,6 +1,7 @@
 package lobby.lobbyController;
 
 import maincontroller.Account;
+import maincontroller.MainGameController;
 import lobby.MasterOrder;
 import lobby.MasterStatus;
 import lobby.lobbyModel.LobbyModel;
@@ -9,6 +10,7 @@ import lobby.lobbyView.LobbyView;
 public class LobbyController {
 
     // Atributos
+    private MainGameController mainGameController;
     private MasterStatus status;
     private LobbyView lobbyView;
     private LobbyModel lobbyModel;
@@ -56,6 +58,14 @@ public class LobbyController {
 
     public void setLobbyModel(LobbyModel lobbyModel) {
         this.lobbyModel = lobbyModel;
+    }
+
+    public MainGameController getMainGameController() {
+        return mainGameController;
+    }
+
+    public void setMainGameController(MainGameController mainGameController) {
+        this.mainGameController = mainGameController;
     }
 
 }
