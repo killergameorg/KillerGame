@@ -1,11 +1,11 @@
 package lobby.lobbyController;
 
-import maincontroller.Account;
-import maincontroller.MainGameController;
 import lobby.MasterOrder;
 import lobby.MasterStatus;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
+import maincontroller.Account;
+import maincontroller.MainGameController;
 
 public class LobbyController {
 

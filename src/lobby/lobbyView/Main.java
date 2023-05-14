@@ -1,7 +1,10 @@
 package lobby.lobbyView;
 
+import lobby.lobbyController.LobbyController;
+import lobby.lobbyModel.LobbyModel;
+
 public class Main {
     public static void main(String[] args) {
-        new Thread(new LobbyView()).start();
+        LobbyView view= new LobbyView();
     }
 }

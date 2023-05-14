@@ -1,9 +1,9 @@
 package lobby;
 
-import java.lang.reflect.Field;
-
 import lobby.lobbyModel.LobbyModel;
 import maincontroller.Account;
+
+import java.lang.reflect.Field;
 
 public class test {
     private int atributo1;
