@@ -3,6 +3,7 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 
 public class Viewer extends JPanel {
 
@@ -11,25 +12,58 @@ public class Viewer extends JPanel {
     JPanel bulletDamage;
     JPanel map;
     JPanel gameState;
-    // Valor puesto por el gamemaster
+    JPanel readypanel;
+    ArrayList<JLabel> labellist;
+    String[] paramlist = new String[]{"Lifes:","BulletDamage:","Map:","Game Ready"};
+    //Valores estáticos
+    JLabel lifeLabel;
+    JLabel bulletlabel;
+    JLabel mapLabel;
+    //Valor puesto por el gamemaster
     JLabel playersnum;
     JLabel lifesnum;
     JLabel bulletDamagenum;
     JLabel stateLabel;
     JLabel mapnum;
+    JLabel readylabel;
+
+    public JLabel getReadylabel() {
+        return readylabel;
+    }
+
+    public void setReadylabel(JLabel readylabel) {
+        this.readylabel = readylabel;
+    }
+
 
     Viewer() {
+        labellist = new ArrayList<JLabel>();
+        addReady();
         addNumPlayers();
         addGameState();
         addLifes();
         addBulletDamage();
         addMap();
+        labellist.add(lifeLabel);
+        labellist.add(bulletlabel);
+        labellist.add(mapLabel);
+        labellist.add(readylabel);
+    }
+
+    private void addReady() {
+        readypanel = new JPanel();
+        readypanel.setSize(50, 50);
+        readylabel = new JLabel(paramlist[PlayerValues.GAMEREADY.ordinal()]);
+        readylabel.setForeground(Color.red);
+        readylabel.setFont(customFont());
+        readypanel.add(readylabel);
+        readypanel.setOpaque(false);
     }
 
     private void addLifes() {
         lifes = new JPanel();
         lifes.setSize(50, 50);
-        JLabel lifeLabel = new JLabel("Lifes:");
+        lifeLabel = new JLabel(paramlist[PlayerValues.LIFES.ordinal()]);
         lifeLabel.setForeground(Color.white);
         lifeLabel.setFont(customFont());
         lifesnum = new JLabel("0");
@@ -43,10 +77,9 @@ public class Viewer extends JPanel {
     private void addBulletDamage() {
         bulletDamage = new JPanel();
         bulletDamage.setSize(50, 50);
-        JLabel bulletlabel = new JLabel("BulletDamage:");
+        bulletlabel = new JLabel(paramlist[PlayerValues.BULLETDAMAGE.ordinal()]);
         bulletlabel.setForeground(Color.white);
         bulletlabel.setFont(customFont());
-
         bulletDamagenum = new JLabel("0");
         bulletDamagenum.setForeground(Color.white);
         bulletDamagenum.setFont(customFont());
@@ -58,13 +91,13 @@ public class Viewer extends JPanel {
     private void addMap() {
         map = new JPanel();
         map.setSize(50, 50);
-        JLabel lifeLabel = new JLabel("Map:");
-        lifeLabel.setForeground(Color.white);
-        lifeLabel.setFont(customFont());
+        mapLabel = new JLabel(paramlist[PlayerValues.MAP.ordinal()]);
+        mapLabel.setForeground(Color.white);
+        mapLabel.setFont(customFont());
         mapnum = new JLabel("0");
         mapnum.setForeground(Color.white);
         mapnum.setFont(customFont());
-        map.add(lifeLabel);
+        map.add(mapLabel);
         map.add(mapnum);
         map.setOpaque(false);
     }
@@ -72,7 +105,7 @@ public class Viewer extends JPanel {
     private void addGameState() {
         gameState = new JPanel();
         gameState.setSize(50, 50);
-        stateLabel = new JLabel("Waiting for players");
+        stateLabel = new JLabel("Waiting for master");
         stateLabel.setForeground(Color.white);
         stateLabel.setFont(customFont());
         gameState.add(stateLabel);
@@ -96,8 +129,7 @@ public class Viewer extends JPanel {
     private Font customFont() {
         Font font = null;
         try {
-            // Archivo de fuente puesto para testear la interfaz.
-            // Fuente:https://www.dafont.com/polybius1981.font
+            //Archivo de fuente puesto para testear la interfaz. Fuente:https://www.dafont.com/polybius1981.font
             String fontPath = "src/gameAssets/poly.ttf";
             String absoluteFontPath = getClass().getClassLoader().getResource(fontPath).getPath();
             Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(absoluteFontPath));
@@ -110,7 +142,7 @@ public class Viewer extends JPanel {
         return font;
     }
 
-    // Getters setters
+    //Getters setters
     public JLabel getPlayersnum() {
         return playersnum;
     }
@@ -150,4 +182,13 @@ public class Viewer extends JPanel {
     public void setMapnum(JLabel mapnum) {
         this.mapnum = mapnum;
     }
+
+    public ArrayList<JLabel> getLabellist() {
+        return labellist;
+    }
+
+    public void setLabellist(ArrayList<JLabel> labellist) {
+        this.labellist = labellist;
+    }
+
 }
