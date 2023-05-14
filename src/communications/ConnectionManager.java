@@ -2,6 +2,7 @@ package communications;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.logging.Logger;
 
 import communications.frames.Frame;
 
@@ -14,6 +15,10 @@ import communications.frames.Frame;
  */
 class ConnectionManager implements Runnable {
 
+	/** The logger for this class. */
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = Logger.getLogger(ConnectionManager.class.getClass().getName());
+	
 	/** Flag to indicate if the ConnectionManager is active. */
 	private boolean active;
 	
@@ -95,11 +100,11 @@ class ConnectionManager implements Runnable {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("Error en la recepción desde " + remoteIp + ". Se procederá a matar la conexión.");
 			controller.killConnection(remoteIp, false);
 			active = false;
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			LOGGER.info("La clase usada para deserializar no existe.");
 		}
 	}
 
@@ -111,7 +116,7 @@ class ConnectionManager implements Runnable {
 		try {
 			in.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			// Fallo en el cierre del InputObjectStream. No hacer nada, el GC se encargará de él. 
 		}
 	}
 
