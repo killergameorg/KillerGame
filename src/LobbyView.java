@@ -71,10 +71,9 @@ public class LobbyView extends JFrame implements Runnable {
 
     public void refresh() {
         //Función de prueba para testear interfaz
-        String[] state = new String[]{"Waiting for players", "Waiting for player configuration"};
-        Random random = new Random();
+             Random random = new Random();
         viewer.getLifesnum().setText(String.valueOf(random.nextInt(0, 100)));
-        viewer.getStateLabel().setText(state[random.nextInt(0, state.length)]);
+
 //Valor dado por el controlador
         updateParam(3);
     }
