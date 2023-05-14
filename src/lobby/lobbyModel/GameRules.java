@@ -31,7 +31,7 @@ public class GameRules {
         this.bulletDamage = bulletDamage;
         this.map = map;
         // Datos estaticos
-        this.defaultDamage=10;
+        this.defaultDamage = 10;
         this.maxPlayer = 8;
         this.endTime = 300;
         this.numTeam = 2;
@@ -46,6 +46,12 @@ public class GameRules {
     }
 
     // Getter y Setters
+
+    @Override
+    public String toString() {
+        return "GameRules [life=" + life + ", bulletDamage=" + bulletDamage + ", map=" + map + "]";
+    }
+
     public int getLife() {
         return life;
     }
@@ -62,7 +68,6 @@ public class GameRules {
         this.bulletDamage = bulletDamage;
     }
 
-    
     public int getMaxPlayer() {
         return maxPlayer;
     }
@@ -167,7 +172,4 @@ public class GameRules {
         this.map = map;
     }
 
-
-
-    
 }

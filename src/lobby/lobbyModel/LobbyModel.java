@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import maincontroller.Account;
 import lobby.LOBBYSECTION;
+import lobby.Maps;
 import lobby.MasterOrder;
+import lobby.lobbyController.LobbyController;
 import maincontroller.Team;
 
 public class LobbyModel {
@@ -16,16 +18,22 @@ public class LobbyModel {
     private Long idNextPlayers;
     private Long roomMasterId;
     private GameRules gameRules;
-    private int[] gameRulesValues;
+    private int numChangeableRule;
+    private LobbyController lobbyController;
 
     // Constructor
-    public LobbyModel() {
+    public LobbyModel(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
         this.selectedRule = 0;
-        this.lobbysection = LOBBYSECTION.values()[0];
+        this.lobbysection = LOBBYSECTION.values()[selectedRule];
         this.players = new ArrayList<Account>();
         this.idNextPlayers = 0L;
         this.roomMasterId = -1L;
-        this.gameRulesValues = new int[] { 100, 10, 0 };
+        this.gameRules = new GameRules(100, 10, Maps.map1);
+        this.numChangeableRule = LOBBYSECTION.values().length;
+
+        // Aqui al crear el modelo debe pasar enum de que esta seleccionado Life
+        // Tu metodo(lobbysection)
     }
 
     // Metodos
@@ -40,6 +48,8 @@ public class LobbyModel {
             players.add(account);
         }
 
+        // Aqui debe actualizar cantidad de jugador que hay
+        // Tu metodo(player.size)
     }
 
     public void removeAccount(Account account) {
@@ -55,6 +65,9 @@ public class LobbyModel {
                 players.remove(i);
             }
         }
+
+        // Aqui debe actualizar cantidad de jugador que hay
+        // Tu metodo(player.size)
     }
 
     public void randomTeam(Account account) {
@@ -67,7 +80,6 @@ public class LobbyModel {
                 blueTeam += 1;
             }
         }
-
         if (redTeam > blueTeam) {
             account.setTeam(Team.BLUE);
         } else if (redTeam < blueTeam) {
@@ -85,43 +97,79 @@ public class LobbyModel {
         if (account.getId() == roomMasterId) {
             switch (order) {
                 case LEFT:
-                    beforeGameRulePosition(order);
+                    beforeGameRulePosition();
                     break;
                 case RIGHT:
-                    nextGameRulePosition(order);
+                    nextGameRulePosition();
                     break;
                 case OK:
-                    plusGameRuleValue(order);
+                    plusGameRuleValue();
                     break;
                 case BACK:
-                    minusGameRuleValue(order);
+                    minusGameRuleValue();
                     break;
             }
         }
     }
 
-    public void nextGameRulePosition(MasterOrder order) {
-        this.selectedRule = Math.floorMod(selectedRule + 1, gameRulesValues.length);
+    public void nextGameRulePosition() {
+        this.selectedRule = Math.floorMod(selectedRule + 1, numChangeableRule);
+        this.lobbysection = LOBBYSECTION.values()[selectedRule];
+        System.out.println(this.lobbysection);
+        // Aqui debe pasar el enum
+        // Tu metodo(lobbysection)
     }
 
-    public void beforeGameRulePosition(MasterOrder order) {
-        this.selectedRule = Math.floorMod(selectedRule - 1, gameRulesValues.length);
+    public void beforeGameRulePosition() {
+        this.selectedRule = Math.floorMod(selectedRule - 1, numChangeableRule);
+        this.lobbysection = LOBBYSECTION.values()[selectedRule];
+        System.out.println(this.lobbysection);
+        // Aqui debe pasar el enum
+        // Tu metodo(lobbysection)
     }
 
-    public void minusGameRuleValue(MasterOrder order) {
-        if (lobbysection == LOBBYSECTION.MAP) {
-            gameRulesValues[selectedRule] = Math.floorMod(gameRulesValues[selectedRule] - 1, gameRulesValues.length);
-        } else {
-            gameRulesValues[selectedRule] -= 1;
+    public void minusGameRuleValue() {
+        switch (this.lobbysection) {
+            case LIFE:
+                if (this.gameRules.getLife() > 0) {
+                    this.gameRules.setLife(this.gameRules.getLife() - 5);
+                }
+                break;
+            case BULLETDAMAGE:
+                if (this.gameRules.getLife() > 0) {
+                    this.gameRules.setBulletDamage(this.gameRules.getBulletDamage() - 5);
+                }
+                break;
+            case MAP:
+                int enumPosition = Maps.valueOf(this.gameRules.getMap().toString()).ordinal();
+                this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition - 1, Maps.values().length)]);
+                break;
+            case GAMEREADY:
+                this.lobbyController.getMainGameController().startGame(gameRules, players);
+                break;
         }
+        // Aqui te paso el game rule al actualizar
+        // Tu metodo(gameRule)
     }
 
-    public void plusGameRuleValue(MasterOrder order) {
-        if (lobbysection == LOBBYSECTION.MAP) {
-            gameRulesValues[selectedRule] = Math.floorMod(gameRulesValues[selectedRule] + 1, gameRulesValues.length);
-        } else {
-            gameRulesValues[selectedRule] += 1;
+    public void plusGameRuleValue() {
+        switch (this.lobbysection) {
+            case LIFE:
+                this.gameRules.setLife(this.gameRules.getLife() + 5);
+                break;
+            case BULLETDAMAGE:
+                this.gameRules.setBulletDamage(this.gameRules.getBulletDamage() + 5);
+                break;
+            case MAP:
+                int enumPosition = Maps.valueOf(this.gameRules.getMap().toString()).ordinal();
+                this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition + 1, Maps.values().length)]);
+                break;
+            case GAMEREADY:
+                this.lobbyController.getMainGameController().startGame(gameRules, players);
+                break;
         }
+        // Aqui te paso el game rule al actualizar
+        // Tu metodo(gameRule)
     }
 
     // Getter y Setters
@@ -165,20 +213,36 @@ public class LobbyModel {
         this.roomMasterId = roomMasterId;
     }
 
-    public int[] getGameRulesValues() {
-        return gameRulesValues;
-    }
-
-    public void setGameRulesValues(int[] gameRulesValues) {
-        this.gameRulesValues = gameRulesValues;
-    }
-
     public LOBBYSECTION getDinamicRules() {
         return lobbysection;
     }
 
     public void setDinamicRules(LOBBYSECTION lobbysection) {
         this.lobbysection = lobbysection;
+    }
+
+    public LOBBYSECTION getLobbysection() {
+        return lobbysection;
+    }
+
+    public void setLobbysection(LOBBYSECTION lobbysection) {
+        this.lobbysection = lobbysection;
+    }
+
+    public int getNumChangeableRule() {
+        return numChangeableRule;
+    }
+
+    public void setNumChangeableRule(int numChangeableRule) {
+        this.numChangeableRule = numChangeableRule;
+    }
+
+    public LobbyController getLobbyController() {
+        return lobbyController;
+    }
+
+    public void setLobbyController(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
     }
 
 }
