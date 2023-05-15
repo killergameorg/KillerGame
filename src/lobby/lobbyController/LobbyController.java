@@ -1,7 +1,10 @@
 package lobby.lobbyController;
 
+import java.util.ArrayList;
+
 import lobby.MasterOrder;
 import lobby.MasterStatus;
+import lobby.lobbyModel.GameRules;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
 import maincontroller.Account;
@@ -16,10 +19,8 @@ public class LobbyController {
     private LobbyModel lobbyModel;
 
     // Constructor
-    public LobbyController(MasterStatus status, LobbyView lobbyView, LobbyModel lobbyModel) {
+    public LobbyController(MasterStatus status) {
         this.status = status;
-        this.lobbyView = lobbyView;
-        this.lobbyModel = lobbyModel;
     }
 
     // Metodos
@@ -33,6 +34,10 @@ public class LobbyController {
 
     public void reciveMasterMsg(Account account, MasterOrder order) {
         lobbyModel.reciveMasterMsg(account, order);
+    }
+
+    public void startGame(GameRules gameRules, ArrayList<Account> players) {
+        this.mainGameController.startGame(gameRules, players);
     }
 
     // Getter y Setters

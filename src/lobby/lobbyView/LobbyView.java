@@ -10,9 +10,11 @@ import java.awt.*;
 public class LobbyView extends JFrame implements Runnable {
     private int refreshmilis = 500;
     Viewer viewer;
+    private LobbyController lobbyController;
 
 
-    public LobbyView() {
+    public LobbyView(LobbyController lobbyController) {
+        this.lobbyController=lobbyController;
         viewer = new Viewer();
         setTitle("Lobby");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());

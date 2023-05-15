@@ -35,7 +35,7 @@ public class LobbyModel {
         //TODO Aqui al crear el modelo debe pasar enum de que esta seleccionado Life
         // Tu metodo(lobbysection),
         lobbyController.getLobbyView().updatePos(this.lobbysection);
-
+        lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
     // Metodos
@@ -123,8 +123,6 @@ public class LobbyModel {
         //TODO Aqui debe pasar el enum
         // Tu metodo(lobbysection)
         lobbyController.getLobbyView().updatePos(this.lobbysection);
-        System.out.println(this.lobbysection);
-
     }
 
     public void beforeGameRulePosition() {
@@ -134,8 +132,6 @@ public class LobbyModel {
         //TODO Aqui debe pasar el enum
         // Tu metodo(lobbysection)
         lobbyController.getLobbyView().updatePos(this.lobbysection);
-        System.out.println(this.lobbysection);
-
     }
 
     public void minusGameRuleValue() {
@@ -147,7 +143,7 @@ public class LobbyModel {
                 }
                 break;
             case BULLETDAMAGE:
-                if (this.gameRules.getLife() > 0) {
+                if (this.gameRules.getBulletDamage() > 0) {
                     this.gameRules.setBulletDamage(this.gameRules.getBulletDamage() - 5);
                 }
                 break;
@@ -156,7 +152,7 @@ public class LobbyModel {
                 this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition - 1, Maps.values().length)]);
                 break;
             case GAMEREADY:
-                this.lobbyController.getMainGameController().startGame(gameRules, players);
+                this.lobbyController.startGame(gameRules, players);
                 break;
         }
         //TODO Aqui te paso el game rule al actualizar
@@ -178,7 +174,7 @@ public class LobbyModel {
                 this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition + 1, Maps.values().length)]);
                 break;
             case GAMEREADY:
-                this.lobbyController.getMainGameController().startGame(gameRules, players);
+                this.lobbyController.startGame(gameRules, players);
                 break;
         }
         //TODO Aqui te paso el game rule al actualizar
