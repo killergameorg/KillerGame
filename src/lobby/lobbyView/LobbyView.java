@@ -1,46 +1,67 @@
 package lobby.lobbyView;
 
+import lobby.LOBBYSECTION;
+import lobby.lobbyController.LobbyController;
+import lobby.lobbyModel.GameRules;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.Random;
 
 public class LobbyView extends JFrame implements Runnable {
-    private int refreshmilis;
+    private int refreshmilis = 500;
     Viewer viewer;
+    private LobbyController lobbyController;
 
-    public LobbyView() {
+
+    public LobbyView(LobbyController lobbyController) {
+        this.lobbyController=lobbyController;
         viewer = new Viewer();
-        this.refreshmilis = 500;
         setTitle("Lobby");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
-        // Método para que el proyecto cubra toda la pantalla
-        setUndecorated(true);
+        //Método para que el proyecto cubra toda la pantalla
+        //setUndecorated(true);
         addComponentes();
         setLocationRelativeTo(null);
         setVisible(true);
 
-    }
 
+
+    }
+    public void updatePos(LOBBYSECTION position){
+        for (int i = 0; i < viewer.labellist.size(); i++) {
+            if (i==position.ordinal()){
+                viewer.getLabellist().get(i).setText("->"+viewer.paramlist[i]);
+            }
+            else {
+                viewer.getLabellist().get(i).setText(viewer.paramlist[i]);
+            }
+        }
+    }
+    /*  public void setPos(){
+          position++;
+          if (position > viewer.getLabellist().size()-1){
+              position=0;
+          }
+      }*/
     public void addComponentes() {
         // Borrar fondo y añadir el que nos pasen desde visuales
         JLabel background = new JLabel(new ImageIcon("src/gameAssets/2space.jpg"));
         background.setLayout(new BorderLayout());
-        // Logo
-        JPanel logopanel = new JPanel();
-        logopanel.setOpaque(false);
-
-        // Parámetros de partida
+//Parámetros de partida
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
+
         centerPanel.add(viewer.lifes);
         centerPanel.add(viewer.bulletDamage);
         centerPanel.add(viewer.map);
+        centerPanel.add(viewer.readypanel);
+
 
         centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(Box.createVerticalStrut(300));
-        // Número de jugadores actuales e indicación de si se puede iniciar la partida
+//Número de jugadores actuales e indicación de si se puede iniciar la partida
 
         background.add(viewer.numplayers, BorderLayout.WEST);
         background.add(viewer.gameState, BorderLayout.EAST);
@@ -48,28 +69,22 @@ public class LobbyView extends JFrame implements Runnable {
         this.setContentPane(background);
     }
 
-    public void refresh() {
-        // Función de prueba para testear interfaz
-        String[] state = new String[] { "Waiting for players", "Waiting for master to start the game" };
-        Random random = new Random();
-        viewer.getLifesnum().setText(String.valueOf(random.nextInt(0, 100)));
-        viewer.getStateLabel().setText(state[random.nextInt(0, state.length)]);
+    public void refreshPlayerNum(int players){
+        viewer.getPlayersnum().setText(String.valueOf(players));
+    }
+    public void refreshMasterValues(GameRules gameRules) {
+        //Función de prueba para testear interfaz
+        viewer.getLifesnum().setText(String.valueOf(gameRules.getLife()));
+        viewer.getBulletDamagenum().setText(String.valueOf(gameRules.getBulletDamage()));
+        viewer.getMapnum().setText(String.valueOf(gameRules.getMap()));
+
     }
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                Thread.sleep(refreshmilis);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            refresh();
-
-        }
     }
 
-    // Getters setters
+    //Getters setters
     public Viewer getViewer() {
         return viewer;
     }

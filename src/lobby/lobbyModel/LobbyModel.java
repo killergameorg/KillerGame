@@ -1,13 +1,13 @@
 package lobby.lobbyModel;
 
-import java.util.ArrayList;
-
-import maincontroller.Account;
 import lobby.LOBBYSECTION;
 import lobby.Maps;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
+import maincontroller.Account;
 import maincontroller.Team;
+
+import java.util.ArrayList;
 
 public class LobbyModel {
 
@@ -32,8 +32,10 @@ public class LobbyModel {
         this.gameRules = new GameRules(100, 10, Maps.map1);
         this.numChangeableRule = LOBBYSECTION.values().length;
 
-        // Aqui al crear el modelo debe pasar enum de que esta seleccionado Life
-        // Tu metodo(lobbysection)
+        //TODO Aqui al crear el modelo debe pasar enum de que esta seleccionado Life
+        // Tu metodo(lobbysection),
+        lobbyController.getLobbyView().updatePos(this.lobbysection);
+        lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
     // Metodos
@@ -48,8 +50,9 @@ public class LobbyModel {
             players.add(account);
         }
 
-        // Aqui debe actualizar cantidad de jugador que hay
+        //TODO Aqui debe actualizar cantidad de jugador que hay
         // Tu metodo(player.size)
+        lobbyController.getLobbyView().refreshPlayerNum(players.size());
     }
 
     public void removeAccount(Account account) {
@@ -66,8 +69,9 @@ public class LobbyModel {
             }
         }
 
-        // Aqui debe actualizar cantidad de jugador que hay
+        //TODO Aqui debe actualizar cantidad de jugador que hay
         // Tu metodo(player.size)
+        lobbyController.getLobbyView().refreshPlayerNum(players.size());
     }
 
     public void randomTeam(Account account) {
@@ -115,20 +119,23 @@ public class LobbyModel {
     public void nextGameRulePosition() {
         this.selectedRule = Math.floorMod(selectedRule + 1, numChangeableRule);
         this.lobbysection = LOBBYSECTION.values()[selectedRule];
-        System.out.println(this.lobbysection);
-        // Aqui debe pasar el enum
+
+        //TODO Aqui debe pasar el enum
         // Tu metodo(lobbysection)
+        lobbyController.getLobbyView().updatePos(this.lobbysection);
     }
 
     public void beforeGameRulePosition() {
         this.selectedRule = Math.floorMod(selectedRule - 1, numChangeableRule);
         this.lobbysection = LOBBYSECTION.values()[selectedRule];
-        System.out.println(this.lobbysection);
-        // Aqui debe pasar el enum
+
+        //TODO Aqui debe pasar el enum
         // Tu metodo(lobbysection)
+        lobbyController.getLobbyView().updatePos(this.lobbysection);
     }
 
     public void minusGameRuleValue() {
+        //Actualizar valores refresh()
         switch (this.lobbysection) {
             case LIFE:
                 if (this.gameRules.getLife() > 0) {
@@ -136,7 +143,7 @@ public class LobbyModel {
                 }
                 break;
             case BULLETDAMAGE:
-                if (this.gameRules.getLife() > 0) {
+                if (this.gameRules.getBulletDamage() > 0) {
                     this.gameRules.setBulletDamage(this.gameRules.getBulletDamage() - 5);
                 }
                 break;
@@ -145,14 +152,16 @@ public class LobbyModel {
                 this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition - 1, Maps.values().length)]);
                 break;
             case GAMEREADY:
-                this.lobbyController.getMainGameController().startGame(gameRules, players);
+                this.lobbyController.startGame(gameRules, players);
                 break;
         }
-        // Aqui te paso el game rule al actualizar
+        //TODO Aqui te paso el game rule al actualizar
         // Tu metodo(gameRule)
+        lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
     public void plusGameRuleValue() {
+        //Actualizar valores refresh()
         switch (this.lobbysection) {
             case LIFE:
                 this.gameRules.setLife(this.gameRules.getLife() + 5);
@@ -165,11 +174,12 @@ public class LobbyModel {
                 this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition + 1, Maps.values().length)]);
                 break;
             case GAMEREADY:
-                this.lobbyController.getMainGameController().startGame(gameRules, players);
+                this.lobbyController.startGame(gameRules, players);
                 break;
         }
-        // Aqui te paso el game rule al actualizar
+        //TODO Aqui te paso el game rule al actualizar
         // Tu metodo(gameRule)
+        lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
     // Getter y Setters
