@@ -236,7 +236,7 @@ Se dispara cuando llega un mensaje que debe ser interpretado, ya sea porque ha s
 
 El argument *ip* indica la dirección de procedencia del mensaje.
 
-El argumento *message* es el cuerpo del mensaje. La interfaz usa el tipo Objeto por ser la clase base en Java y por consiguiente representar cualquier clase del lenguaje. Normalmente el menaje auténtico vendrá de una clase más especializada. La forma más sencilla de recuperarla es conocer qué tipos de mensajes van a circular por la red según la aplicación que se le vaya a dar y usar el operador *instanceof*  para preguntar su identidad real en un switch.
+El argumento *message* es el cuerpo del mensaje. La interfaz usa el tipo Objeto por ser la clase base en Java y por consiguiente representar cualquier clase del lenguaje. Normalmente el menaje auténtico vendrá de una clase más especializada. La forma más sencilla de recuperarla es conocer qué tipos de mensajes van a circular por la red según la aplicación que se le vaya a dar y usar el operador *instanceof*  para preguntar su identidad real en una cadena de if-else.
 
 Un ejemplo de código que realiza este trabajo podría ser el siguiente:
 
