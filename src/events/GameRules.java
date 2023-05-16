@@ -9,6 +9,8 @@ public class GameRules {
     private double acc;
     private int speedIncrease;
     private boolean friendlyFire;
+    private int powerUpUpgrade;
+    private int winScore;
 
     public int getColisionDamage() {
         return colisionDamage;
@@ -18,7 +20,18 @@ public class GameRules {
         return bulletDamage;
     }
 
-    public GameRules(int colisionDamage) {
+    public int getPowerUpUpgrade() {
+        return powerUpUpgrade;
+    }
+
+    public int getWinScore() {
+        return winScore;
+    }
+
+    public GameRules(int colisionDamage,int bulletDamage, int powerUpUpgrade,int winScore) {
         this.colisionDamage = colisionDamage;
+        this.bulletDamage = bulletDamage;
+        this.powerUpUpgrade = powerUpUpgrade;
+        this.winScore=winScore;
     }
 }
