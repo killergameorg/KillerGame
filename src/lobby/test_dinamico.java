@@ -42,7 +42,6 @@ public class test_dinamico {
     public static void main(String[] args) {
         LobbyModel lobbyModel = new LobbyModel(null);
         Account a = new Account(null, null);
-        lobbyModel.addAccount(a);
         lobbyModel.beforeGameRulePosition();
         lobbyModel.nextGameRulePosition();
         lobbyModel.nextGameRulePosition();

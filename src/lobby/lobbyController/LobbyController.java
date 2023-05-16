@@ -24,20 +24,44 @@ public class LobbyController {
     }
 
     // Metodos
-    public void addAccount(Account account) {
-        lobbyModel.addAccount(account);
+    /*
+     * En caso de ser el lobbyMaster se ejecuta el siguiente funcion,
+     * Se crea el objeto de view y modelo de lobby
+     */
+    public void startLobby() {
+        LobbyView lobbyView = new LobbyView(this);
+        this.setLobbyView(lobbyView);
+        LobbyModel lobbyModel = new LobbyModel(this);
+        this.setLobbyModel(lobbyModel);
     }
 
-    public void removeAccount(Account account) {
-        lobbyModel.removeAccount(account);
+    /**
+     * El room master manda un enum Left o Right para cambiar la posicion de rule
+     * seleccionado
+     * ademas enum Ok o Back sirve para aumentar o disminuir el valor de rule.
+     * 
+     * @param order enum Left, Right, Ok, Back
+     */
+    public void reciveMasterMsg(MasterOrder order) {
+        lobbyModel.reciveMasterMsg(order);
     }
 
-    public void reciveMasterMsg(Account account, MasterOrder order) {
-        lobbyModel.reciveMasterMsg(account, order);
+    /**
+     * Cuando el room master decide comenzar el juego se pasa al maingamecontroller
+     * gameRule.
+     * @param gameRules
+     */
+    public void startGame(GameRules gameRules) {
+        this.mainGameController.startGame(gameRules);
     }
 
-    public void startGame(GameRules gameRules, ArrayList<Account> players) {
-        this.mainGameController.startGame(gameRules, players);
+    /**
+     * Este metodo sire para actualizar el view al aumentar o disminuir 
+     * cantidad de jugador
+     * @param numPlayer un numero que indica cantidad de jugador.
+     */
+    public void setPlayerCount(int numPlayer) {
+
     }
 
     // Getter y Setters
