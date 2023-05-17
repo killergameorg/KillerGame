@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LobbyView extends JFrame implements Runnable {
-    private int refreshmilis = 500;
+
     Viewer viewer;
     private LobbyController lobbyController;
 
@@ -45,7 +45,7 @@ public class LobbyView extends JFrame implements Runnable {
       }*/
     public void addComponentes() {
         // Borrar fondo y añadir el que nos pasen desde visuales
-        JLabel background = new JLabel(new ImageIcon("src/gameAssets/2space.jpg"));
+        JLabel background = new JLabel(new ImageIcon("src//lobby//gameAssets//2space.jpg"));
         background.setLayout(new BorderLayout());
 //Parámetros de partida
         JPanel centerPanel = new JPanel();

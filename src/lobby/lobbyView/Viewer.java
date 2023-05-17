@@ -132,7 +132,7 @@ public class Viewer extends JPanel {
         Font font = null;
         try {
             //Archivo de fuente puesto para testear la interfaz. Fuente:https://www.dafont.com/polybius1981.font
-            String fontPath = "gameAssets/poly.ttf";
+            String fontPath = "lobby//gameAssets//poly.ttf";
             String absoluteFontPath = getClass().getClassLoader().getResource(fontPath).getPath();
             Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(absoluteFontPath));
             font = customFont.deriveFont(Font.BOLD, 50);
