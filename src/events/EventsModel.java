@@ -69,30 +69,25 @@ public class EventsModel {
      * @return ArrayList : List of actions produced by the life decrease event
      */
     public ArrayList<Action> processLifeDecrease(VisualObject emisor, VisualObject receiver) {
-        // todo quitar vida segun tipo de objeto
         ArrayList<Action> actions = new ArrayList<>();
 
-        if (receiver instanceof Ship) {
-            if (emisor instanceof Ship) {
-                actions.add(new LifeDecreaseAction(receiver, this.gameRules.getColisionDamage()));
+        if (emisor instanceof Ship) {
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getColisionDamage()));
 
-                if ((receiver.getLife() - this.gameRules.getColisionDamage()) <= 0) {
-                    actions.addAll((processDeath(receiver)));
-                    actions.addAll(processPointWin(emisor.getTeam()));
-                }
-
-            } else if (emisor instanceof Bullet) {
-                actions.add(new LifeDecreaseAction(receiver, this.gameRules.getBulletDamage()));
-
-                
-                
-                if ((receiver.getLife() - this.gameRules.getBulletDamage()) <= 0) {
-                    actions.addAll((processDeath(receiver)));
-                    actions.addAll(processPointWin(emisor.getTeam()));
-                }
-                
-                actions.addAll((processDeath(emisor)));
+            if ((receiver.getLife() - this.gameRules.getColisionDamage()) <= 0) {
+                actions.addAll((processDeath(receiver)));
+                actions.addAll(processPointWin(emisor.getTeam()));
             }
+
+        } else if (emisor instanceof Bullet) {
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getBulletDamage()));
+
+            if ((receiver.getLife() - this.gameRules.getBulletDamage()) <= 0) {
+                actions.addAll((processDeath(receiver)));
+                actions.addAll(processPointWin(emisor.getTeam()));
+            }
+
+            actions.addAll((processDeath(emisor)));
         }
 
         return actions;
@@ -105,16 +100,8 @@ public class EventsModel {
      */
     public ArrayList<Action> processDeath(VisualObject visualObject) {
         ArrayList<Action> actions = new ArrayList<>();
-        if (visualObject instanceof Ship) {
-            actions.add(new ExplosionAction(visualObject));
-
-            actions.addAll(processPointWin(visualObject.getTeam())); 
-
-        } else if (visualObject instanceof Bullet) {
-            actions.add(new ExplosionAction(visualObject));
-        }
+        actions.add(new ExplosionAction(visualObject));
         return actions;
-
     }
 
     /*
@@ -128,8 +115,9 @@ public class EventsModel {
         ArrayList<Action> actions = new ArrayList<>();
         if (receiver instanceof Ship && powerUp instanceof PowerUp) {
             if ((receiver.getLife() + this.gameRules.getPowerUpUpgrade() <= 100)) {
-                Action lifeIncrease = new LifeIncreaseAction(powerUp, this.gameRules.getPowerUpUpgrade());
-                actions.add(lifeIncrease);
+                actions.add(new LifeIncreaseAction(powerUp, this.gameRules.getPowerUpUpgrade()));
+            } else if ((receiver.getLife() + this.gameRules.getPowerUpUpgrade() > 100)) {
+                actions.add(new LifeIncreaseAction(powerUp, 100 - receiver.getLife()));
             }
         }
         return actions;
