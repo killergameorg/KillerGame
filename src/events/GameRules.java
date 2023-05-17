@@ -1,37 +1,41 @@
 package events;
 
 public class GameRules {
-    private int colisionDamage;
+
+    private int life;
     private int bulletDamage;
-    private int numPlayers;
-    private int endTime;
-    private int bulletSpeed;
-    private double acc;
-    private int speedIncrease;
-    private boolean friendlyFire;
-    private int powerUpUpgrade;
-    private int winScore;
+    private int colisionDamage;
+    private Maps map;
+
+    // Constructor
+    public GameRules(int life, int bulletDamage, int colisionDamage, Maps map) {
+        this.life = life;
+        this.bulletDamage = bulletDamage;
+        this.map = map;
+    }
+
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
+    }
 
     public int getColisionDamage() {
         return colisionDamage;
+    }
+
+    public void setColisionDamage(int colisionDamage) {
+        this.colisionDamage = colisionDamage;
     }
 
     public int getBulletDamage() {
         return bulletDamage;
     }
 
-    public int getPowerUpUpgrade() {
-        return powerUpUpgrade;
-    }
-
-    public int getWinScore() {
-        return winScore;
-    }
-
-    public GameRules(int colisionDamage,int bulletDamage, int powerUpUpgrade,int winScore) {
-        this.colisionDamage = colisionDamage;
+    public void setBulletDamage(int bulletDamage) {
         this.bulletDamage = bulletDamage;
-        this.powerUpUpgrade = powerUpUpgrade;
-        this.winScore=winScore;
     }
+
 }
