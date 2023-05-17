@@ -19,14 +19,16 @@ public class LobbyController {
     private LobbyModel lobbyModel;
 
     // Constructor
-    public LobbyController(MasterStatus status) {
-        this.status = status;
+    // When created, it asks the maincontroller to apply the master
+    public LobbyController() {
+        this.mainGameController.applyingToMaster();
+        this.status = MasterStatus.ApplyingToMaster;
     }
 
     // Metodos
     /*
-     * En caso de ser el lobbyMaster se ejecuta el siguiente funcion,
-     * Se crea el objeto de view y modelo de lobby
+     * In case of being the lobbyMaster the following function is executed,
+     * The object view  and lobbymodel are created.
      */
     public void startLobby() {
         LobbyView lobbyView = new LobbyView(this);
@@ -36,9 +38,8 @@ public class LobbyController {
     }
 
     /**
-     * El room master manda un enum Left o Right para cambiar la posicion de rule
-     * seleccionado
-     * ademas enum Ok o Back sirve para aumentar o disminuir el valor de rule.
+     * The room master sends an enum Left or Right to change the position of rule
+     * selected ,also enum Ok or Back is used to increase or decrease the value of the rule.
      * 
      * @param order enum Left, Right, Ok, Back
      */
@@ -47,8 +48,9 @@ public class LobbyController {
     }
 
     /**
-     * Cuando el room master decide comenzar el juego se pasa al maingamecontroller
+     * When the room master decides to start the game, it is passed to the maingamecontroller.
      * gameRule.
+     * 
      * @param gameRules
      */
     public void startGame(GameRules gameRules) {
@@ -56,12 +58,26 @@ public class LobbyController {
     }
 
     /**
-     * Este metodo sire para actualizar el view al aumentar o disminuir 
-     * cantidad de jugador
-     * @param numPlayer un numero que indica cantidad de jugador.
+     * This method is used to update the view by increasing or decreasing the
+     * amount of player.
+     * 
+     * @param numPlayer a number indicating the number of players.
      */
     public void setPlayerCount(int numPlayer) {
+        this.lobbyView.refreshPlayerNum(numPlayer);
+    }
 
+    /*
+     * Afther using method mainGameController.applyingToMaster()
+     * maincontroller will decide, this object is master or slave 
+     * by using one of these thwo method.
+     */
+    public void setSlave() {
+        this.status = MasterStatus.LobbySlave;
+    }
+
+    public void setMaster() {
+        this.status = MasterStatus.LobbyMaster;
     }
 
     // Getter y Setters

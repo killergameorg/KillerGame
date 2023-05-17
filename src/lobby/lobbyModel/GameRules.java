@@ -5,12 +5,12 @@ import lobby.Maps;
 public class GameRules {
 
     // Atributos
-    // Datos que se puede modificar
+    // Data that can be modified
     private int life;
     private int bulletDamage;
     private Maps map;
 
-    // Datos estaticos
+    // Static data
     private int defaultDamage;
     private int maxPlayer;
     private int endTime;
@@ -26,16 +26,16 @@ public class GameRules {
 
     // Constructor
     public GameRules(int life, int bulletDamage, Maps map) {
-        // Datos que se puede modificar
+        // Data that can be modified
         this.life = life;
         this.bulletDamage = bulletDamage;
         this.map = map;
-        // Datos estaticos
+        // Static data
         this.defaultDamage = 10;
         this.maxPlayer = 8;
         this.endTime = 300;
         this.numTeam = 2;
-        this.bulletSpeed = 1; // Hay que preguntar
+        this.bulletSpeed = 1;
         this.shootSpeed = 200;
         this.friendlyFire = false;
         this.gameMode = "Team deathmatch";
@@ -46,7 +46,6 @@ public class GameRules {
     }
 
     // Getter y Setters
-
     @Override
     public String toString() {
         return "GameRules [life=" + life + ", bulletDamage=" + bulletDamage + ", map=" + map + "]";
