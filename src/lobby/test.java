@@ -8,6 +8,10 @@ import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
 
 public class test {
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         LobbyController lobbyController = new LobbyController(MasterStatus.LobbyMaster);
         LobbyView lobbyView = new LobbyView(lobbyController);

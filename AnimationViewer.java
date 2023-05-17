@@ -19,6 +19,10 @@ public class AnimationViewer extends JFrame {
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(AnimationViewer.class.getClass().getName());
 
+	
+	/** 
+	 * @return Color
+	 */
 	private static Color generateRandomColor() {
 		Random random = new Random();
 		// Genera un valor aleatorio para cada componente RGB

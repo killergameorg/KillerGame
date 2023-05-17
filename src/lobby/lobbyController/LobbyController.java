@@ -12,7 +12,7 @@ import maincontroller.MainGameController;
 
 public class LobbyController {
 
-    // Atributos
+    // Atributes
     private MainGameController mainGameController;
     private MasterStatus status;
     private LobbyView lobbyView;
@@ -22,8 +22,7 @@ public class LobbyController {
     public LobbyController(MasterStatus status) {
         this.status = status;
     }
-
-    // Metodos
+    // Methods
     public void addAccount(Account account) {
         lobbyModel.addAccount(account);
     }

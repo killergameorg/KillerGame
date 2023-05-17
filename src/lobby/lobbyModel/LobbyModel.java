@@ -38,6 +38,10 @@ public class LobbyModel {
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
+    
+    /** 
+     * @param account
+     */
     // Metodos
     public void addAccount(Account account) {
         if (account != null && players.size() < gameRules.getMaxPlayer()) {

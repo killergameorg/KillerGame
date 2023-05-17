@@ -21,6 +21,11 @@ public class MainGameController {
         // TODO
     }
 
+    
+    /** 
+     * @param gameRules
+     * @param accounts
+     */
     public void startGame(GameRules gameRules, ArrayList<Account> accounts) {
         this.setAccounts(accounts);
         // TODO

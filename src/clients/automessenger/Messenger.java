@@ -14,6 +14,10 @@ public class Messenger implements P2PCommListener {
 		connectedPeers = new Hashtable<>();
 	}
 
+	
+	/** 
+	 * @param ip
+	 */
 	@Override
 	public void onConnectionClosed(String ip) {
 		System.err.println("[" + ip + "] " + "cerró su conexión");

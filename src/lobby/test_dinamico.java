@@ -10,6 +10,11 @@ public class test_dinamico {
     private int atributo2;
     private EnumTipo atributoEnum;
 
+    
+    /** 
+     * @param numeroSeleccionado
+     * @param nuevoValor
+     */
     public void cambiarValor(int numeroSeleccionado, Object nuevoValor) {
         try {
             Field[] campos = this.getClass().getDeclaredFields();

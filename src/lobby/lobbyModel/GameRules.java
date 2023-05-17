@@ -44,8 +44,8 @@ public class GameRules {
         this.increaseSpeed = 0.1;
         this.maxSpeed = 7.0;
     }
-
-    // Getter y Setters
+    
+    // Getter and Setters
 
     @Override
     public String toString() {
