@@ -9,7 +9,8 @@ import lobby.lobbyView.LobbyView;
 
 public class test {
     public static void main(String[] args) {
-        LobbyController lobbyController = new LobbyController(MasterStatus.LobbyMaster);
+        //Para que funcione necesita quitar applingtomaster en el constructor
+        LobbyController lobbyController = new LobbyController();
         LobbyView lobbyView = new LobbyView(lobbyController);
         lobbyController.setLobbyView(lobbyView);
         LobbyModel lobbyModel = new LobbyModel(lobbyController);

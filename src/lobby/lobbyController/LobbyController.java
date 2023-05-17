@@ -55,6 +55,7 @@ public class LobbyController {
      */
     public void startGame(GameRules gameRules) {
         this.mainGameController.startGame(gameRules);
+        this.lobbyView.dispose();
     }
 
     /**
