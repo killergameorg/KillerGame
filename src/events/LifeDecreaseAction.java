@@ -16,8 +16,8 @@ public class LifeDecreaseAction extends VisualObjectAction {
         return super.getVisualObject();
     }
 
-    public LifeDecreaseAction(VisualObject visualObject1,int lifeDowngrade) {
-        super(visualObject1);
+    public LifeDecreaseAction(VisualObject visualObject,int lifeDowngrade) {
+        super(visualObject);
         this.lifeDowngrade=lifeDowngrade;
     }
 
