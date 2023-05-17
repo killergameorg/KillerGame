@@ -1,8 +1,8 @@
 package events;
 
 public class DestructionAction extends VisualObjectAction {
-    public DestructionAction(VisualObject visualObject1) {
-        super(visualObject1);
+    public DestructionAction(VisualObject visualObject) {
+        super(visualObject);
     }
 
     @Override
