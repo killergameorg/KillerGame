@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LobbyView extends JFrame {
-    private int refreshmilis = 500;
    private Viewer viewer;
     private LobbyController lobbyController;
 
@@ -60,7 +59,7 @@ public class LobbyView extends JFrame {
 
         centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(Box.createVerticalStrut(300));
-//Actual players in lobby
+//number of players waiting in lobby
 
         background.add(viewer.numplayers, BorderLayout.WEST);
         background.add(viewer.gameState, BorderLayout.EAST);

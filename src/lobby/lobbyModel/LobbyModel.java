@@ -31,17 +31,12 @@ public class LobbyModel {
         this.roomMasterId = -1L;
         this.gameRules = new GameRules(100, 10, Maps.map1);
         this.numChangeableRule = LOBBYSECTION.values().length;
-
-        //TODO Aqui al crear el modelo debe pasar enum de que esta seleccionado Life
-        // Tu metodo(lobbysection),
         lobbyController.getLobbyView().updatePos(this.lobbysection);
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
     
-    /** 
-     * @param account
-     */
+  
     // Metodos
     public void addAccount(Account account) {
         if (account != null && players.size() < gameRules.getMaxPlayer()) {
@@ -54,11 +49,12 @@ public class LobbyModel {
             players.add(account);
         }
 
-        //TODO Aqui debe actualizar cantidad de jugador que hay
-        // Tu metodo(player.size)
+       
         lobbyController.getLobbyView().refreshPlayerNum(players.size());
     }
 
+    
+    
     public void removeAccount(Account account) {
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getId() == account.getId()) {
@@ -73,8 +69,7 @@ public class LobbyModel {
             }
         }
 
-        //TODO Aqui debe actualizar cantidad de jugador que hay
-        // Tu metodo(player.size)
+       
         lobbyController.getLobbyView().refreshPlayerNum(players.size());
     }
 
@@ -124,8 +119,7 @@ public class LobbyModel {
         this.selectedRule = Math.floorMod(selectedRule + 1, numChangeableRule);
         this.lobbysection = LOBBYSECTION.values()[selectedRule];
 
-        //TODO Aqui debe pasar el enum
-        // Tu metodo(lobbysection)
+       
         lobbyController.getLobbyView().updatePos(this.lobbysection);
     }
 
@@ -133,13 +127,12 @@ public class LobbyModel {
         this.selectedRule = Math.floorMod(selectedRule - 1, numChangeableRule);
         this.lobbysection = LOBBYSECTION.values()[selectedRule];
 
-        //TODO Aqui debe pasar el enum
-        // Tu metodo(lobbysection)
+        
         lobbyController.getLobbyView().updatePos(this.lobbysection);
     }
 
     public void minusGameRuleValue() {
-        //Actualizar valores refresh()
+        
         switch (this.lobbysection) {
             case LIFE:
                 if (this.gameRules.getLife() > 0) {
@@ -159,13 +152,12 @@ public class LobbyModel {
                 this.lobbyController.startGame(gameRules, players);
                 break;
         }
-        //TODO Aqui te paso el game rule al actualizar
-        // Tu metodo(gameRule)
+    
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 
     public void plusGameRuleValue() {
-        //Actualizar valores refresh()
+
         switch (this.lobbysection) {
             case LIFE:
                 this.gameRules.setLife(this.gameRules.getLife() + 5);
@@ -181,8 +173,7 @@ public class LobbyModel {
                 this.lobbyController.startGame(gameRules, players);
                 break;
         }
-        //TODO Aqui te paso el game rule al actualizar
-        // Tu metodo(gameRule)
+       
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
 

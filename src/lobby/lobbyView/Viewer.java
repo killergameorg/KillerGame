@@ -6,7 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
-
+/**
+* All the components for the LobbyView 
+* 
+* @author Antoni Xavier Bascunana Sanchez
+* 
+*/
 public class Viewer extends JPanel {
 
     JPanel numplayers;
@@ -43,7 +48,9 @@ public class Viewer extends JPanel {
         labellist.add(mapLabel);
         labellist.add(readylabel);
     }
-
+    /** 
+     * Waiting for master Jpanel
+     */
     public void addReady() {
         readypanel = new JPanel();
         readypanel.setSize(50, 50);
@@ -53,7 +60,9 @@ public class Viewer extends JPanel {
         readypanel.add(readylabel);
         readypanel.setOpaque(false);
     }
-
+    /** 
+     * Lifes Jpanel
+     */
     public void addLifes() {
         lifes = new JPanel();
         lifes.setSize(50, 50);
@@ -67,7 +76,9 @@ public class Viewer extends JPanel {
         lifes.add(lifesnum);
         lifes.setOpaque(false);
     }
-
+    /** 
+     * BulletDamage Jpanel
+     */
     public void addBulletDamage() {
         bulletDamage = new JPanel();
         bulletDamage.setSize(50, 50);
@@ -81,7 +92,9 @@ public class Viewer extends JPanel {
         bulletDamage.add(bulletDamagenum);
         bulletDamage.setOpaque(false);
     }
-
+    /** 
+     * Map Jpanel
+     */
     public void addMap() {
         map = new JPanel();
         map.setSize(50, 50);
@@ -95,7 +108,9 @@ public class Viewer extends JPanel {
         map.add(mapnum);
         map.setOpaque(false);
     }
-
+    /** 
+     *GameState Jpanel
+     */
     public void addGameState() {
         gameState = new JPanel();
         gameState.setSize(50, 50);
@@ -105,7 +120,9 @@ public class Viewer extends JPanel {
         gameState.add(stateLabel);
         gameState.setOpaque(false);
     }
-
+    /** 
+     * PlayerNum Jpanel
+     */
     public void addNumPlayers() {
         numplayers = new JPanel();
         numplayers.setSize(50, 50);
@@ -143,9 +160,6 @@ public class Viewer extends JPanel {
 
 
     
-    /** 
-     * @return JLabel
-     */
     //Getters setters
     public JLabel getPlayersnum() {
         return playersnum;
