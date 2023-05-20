@@ -1,4 +1,4 @@
-package clients.asteroids;
+package clients.asteroids.screen;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,30 +7,34 @@ import java.util.Optional;
 import java.util.Properties;
 
 import clients.asteroids.messages.AccelerateShipMessage;
-import clients.asteroids.messages.IdMessage;
+import clients.asteroids.messages.IdScreenMessage;
+import clients.asteroids.messages.IdShipMessage;
+import clients.asteroids.messages.RequestShipIdMessage;
 import clients.asteroids.messages.RotateShipMessage;
-import clients.asteroids.messages.ShipMessage;
+import clients.asteroids.messages.ShipScreenChangeMessage;
 import communications.ConnectionController;
 import communications.P2PCommListener;
 
-public class AsteroidsController implements P2PCommListener{
-
-	private int id;
+public class ScreenController implements P2PCommListener{
 
 	private ConnectionController comm;
-	private AsteroidsViewer viewer;
+	private ScreenViewer viewer;
 	private String[] neighbour;
+	
 
-	public AsteroidsController() {
+	private int id;
+	private int team;
+
+	public ScreenController() {
 		neighbour = new String[4];
 
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream(new File("asteroids.properties")));
+			properties.load(new FileInputStream(new File("asteroids_screen.properties")));
 			id = Integer.parseInt(properties.getProperty("id"));
+			team = Integer.parseInt(properties.getProperty("team"));
 			int msRefresh = Integer.parseInt(properties.getProperty("ms_refresh"));
-			viewer = new AsteroidsViewer(this, msRefresh);
-			viewer.startAnimation();
+			viewer = new ScreenViewer(this, msRefresh);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -74,15 +78,12 @@ public class AsteroidsController implements P2PCommListener{
 
 	@Override
 	public void onIncomingMessage(String ip, Object message) {
-		if (message instanceof ShipMessage) {
-			ShipMessage m = (ShipMessage) message;
-
-			Edge from = m.from;
-			Ship ship = m.ship;
-
+		if (message instanceof ShipScreenChangeMessage) {
+			var m = (ShipScreenChangeMessage) message;
+			var from = m.from;
+			var ship = m.ship;
 			double x = ship.x;
 			double y = ship.y;
-
 			switch (from) {
 			case UP:
 				y = 0;
@@ -97,16 +98,15 @@ public class AsteroidsController implements P2PCommListener{
 				x = 0;
 				break;
 			}
-
 			viewer.createShip(ship.id, x, y, ship.dx, ship.dy, ship.da, ship.getColor());
 		} else if (message instanceof AccelerateShipMessage) {
-			AccelerateShipMessage m = (AccelerateShipMessage) message;
+			var m = (AccelerateShipMessage) message;
 			Optional<Ship> ship = viewer.getShip(m.shipId);
 			if(ship.isPresent()) {
 				ship.get().doAcceleration(m.accelerate);
 			}
 		} else if (message instanceof RotateShipMessage) {
-			RotateShipMessage m = (RotateShipMessage) message;
+			var m = (RotateShipMessage) message;
 			Optional<Ship> ship = viewer.getShip(m.shipId);
 			if(ship.isPresent()) {
 				switch(m.rotation) {
@@ -121,8 +121,18 @@ public class AsteroidsController implements P2PCommListener{
 					break;
 				}
 			}
-		} else if (message instanceof IdMessage) {
-			IdMessage m = (IdMessage) message;
+		} else if (message instanceof RequestShipIdMessage) {
+			var m = (RequestShipIdMessage) message;
+			if(m.team == team) {
+				var petitionaryId = m.petitionaryId;
+				var shipId = viewer.getNewShip();
+				var idShipMessage = new IdShipMessage();
+				idShipMessage.petitonaryId = petitionaryId;
+				idShipMessage.shipId = shipId;
+				comm.sendFlood(idShipMessage);
+			}
+		} else if (message instanceof IdScreenMessage) {
+			IdScreenMessage m = (IdScreenMessage) message;
 			int peerId = m.id;
 			addNeighbour(ip, peerId);
 		}
@@ -130,13 +140,13 @@ public class AsteroidsController implements P2PCommListener{
 
 	@Override
 	public void onNewConnection(String ip) {
-		IdMessage idMessage = new IdMessage();
-		idMessage.id = id;
-		comm.sendPrivate(ip, idMessage);
+		var idScreenMessage = new IdScreenMessage();
+		idScreenMessage.id = id;
+		comm.sendPrivate(ip, idScreenMessage);
 	}
 
 	private void removeNeighbour(String ip) {
-		for (int i = 0; i < neighbour.length; ++i) {
+		for (var i = 0; i < neighbour.length; ++i) {
 			if (neighbour[i] != null && neighbour[i].equals(ip)) {
 				neighbour[i] = null;
 				break;
@@ -157,8 +167,8 @@ public class AsteroidsController implements P2PCommListener{
 	}
 
 	public void shipOutOfLimits(Ship ship, Edge edge) {
-		String ip = neighbour[edge.ordinal()];
-		ShipMessage message = new ShipMessage();
+		var ip = neighbour[edge.ordinal()];
+		var message = new ShipScreenChangeMessage();
 		message.ship = ship;
 		switch (edge) {
 		case UP:
@@ -174,12 +184,7 @@ public class AsteroidsController implements P2PCommListener{
 			message.from = Edge.RIGHT;
 			break;
 		}
-
 		comm.sendPrivate(ip, message);
-	}
-
-	public void startAnimation() {
-		viewer.startAnimation();
 	}
 	
 	public boolean upHasWall() {

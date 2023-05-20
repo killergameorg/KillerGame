@@ -5,28 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import events.Action;
-import events.EventCollision;
-import events.EventsGameController;
-import events.ExplosionAction;
-import events.GameWinAction;
-import events.LifeDecreaseAction;
-import events.TeamActions;
-import events.VisualObjectsActions;
-import lobby.GameRules;
-import lobby.LobbyGameController;
-import maincontroller.gameinfo.Account;
-import maincontroller.notifications.NotificationProcessor;
-import maincontroller.notifications.NotificationProcessorPositionUpdate;
-import maincontroller.notifications.NotificationsManager;
-import visual.ControllableSpaceShip;
-import visual.Direction;
-import visual.DynamicVisualObject;
-import visual.NotificationMsg;
-import visual.NotificationType;
-import visual.Position;
-import visual.VisualGameController;
-import visual.VisualObject;
+import lobby.lobbyModel.GameRules;
 
 public class MainGameController {
     // TODO: Ordenar todos los métodos según sus departamentos
