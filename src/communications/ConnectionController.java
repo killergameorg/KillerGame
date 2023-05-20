@@ -52,7 +52,7 @@ public class ConnectionController {
 	private static final String FILE_PROPERTIES = "connections.properties";
 	
 	/** The port on which the server listens for incoming connections. */
-	private int serverPort;
+	private Integer serverPort;
 
 	/** The listener that receives incoming messages and connection status notifications. */
 	private P2PCommListener commListener;
@@ -79,8 +79,10 @@ public class ConnectionController {
 		var properties = new Properties();
 		try {
 			properties.load(new FileInputStream(new File(FILE_PROPERTIES)));
-
 			serverPort = Integer.valueOf(properties.getProperty("server_port"));
+			if(serverPort < 1024 || serverPort > 65535) {
+				throw(new IllegalArgumentException());
+			}
 			reconnectionPeers = new ArrayList<>();
 			
 			var peersIp = properties.getProperty("peers");
@@ -93,6 +95,12 @@ public class ConnectionController {
 			connectedPeers = new Hashtable<>();
 			peerMessageControl = new Hashtable<>();
 
+		} catch (NumberFormatException e) {
+			LOGGER.warning("No se ha proporcionado el puerto del servidor en "  + FILE_PROPERTIES + ". Revise la propiedad server.");
+			System.exit(-1);
+		} catch (IllegalArgumentException e) {
+			LOGGER.warning("El número de puerto de servidor en "  + FILE_PROPERTIES + " es erroneo. Revise la propiedad server.");
+			System.exit(-1);
 		} catch (IOException e) {
 			LOGGER.warning("El archivo " + FILE_PROPERTIES + " no ha sido encontrado.");
 			System.exit(-1);
@@ -194,11 +202,13 @@ public class ConnectionController {
 	 * 	Initializes the ConnectionController by starting the server thread and the reconnection thread.
 	 */
 	public void initialize() {
-		try {
-			new Thread(new ServerManager(this, serverPort)).start();
-		} catch (IOException e) {
-			LOGGER.warning("[FATAL] No se puede crear el socket de servidor. La aplicación se va a cerrar.");
-			System.exit(-1);
+		if(serverPort != null) { // Arranca el servidor si se ha pasado un puerto válido
+			try {
+					new Thread(new ServerManager(this, serverPort)).start();
+			} catch (IOException e) {
+				LOGGER.warning("[FATAL] No se puede crear el socket de servidor. La aplicación se va a cerrar.");
+				System.exit(-1);
+			}
 		}
 
 		new Thread(() -> {
