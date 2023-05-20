@@ -1,4 +1,4 @@
-package maincontroller;
+package maincontroller.gameinfo;
 
 public class Account {
 
