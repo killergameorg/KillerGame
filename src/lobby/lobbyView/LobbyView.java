@@ -6,10 +6,15 @@ import lobby.lobbyModel.GameRules;
 
 import javax.swing.*;
 import java.awt.*;
-
-public class LobbyView extends JFrame implements Runnable {
-
-    Viewer viewer;
+/**
+* Frame for the Lobby
+* 
+* @author Antoni Xavier Bascunana Sanchez
+* 
+*/
+public class LobbyView extends JFrame {
+    
+   private Viewer viewer;
     private LobbyController lobbyController;
 
 
@@ -18,15 +23,19 @@ public class LobbyView extends JFrame implements Runnable {
         viewer = new Viewer();
         setTitle("Lobby");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
-        //Método para que el proyecto cubra toda la pantalla
         //setUndecorated(true);
-        addComponentes();
+        addComponents();
         setLocationRelativeTo(null);
         setVisible(true);
 
 
 
     }
+    
+    /** 
+     * @param position
+     * Method to display selected position by user
+     */
     public void updatePos(LOBBYSECTION position){
         for (int i = 0; i < viewer.labellist.size(); i++) {
             if (i==position.ordinal()){
@@ -37,17 +46,14 @@ public class LobbyView extends JFrame implements Runnable {
             }
         }
     }
-    /*  public void setPos(){
-          position++;
-          if (position > viewer.getLabellist().size()-1){
-              position=0;
-          }
-      }*/
-    public void addComponentes() {
-        // Borrar fondo y añadir el que nos pasen desde visuales
-        JLabel background = new JLabel(new ImageIcon("src//lobby//gameAssets//2space.jpg"));
+   /** 
+     *Add Viewer components
+     */
+    public void addComponents() {
+        // Delete background and add the one sent from the visual dep
+        JLabel background = new JLabel(new ImageIcon("src/lobby/gameAssets/2space.jpg"));
         background.setLayout(new BorderLayout());
-//Parámetros de partida
+        //Game Parameters
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -61,7 +67,7 @@ public class LobbyView extends JFrame implements Runnable {
 
         centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(Box.createVerticalStrut(300));
-//Número de jugadores actuales e indicación de si se puede iniciar la partida
+        //number of players waiting in lobby
 
         background.add(viewer.numplayers, BorderLayout.WEST);
         background.add(viewer.gameState, BorderLayout.EAST);
@@ -69,21 +75,28 @@ public class LobbyView extends JFrame implements Runnable {
         this.setContentPane(background);
     }
 
+    
+    /** 
+     * @param players
+     * refresh number of players in game
+     */
     public void refreshPlayerNum(int players){
         viewer.getPlayersnum().setText(String.valueOf(players));
     }
+    
+    /** 
+     * @param players
+     * Refresh values set by master
+     */
     public void refreshMasterValues(GameRules gameRules) {
-        //Función de prueba para testear interfaz
         viewer.getLifesnum().setText(String.valueOf(gameRules.getLife()));
         viewer.getBulletDamagenum().setText(String.valueOf(gameRules.getBulletDamage()));
-        viewer.getMapnum().setText(String.valueOf(gameRules.getMap()));
+        viewer.getMapnum().setText(String.valueOf(gameRules.));
 
     }
 
-    @Override
-    public void run() {
-    }
 
+    
     //Getters setters
     public Viewer getViewer() {
         return viewer;
