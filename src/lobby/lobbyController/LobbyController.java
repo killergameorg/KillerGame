@@ -1,13 +1,10 @@
 package lobby.lobbyController;
 
-import java.util.ArrayList;
-
 import lobby.MasterOrder;
 import lobby.MasterStatus;
 import lobby.lobbyModel.GameRules;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
-import maincontroller.Account;
 import maincontroller.MainGameController;
 
 public class LobbyController {
@@ -28,7 +25,7 @@ public class LobbyController {
     // Metodos
     /*
      * In case of being the lobbyMaster the following function is executed,
-     * The object view  and lobbymodel are created.
+     * The object view and lobbymodel are created.
      */
     public void startLobby() {
         LobbyView lobbyView = new LobbyView(this);
@@ -39,7 +36,8 @@ public class LobbyController {
 
     /**
      * The room master sends an enum Left or Right to change the position of rule
-     * selected ,also enum Ok or Back is used to increase or decrease the value of the rule.
+     * selected ,also enum Ok or Back is used to increase or decrease the value of
+     * the rule.
      * 
      * @param order enum Left, Right, Ok, Back
      */
@@ -48,7 +46,8 @@ public class LobbyController {
     }
 
     /**
-     * When the room master decides to start the game, it is passed to the maingamecontroller.
+     * When the room master decides to start the game, it is passed to the
+     * maingamecontroller.
      * gameRule.
      * 
      * @param gameRules
@@ -70,7 +69,7 @@ public class LobbyController {
 
     /*
      * Afther using method mainGameController.applyingToMaster()
-     * maincontroller will decide, this object is master or slave 
+     * maincontroller will decide, this object is master or slave
      * by using one of these thwo method.
      */
     public void setSlave() {

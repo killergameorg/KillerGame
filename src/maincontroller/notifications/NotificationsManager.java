@@ -5,9 +5,6 @@ import java.util.HashMap;
 
 import events.Action;
 import events.ExplosionAction;
-import events.TeamActions;
-import events.VisualObjectsActions;
-import maincontroller.MainGameController;
 import maincontroller.MainGameModel;
 import visual.NotificationMsg;
 import visual.NotificationType;

@@ -1,9 +1,9 @@
 package lobby.lobbyModel;
 
 import lobby.LOBBYSECTION;
-import lobby.Maps;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
+import visual.Maps;
 
 public class LobbyModel {
 
@@ -20,7 +20,7 @@ public class LobbyModel {
         this.lobbyController = lobbyController;
         this.selectedRule = 0;
         this.lobbysection = LOBBYSECTION.values()[selectedRule];
-        this.gameRules = new GameRules(100, 10, Maps.map1);
+        this.gameRules = new GameRules(100, 10, Maps.MAP_1);
         this.numChangeableRule = LOBBYSECTION.values().length;
 
         // Update the viewer the selected rule and the values of all game rules

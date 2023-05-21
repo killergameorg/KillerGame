@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 public abstract class Event {
 
     private VisualObject firstObject;
