@@ -3,8 +3,7 @@ package maincontroller.notifications;
 import java.util.ArrayList;
 
 import events.Action;
-import events.EventCollision;
-import maincontroller.MainGameController;
+import events.Colision;
 import maincontroller.MainGameModel;
 import visual.DynamicVisualObject;
 import visual.Position;
@@ -59,8 +58,8 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
                         visualObjects.get(i).getPosition().getxPos() == positionFuture.getxPos() &&
                         visualObjects.get(i).getPosition().getyPos() == positionFuture.getyPos()) {
 
-                    EventCollision eventCollision = new EventCollision(visualObject, visualObjects.get(i));
-                    actions.addAll(this.processEvent(eventCollision));
+                    Colision colision = new Colision(visualObject, visualObjects.get(i));
+                    actions.addAll(this.processEvent(colision));
                 }
 
             }
@@ -70,8 +69,8 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
         return actions;
     }
 
-    private ArrayList<Action> processEvent(EventCollision eventCollision) {
-        return this.getMainGameModel().processEvent(eventCollision);
+    private ArrayList<Action> processEvent(Colision colision) {
+        return this.getMainGameModel().processEvent(colision);
     }
 
     /**

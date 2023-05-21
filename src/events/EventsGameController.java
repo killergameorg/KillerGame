@@ -2,6 +2,8 @@ package events;
 
 import java.util.ArrayList;
 
+import lobby.lobbyModel.GameRules;
+
 public class EventsGameController {
     private EventsModel eventsModel;
 
@@ -29,7 +31,7 @@ public class EventsGameController {
      * dependening on this and the conditions contained at the event and setted 
      * at the game rules, will send a list of actions to execute as a result of this event
      */
-    public ArrayList<Action> proccessEvent(Event event){
-       return this.eventsModel.processEvent(event);
+    public ArrayList<Action> processEvent(Event event){
+        return this.eventsModel.processEvent(event);
     }
 }

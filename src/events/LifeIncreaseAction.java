@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 public class LifeIncreaseAction extends VisualObjectAction {
     private int lifeUpgrade;
 
