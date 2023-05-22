@@ -26,7 +26,9 @@ public class AnimationController implements P2PCommListener {
 			properties.load(new FileInputStream(new File("animation.properties")));
 			int numBalls = Integer.parseInt(properties.getProperty("num_balls"));
 			id = Integer.parseInt(properties.getProperty("id"));
-			viewer = new AnimationViewer(this, numBalls);
+			int msRefresh = Integer.parseInt(properties.getProperty("ms_refresh"));
+			int ballMaxSpeed = Integer.parseInt(properties.getProperty("ball_max_speed"));
+			viewer = new AnimationViewer(this, numBalls, ballMaxSpeed, msRefresh);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -48,6 +50,29 @@ public class AnimationController implements P2PCommListener {
 		}
 
 		neighbour[neighbourIndex] = ip;
+	}
+
+	public void ballOutOfLimits(Ball ball, Edge edge) {
+		String ip = neighbour[edge.ordinal()];
+		BallMessage message = new BallMessage();
+
+		message.ball = ball;
+		switch (edge) {
+		case UP:
+			message.from = Edge.DOWN;
+			break;
+		case RIGHT:
+			message.from = Edge.LEFT;
+			break;
+		case DOWN:
+			message.from = Edge.UP;
+			break;
+		case LEFT:
+			message.from = Edge.RIGHT;
+			break;
+		}
+
+		comm.sendPrivate(ip, message);
 	}
 
 	public boolean downHasWall() {
@@ -120,14 +145,6 @@ public class AnimationController implements P2PCommListener {
 
 	public boolean rightHasWall() {
 		return neighbour[Edge.RIGHT.ordinal()] == null;
-	}
-
-	public void sendFlood(Object message) {
-		comm.sendFlood(message);
-	}
-
-	public void sendPrivate(String ip, Object message) {
-		comm.sendPrivate(ip, message);
 	}
 
 	public void setComm(ConnectionController comm) {

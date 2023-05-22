@@ -21,21 +21,25 @@ public class Ball implements Serializable, ActionListener {
 	private int dx;
 	private int dy;
 	private int diameter;
-	private Color color;
-
+	private int red;
+	private int green;
+	private int blue;
+	
 	private transient AnimationViewer animationController;
 	private transient Timer timer;
 
-	public Ball(AnimationViewer animationController, int x, int y, int dx, int dy, Color color) {
+	public Ball(AnimationViewer animationController, int x, int y, int dx, int dy, Color color, int msRefresh) {
 		this.animationController = animationController;
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
-		this.color = color;
-		;
+		red = color.getRed();
+		green = color.getGreen();
+		blue = color.getBlue();
+		
 		diameter = 30;
-		timer = new Timer(5, this);
+		timer = new Timer(msRefresh, this);
 		timer.start();
 	}
 
@@ -93,7 +97,7 @@ public class Ball implements Serializable, ActionListener {
 	}
 
 	public Color getColor() {
-		return color;
+		return new Color(red, green, blue);
 	}
 
 	public int getDiameter() {
