@@ -7,7 +7,7 @@ import events.ExplosionAction;
 import events.GameWinAction;
 import events.LifeDecreaseAction;
 import events.TeamActions;
-import events.VisualObjectsActions;
+import events.VisualObjectAction;
 import visual.VisualObject;
 
 public class NotificationsActionsProcessor {
@@ -27,8 +27,8 @@ public class NotificationsActionsProcessor {
         for (int i = 0; i < actions.size(); i++) {
             Action action = actions.get(i);
 
-            if (action instanceof VisualObjectsActions) {
-                this.processActionVisualObject((VisualObjectsActions) action);
+            if (action instanceof VisualObjectAction) {
+                this.processActionVisualObject((VisualObjectAction) action);
             } else if (action instanceof TeamActions) {
                 this.processActionTeam((TeamActions) action);
             }
@@ -42,19 +42,19 @@ public class NotificationsActionsProcessor {
      * 
      * @param visualObjectsActions The action to process
      */
-    private void processActionVisualObject(VisualObjectsActions visualObjectsActions) {
+    private void processActionVisualObject(VisualObjectAction visualObjectAction) {
         boolean canMove = true;
 
-        if (visualObjectsActions instanceof LifeDecreaseAction) {
-            this.processActionLifeDecrease((LifeDecreaseAction) visualObjectsActions);
-        } else if (visualObjectsActions instanceof ExplosionAction) {
-            this.processActionExplosion((ExplosionAction) visualObjectsActions);
+        if (visualObjectAction instanceof LifeDecreaseAction) {
+            this.processActionLifeDecrease((LifeDecreaseAction) visualObjectAction);
+        } else if (visualObjectAction instanceof ExplosionAction) {
+            this.processActionExplosion((ExplosionAction) visualObjectAction);
 
             canMove = false; // The object can't move
         }
 
         if (canMove) {
-            this.updateVisualObjectPosition(visualObjectsActions.getVisualObject());
+            this.updateVisualObjectPosition(visualObjectAction.getVisualObject());
         }
     }
 
