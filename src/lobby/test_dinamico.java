@@ -1,7 +1,7 @@
 package lobby;
 
 import lobby.lobbyModel.LobbyModel;
-import maincontroller.Account;
+import maincontroller.gameinfo.Account;
 
 import java.lang.reflect.Field;
 

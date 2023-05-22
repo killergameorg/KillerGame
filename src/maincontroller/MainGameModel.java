@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import events.Action;
-import events.EventCollision;
+import events.Colision;
 import events.ExplosionAction;
-import lobby.GameRules;
+import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.GameState;
 import maincontroller.notifications.NotificationsManager;
@@ -36,13 +36,19 @@ public class MainGameModel {
     }
 
     // ! Methods
-    public void startGame(GameRules gameRules, ArrayList<Account> accounts) {
-        this.setAccounts(accounts);
+    public void startGame(GameRules gameRules) {
+
+        this.setGameRules(gameRules);
         // TODO
     }
 
-    public ArrayList<Action> processEvent(EventCollision eventCollision) {
-        return this.getMainGameController().processEvent(eventCollision);
+
+    public void setGameRules(GameRules gameRules){
+        this.getMainGameController().setGameRules(gameRules);
+    }
+
+    public ArrayList<Action> processEvent(Colision colision) {
+        return this.getMainGameController().processEvent(colision);
     }
 
     public ArrayList<VisualObject> getVisualObjects() {
