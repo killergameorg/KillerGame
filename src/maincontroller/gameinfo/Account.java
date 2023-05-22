@@ -3,39 +3,59 @@ package maincontroller.gameinfo;
 public class Account {
 
     // ! Attributes
-    private Long id;
+    private static int idAccountCounter = 0;
+
+    private int idAccount;
     private Team team;
     private String ip;
     private Joystick joystick;
 
     // ! Constructor
     public Account(Team team, String ip) {
-        this.setId(0L); // TODO
+
+        Account.setIdAccountCounter(Account.getIdAccountCounter() + 1);
+
+        this.setIdAccount(Account.getIdAccountCounter());
         this.setTeam(team);
         this.setIp(ip);
         this.setJoystick(new Joystick());
     }
 
     // ! Getters and Setters
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the team
      */
     public Team getTeam() {
         return team;
+    }
+
+    /**
+     * @return the idAccountCounter
+     */
+    public static int getIdAccountCounter() {
+        return idAccountCounter;
+    }
+
+    /**
+     * @param idAccountCounter the idAccountCounter to set
+     */
+    public static void setIdAccountCounter(int idAccountCounter) {
+        Account.idAccountCounter = idAccountCounter;
+    }
+
+    /**
+     * @return the idAccount
+     */
+    public int getIdAccount() {
+        return idAccount;
+    }
+
+    /**
+     * @param idAccount the idAccount to set
+     */
+    public void setIdAccount(int idAccount) {
+        this.idAccount = idAccount;
     }
 
     /**
