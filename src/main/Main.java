@@ -7,26 +7,44 @@ import communications.ConnectionController;
 public class Main {
 
 	public static void main(String[] args) {
-		startAnimation();
+		startAsteroidsController();
 	}
 
 	@SuppressWarnings("unused")
 	static private void startAnimation() {
-		ConnectionController conn = new ConnectionController();
-		AnimationController animationViewer = new AnimationController();
+		var comm = new ConnectionController();
+		var animationViewer = new AnimationController();
 		animationViewer.startAnimation();
-		animationViewer.setComm(conn);
-		conn.setCommListener(animationViewer);
-		conn.initialize();
+		animationViewer.setComm(comm);
+		comm.setCommListener(animationViewer);
+		comm.initialize();
 	}
 
 	@SuppressWarnings("unused")
 	static private void startAutoMessenger() {
-		ConnectionController conn = new ConnectionController();
-		Messenger messenger = new Messenger();
-		messenger.setComm(conn);
-		conn.setCommListener(messenger);
-		conn.initialize();
+		var comm = new ConnectionController();
+		var messenger = new Messenger();
+		messenger.setComm(comm);
+		comm.setCommListener(messenger);
+		comm.initialize();
+	}
+	
+	@SuppressWarnings("unused")
+	static private void startAsteroidsScreen() {
+		var comm = new ConnectionController();
+		var asteroids = new clients.asteroids.screen.ScreenController();
+		asteroids.setComm(comm);
+		comm.setCommListener(asteroids);
+		comm.initialize();
+	}
+	
+	@SuppressWarnings("unused")
+	static private void startAsteroidsController() {
+		var comm = new ConnectionController();
+		var controller = new clients.asteroids.controller.ControlController();
+		controller.setComm(comm);
+		comm.setCommListener(controller);
+		comm.initialize();
 	}
 
 }
