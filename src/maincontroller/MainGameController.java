@@ -3,9 +3,20 @@ package maincontroller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import events.Action;
+import events.Colision;
+import events.EventsGameController;
+import events.ExplosionAction;
+import lobby.MasterOrder;
+import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
+import visual.Ship;
+import visual.Direction;
+import visual.NotificationMsg;
+import visual.Position;
+import visual.VisualGameController;
+import visual.VisualObject;
 
 public class MainGameController {
     // TODO: Ordenar todos los métodos según sus departamentos
@@ -13,7 +24,7 @@ public class MainGameController {
     // ! Attributes
     private MainGameModel mainGameModel;
 
-    private LobbyGameController lobbyGameController;
+    private LobbyController lobbyController;
     private EventsGameController eventsGameController;
     private VisualGameController visualGameController;
 
@@ -36,8 +47,20 @@ public class MainGameController {
         // TODO
     }
 
-    public void startGame(GameRules gameRules, ArrayList<Account> accounts) {
-        this.getMainGameModel().startGame(gameRules, accounts);
+    public void startLobby() {
+        this.getLobbyController().startLobby();
+    }
+
+    public void sendMessageToLobby(MasterOrder order) {
+        this.getLobbyController().reciveMasterMsg(order);
+    }
+
+    public void sendPlayerCountToLobby(int playerCount) {
+        this.getLobbyController().setPlayerCount(playerCount);
+    }
+
+    public void startGame(GameRules gameRules) {
+        this.getMainGameModel().startGame(gameRules);
     }
 
     // ! VisualGameController methods
@@ -57,7 +80,7 @@ public class MainGameController {
      * @param accountId The id of the account that owns the spaceship to create
      * @return The ControllableSpaceShip created
      */
-    public ControllableSpaceShip createVisualObjectControllableSpaceShip(Long accountId) {
+    public Ship createVisualObjectControllableSpaceShip(Long accountId) {
         return this.getVisualGameController().createSpaceship(accountId);
     }
 
@@ -147,24 +170,15 @@ public class MainGameController {
         this.killVisualObject(explosionAction.getVisualObject());
     }
 
-    public ArrayList<Action> processEvent(EventCollision eventCollision) {
-        return this.getEventsGameController().processEvent(eventCollision);
+    public void setGameRules(GameRules gameRules) {
+        this.getEventsGameController().setGameRules(gameRules);
+    }
+
+    public ArrayList<Action> processEvent(Colision colision) {
+        return this.getEventsGameController().processEvent(colision);
     }
 
     // ! Getters and Setters
-    /**
-     * @return the lobbyGameController
-     */
-    public LobbyGameController getLobbyGameController() {
-        return lobbyGameController;
-    }
-
-    /**
-     * @param lobbyGameController the lobbyGameController to set
-     */
-    public void setLobbyGameController(LobbyGameController lobbyGameController) {
-        this.lobbyGameController = lobbyGameController;
-    }
 
     /**
      * @return the eventsGameController
@@ -206,6 +220,20 @@ public class MainGameController {
      */
     public void setMainGameModel(MainGameModel mainGameModel) {
         this.mainGameModel = mainGameModel;
+    }
+
+    /**
+     * @return the lobbyController
+     */
+    public LobbyController getLobbyController() {
+        return lobbyController;
+    }
+
+    /**
+     * @param lobbyController the lobbyController to set
+     */
+    public void setLobbyController(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
     }
 
 }
