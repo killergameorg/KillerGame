@@ -1,5 +1,5 @@
 package clients.animation;
 
-public enum WallPosition {
+public enum Edge {
 	UP, DOWN, LEFT, RIGHT
 }
