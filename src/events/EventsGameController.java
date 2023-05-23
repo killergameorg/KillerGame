@@ -2,6 +2,8 @@ package events;
 
 import java.util.ArrayList;
 
+import lobby.lobbyModel.GameRules;
+
 /**
  * The EventsGameController class is responsible for controlling game events in
  * the game.
@@ -13,7 +15,7 @@ public class EventsGameController {
      * Creates a new instance of the EventsGameController class with the specified
      * EventsModel.
      *
-     * @param eventsModel  EventsModel instance to be associated with the
+     * @param eventsModel EventsModel instance to be associated with the
      *                    controller.
      */
     public EventsGameController(EventsModel eventsModel) {
@@ -34,7 +36,7 @@ public class EventsGameController {
      * Processes the given event and returns a list of actions resulting from the
      * event processing.
      *
-     * @param event  Event object representing the event to be processed.
+     * @param event Event object representing the event to be processed.
      * @return An ArrayList of Action objects resulting from the event
      *         processed.
      */

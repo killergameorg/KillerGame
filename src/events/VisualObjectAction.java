@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 /**
  * The VisualObjectAction class is an abstract subclass of {@link Action} that
  * represents actions performed on a visual object.

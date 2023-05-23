@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 /**
  * The LifeDecreaseAction class represents an action that decreases the life
  * of a visual object by a certain amount.

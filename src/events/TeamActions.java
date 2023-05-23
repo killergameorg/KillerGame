@@ -1,5 +1,7 @@
 package events;
 
+import maincontroller.gameinfo.Team;
+
 /**
  * The TeamActions class is an abstract subclass of {@link Action} that
  * represents actions performed on a team.

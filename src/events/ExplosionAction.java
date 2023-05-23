@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 /**
  * The ExplosionAction class represents an action that triggers an explosion
  * effect on a visual object.

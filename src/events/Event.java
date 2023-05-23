@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 /**
  * The Event class represents an event which involves two visual
  * objects.

@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 /**
  * The GetPowerUp class represents an event where a visual object gets a
  * power-up.

@@ -1,5 +1,7 @@
 package events;
 
+import maincontroller.gameinfo.Team;
+
 /**
  * The PointWinAction class represents an action that triggers a point win at
  * the specified team score.

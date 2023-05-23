@@ -2,6 +2,13 @@ package events;
 
 import java.util.ArrayList;
 
+import lobby.lobbyModel.GameRules;
+import maincontroller.gameinfo.Team;
+import visual.Bullet;
+import visual.PowerUp;
+import visual.Ship;
+import visual.VisualObject;
+
 /**
  * The EventsModel class represents the model component responsible for
  * processing events in the game.

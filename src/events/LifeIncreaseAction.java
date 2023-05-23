@@ -1,5 +1,7 @@
 package events;
 
+import visual.VisualObject;
+
 /**
  * The LifeIncreaseAction class represents an action that increases the life
  * of a visual object by a certain amount.
