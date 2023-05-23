@@ -2,9 +2,18 @@ package events;
 
 import java.util.ArrayList;
 
+/**
+ * The EventsModel class represents the model component responsible for
+ * processing events in the game.
+ */
 public class EventsModel {
     private GameRules gameRules;
 
+    /**
+     * Retrieves the game rules defined at the lobby.
+     *
+     * @return The GameRules object representing the game rules.
+     */
     public GameRules getGameRules() {
         return gameRules;
     }
@@ -13,18 +22,19 @@ public class EventsModel {
         this.gameRules = gameRules;
     }
 
-    /*
-     * @param event : Process the received event
-     * 
-     * @return ArrayList : List of actions produced by the event
+    /**
+     * Processes the given event and returns a list of actions resulting from the
+     * event processing.
+     *
+     * @param event TheEvent object representing the event to be processed.
+     * @return An ArrayList of Action objects resulting from the event processing.
      */
-
     public ArrayList<Action> processEvent(Event event) {
 
         ArrayList<Action> actions = new ArrayList<>();
 
-        if (event instanceof Colision) {
-            actions.addAll(processColision(event.getFirstObject(), event.getSecondObject()));
+        if (event instanceof Collision) {
+            actions.addAll(processCollision(event.getFirstObject(), event.getSecondObject()));
         }
 
         else if (event instanceof GetPowerUp) {
@@ -34,14 +44,15 @@ public class EventsModel {
         return actions;
     }
 
-    /*
-     * @param visualObject1 : Object 1 which suffers colision
-     * 
-     * @param visualObject2 : Object 2 which suffers colision
-     * 
-     * @return ArrayList : List of actions produced by the colision event
+    /**
+     * Processes a collision event between two visual objects and returns a list of
+     * actions resulting from the collision.
+     *
+     * @param visualObject1 The first visual object involved in the collision.
+     * @param visualObject2 The second visual object involved in the collision.
+     * @return An ArrayList of Action objects resulting from the collision.
      */
-    public ArrayList<Action> processColision(VisualObject visualObject1, VisualObject visualObject2) {
+    public ArrayList<Action> processCollision(VisualObject visualObject1, VisualObject visualObject2) {
 
         ArrayList<Action> actions = new ArrayList<>();
 
@@ -61,20 +72,21 @@ public class EventsModel {
         return actions;
     }
 
-    /*
-     * @param emisor : Object which causes the damage
-     * 
-     * @param receiver : Object which suffers the damage
-     * 
-     * @return ArrayList : List of actions produced by the life decrease event
+    /**
+     * Processes a life decrease event for a visual object and returns a list of
+     * actions resulting from the life decrease.
+     *
+     * @param emisor   The visual object causing the life decrease.
+     * @param receiver The visual object whose life is being decreased.
+     * @return An ArrayList of Action objects resulting from the life decrease.
      */
     public ArrayList<Action> processLifeDecrease(VisualObject emisor, VisualObject receiver) {
         ArrayList<Action> actions = new ArrayList<>();
 
         if (emisor instanceof Ship) {
-            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getColisionDamage()));
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getCollisionDamage()));
 
-            if ((receiver.getLife() - this.gameRules.getColisionDamage()) <= 0) {
+            if ((receiver.getLife() - this.gameRules.getCollisionDamage()) <= 0) {
                 actions.addAll((processDeath(receiver)));
                 actions.addAll(processPointWin(emisor.getTeam()));
             }
@@ -93,10 +105,12 @@ public class EventsModel {
         return actions;
     }
 
-    /*
-     * @param visualObject : Object which suffers death
-     * 
-     * @return ArrayList : List of actions produced by the death event
+    /**
+     * Processes a death event for a visual object and returns a list of actions
+     * resulting from the death.
+     *
+     * @param visualObject The visual object that has to die.
+     * @return An ArrayList of Action objects resulting from the death.
      */
     public ArrayList<Action> processDeath(VisualObject visualObject) {
         ArrayList<Action> actions = new ArrayList<>();
@@ -104,12 +118,13 @@ public class EventsModel {
         return actions;
     }
 
-    /*
-     * @param emisor : Object which has the hability to upgrade receiver ship
-     * 
-     * @param receiver : Object which gains an upgrade
-     * 
-     * @return ArrayList : List of actions produced by the power up event
+    /**
+     * Processes a power-up event for a visual object and returns a list of actions
+     * resulting from the power-up obtain.
+     *
+     * @param powerUp  The power-up object.
+     * @param receiver The visual object receiving the power-up.
+     * @return An ArrayList of Action objects resulting from the power-up.
      */
     public ArrayList<Action> processPowerUp(VisualObject powerUp, VisualObject receiver) {
         ArrayList<Action> actions = new ArrayList<>();
@@ -123,10 +138,12 @@ public class EventsModel {
         return actions;
     }
 
-    /*
-     * @param team : Team which earns one point
-     * 
-     * @return ArrayList : List of actions produced by the point win event
+    /**
+     * Processes a point win event for a team and returns a list of actions
+     * resulting from the point win.
+     *
+     * @param team The team that has scored a point.
+     * @return An ArrayList of Action objects resulting from the point win.
      */
     public ArrayList<Action> processPointWin(Team team) {
         ArrayList<Action> actions = new ArrayList<>();
@@ -138,10 +155,12 @@ public class EventsModel {
         return actions;
     }
 
-    /*
-     * @param team : Team which wins the game
-     * 
-     * @return ArrayList : List of actions produced by the game win event
+    /**
+     * Processes a game win event for a team and returns a list of actions resulting
+     * from the game win.
+     *
+     * @param team The team that has won the game.
+     * @return An ArrayList of Action objects resulting from the game win.
      */
     public ArrayList<Action> processGameWin(Team team) {
         ArrayList<Action> actions = new ArrayList<>();

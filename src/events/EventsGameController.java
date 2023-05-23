@@ -2,34 +2,44 @@ package events;
 
 import java.util.ArrayList;
 
+/**
+ * The EventsGameController class is responsible for controlling game events in
+ * the game.
+ */
 public class EventsGameController {
     private EventsModel eventsModel;
 
-    public EventsGameController(EventsModel eventsModel){
+    /**
+     * Creates a new instance of the EventsGameController class with the specified
+     * EventsModel.
+     *
+     * @param eventsModel  EventsModel instance to be associated with the
+     *                    controller.
+     */
+    public EventsGameController(EventsModel eventsModel) {
         this.eventsModel = eventsModel;
     }
 
-    /*
-     * @param gameRules : The game rules defined at the lobby
-     * 
-     * Calls the model's setter method to define which are
-     * gonna be the game rules, to decide depending the event 
-     * which rule take in account
+    /**
+     * Sets the game rules to decide at the game which actions do.
+     *
+     * @param gameRules Represents the game rules to be set defined at the lobby.
      */
-    public void setGameRules(GameRules gameRules){
+
+    public void setGameRules(GameRules gameRules) {
         this.eventsModel.setGameRules(gameRules);
     }
 
-    /*
-     * @param event : Event produced at the game and detected by the main controller
-     * 
-     * @return ArrayList of actions produced by the event 
-     * 
-     * Calls the model's processEvent method and analyze what type of event it is,
-     * dependening on this and the conditions contained at the event and setted 
-     * at the game rules, will send a list of actions to execute as a result of this event
+    /**
+     * Processes the given event and returns a list of actions resulting from the
+     * event processing.
+     *
+     * @param event  Event object representing the event to be processed.
+     * @return An ArrayList of Action objects resulting from the event
+     *         processed.
      */
-    public ArrayList<Action> proccessEvent(Event event){
-       return this.eventsModel.processEvent(event);
+
+    public ArrayList<Action> proccessEvent(Event event) {
+        return this.eventsModel.processEvent(event);
     }
 }
