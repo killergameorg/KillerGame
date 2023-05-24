@@ -26,7 +26,7 @@ public class BackgroundManager {
 
     private void loadBackground() {
         try {
-            background = ImageIO.read(Objects.requireNonNull(getClass().getResource("/img/background/" + backgroundTheme + "/background" + screenID + ".png")));
+            background = ImageIO.read(Objects.requireNonNull(getClass().getResource("/visual_package/img/backgrounds/" + backgroundTheme + "/background" + screenID + ".png")));
         } catch (IOException e) {
             System.err.println("Error en la obtención del fondo");
         }
