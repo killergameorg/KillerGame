@@ -1,19 +1,12 @@
 package visual_package;
 
 public class PhysicsEngine {
-
-    private double x, y;
+    private VisualConstants vConstants;
 
     // * Constructor
 
-    public PhysicsEngine(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
     public PhysicsEngine() {
-        x = 0;
-        y = 0;
+        this.vConstants = new VisualConstants();
     }
 
     // * Getters & Setters
@@ -47,8 +40,14 @@ public class PhysicsEngine {
      * @param pe
      * @return
      */
-    public PhysicsEngine addVector(PhysicsEngine pe) {
-        return new PhysicsEngine(x + pe.getX(), y + pe.getY());
+    /*public Position addPosition(Position p, Position v) {
+        return new Position(p.getX() + v.getX(), p.getY() + v.getY());
+    }*/
+    public Position addPosition(Position p, double vel) {
+        return new Position(p.getX() + vel , p.getY() + vel);
+    }
+    public Position calculatePath(Position p, double angle) {
+        return new Position(p.getxPos + (vConstants.SHIP_ACC * Math.sin(angle)), p.getyPos - (vConstants.SHIP_ACC * Math.cos(angle)));
     }
 
     /**
@@ -124,16 +123,13 @@ public class PhysicsEngine {
      * @return
      */
 
-    public PhysicsEngine setDirection(Direction direction) {
-        double angle;
+    public double setDirection(Direction direction, double angle) {
         if (direction == Direction.LEFT) {
-            angle = Math.PI; // Ángulo de 180 grados (izquierda)
-        } else {
-            angle = 0; // Ángulo de 0 grados (derecha)
+            return angle -= vConstants.ANGLE_ROTATION; 
+        } else if (direction == Direction.RIGHT) {
+            return angle += vConstants.ANGLE_ROTATION;
         }
-
-        double magnitude = getMagnitude();
-        return new PhysicsEngine(Math.cos(angle) * magnitude, Math.sin(angle) * magnitude);
+        return;
     }
 
 }
