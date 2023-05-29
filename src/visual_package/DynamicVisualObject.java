@@ -1,22 +1,24 @@
 package visual_package;
 
+import java.awt.Graphics;
+
+import visual_package.PhysicsEngine.Direction;
+
 public abstract class DynamicVisualObject extends VisualObject implements Runnable {
 
-    private PhysicsEngine velocity;
+    private double velocity;
     private Position futPos;
     private double angle;
-    private double maxVelocity;
-    private Integer width;
-    private Integer height;
-    private PhysicsEngine acceleration;
+    private int width;
+    private int height;
+    private double acceleration;
 
     // * Constructor
 
-    public DynamicVisualObject(PhysicsEngine velocity, double angle, double maxVelocity, Integer width, Integer height,
-            PhysicsEngine acceleration) {
+    public DynamicVisualObject(double velocity, double angle, int width, int height,
+            double acceleration) {
         this.velocity = velocity;
         this.angle = angle;
-        this.maxVelocity = maxVelocity;
         this.width = width;
         this.height = height;
         this.acceleration = acceleration;
@@ -24,11 +26,11 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
 
     // * Getters & Setters
 
-    public PhysicsEngine getVelocity() {
+    public double getVelocity() {
         return this.velocity;
     }
 
-    public void setVelocity(PhysicsEngine velocity) {
+    public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 
@@ -48,42 +50,52 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
         this.maxVelocity = maxVelocity;
     }
 
-    public Integer getWidth() {
+    public int getWidth() {
         return this.width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
-    public Integer getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
-    public PhysicsEngine getAcceleration() {
+    public double getAcceleration() {
         return this.acceleration;
     }
 
-    public void setAcceleration(PhysicsEngine acceleration) {
+    public void setAcceleration(double acceleration) {
         this.acceleration = acceleration;
     }
 
     // * Methods
 
     public void updatePosition() {
-        this.position = this.futPosition;
+        this.position = this.futPos;
+        this.futPos = null;
     }
 
     public void updateRotation(Direction direction) {
-        this.position = this.position.setDirection(this.angle);
+        this.angle = this.pEngine.setDirection(direction, this.angle);
     }
 
     public void calculateNewPosition() {
-        this.futPosition = this.position.addVector(this.position);
+        this.futPos = this.pEngine.addPosition(this.position, this.angle, this.velocity);
+    }
+
+    @Override
+    public void drawObject(Graphics g) {
+        Graphics2D g2d = (Graphics2D)g;
+        AffineTransform originalTransform = g2d.getTransform();
+        g2d.translate(Position.getxPos, Position.getyPos);
+        g2d.rotate(angle);
+        g2d.drawImage(skin, at, null);
     }
 
 }
