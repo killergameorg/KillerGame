@@ -1,6 +1,6 @@
 package lobby.lobbyModel;
 
-import visual.Maps;
+import lobby.Maps;
 
 public class GameRules {
 

@@ -3,7 +3,7 @@ package lobby.lobbyModel;
 import lobby.LOBBYSECTION;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
-import visual.Maps;
+import lobby.Maps;
 
 public class LobbyModel {
 

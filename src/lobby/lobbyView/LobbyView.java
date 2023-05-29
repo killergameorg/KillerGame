@@ -1,36 +1,59 @@
 package lobby.lobbyView;
-
-import lobby.LOBBYSECTION;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
-
+import lobby.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-/**
- * Frame for the Lobby
- * 
- * @author Antoni Xavier Bascunana Sanchez
- * 
- */
-public class LobbyView extends JFrame {
+public class LobbyView extends JFrame implements ActionListener {
 
     private Viewer viewer;
     private LobbyController lobbyController;
-
+    private Image image;
+    private Timer timer;
+    private int y;
+/**
+* Frame for the Lobby
+* 
+* @author Antoni Xavier Bascunana Sanchez
+* 
+*/
     public LobbyView(LobbyController lobbyController) {
+        timer = new Timer(100, this);
         this.lobbyController = lobbyController;
         viewer = new Viewer();
         setTitle("Lobby");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
-        // setUndecorated(true);
         addComponents();
         setLocationRelativeTo(null);
         setVisible(true);
-
     }
 
-    /**
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (image != null) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(image, getHeight()/2, y, rootPane);
+        }
+    }
+
+    public void update(Graphics g) {
+        Graphics offScreen;
+        Image offImage = null;
+        Dimension d = getSize();
+
+        offImage = createImage(d.width, d.height);
+        offScreen = offImage.getGraphics();
+        offScreen.setColor(getBackground());
+        offScreen.fillRect(0, 0, d.width, d.height);
+        offScreen.setColor(getForeground());
+        paint(offScreen);
+        g.drawImage(offImage, 0, 0, rootPane);
+    }
+  /** 
      * @param position
      * Method to display selected position by user
      */
@@ -43,31 +66,35 @@ public class LobbyView extends JFrame {
             }
         }
     }
-
-    /**
+    
+    /* 
      * Add Viewer components
-     */
+     * 
+    */
     public void addComponents() {
-        // Delete background and add the one sent from the visual dep
-        JLabel background = new JLabel(new ImageIcon("src/lobby/gameAssets/2space.jpg"));
+        JPanel background = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(new ImageIcon("src/lobby/gameAssets/2space.jpg").getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
         background.setLayout(new BorderLayout());
-        // Game Parameters
+
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-
         centerPanel.add(viewer.lifes);
         centerPanel.add(viewer.bulletDamage);
         centerPanel.add(viewer.map);
         centerPanel.add(viewer.readypanel);
-
         centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(Box.createVerticalStrut(300));
-        // number of players waiting in lobby
 
         background.add(viewer.numplayers, BorderLayout.WEST);
         background.add(viewer.gameState, BorderLayout.EAST);
         background.add(centerPanel, BorderLayout.SOUTH);
+
         this.setContentPane(background);
     }
 
@@ -79,23 +106,42 @@ public class LobbyView extends JFrame {
         viewer.getPlayersnum().setText(String.valueOf(players));
     }
 
-    /**
-     * @param players
-     * Refresh values set by master
-     */
     public void refreshMasterValues(GameRules gameRules) {
         viewer.getLifesnum().setText(String.valueOf(gameRules.getLife()));
         viewer.getBulletDamagenum().setText(String.valueOf(gameRules.getBulletDamage()));
         viewer.getMapnum().setText(String.valueOf(gameRules.getMap()));
     }
 
-    // Getters setters
+    private void KillDemon() {
+        image = null;
+        timer.stop();
+        update(getGraphics());
+    }
+
+    public void invoqueDemon() {
+        y = 1000;
+        image = new ImageIcon("src/lobby/gameAssets/demon.png").getImage();
+        timer.start();
+    }
+
     public Viewer getViewer() {
         return viewer;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 
     public void setViewer(Viewer viewer) {
         this.viewer = viewer;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        y = y - 100;
+        update(getGraphics());
+        if (y == -1000){
+            KillDemon();
+        }
+    }
 }

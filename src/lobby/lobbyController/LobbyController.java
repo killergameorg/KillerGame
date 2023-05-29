@@ -18,8 +18,8 @@ public class LobbyController {
     // Constructor
     // When created, it asks the maincontroller to apply the master
     public LobbyController() {
-        this.mainGameController.applyingToMaster();
-        this.status = MasterStatus.ApplyingToMaster;
+        /*this.mainGameController.applyingToMaster();
+        this.status = MasterStatus.ApplyingToMaster;*/
     }
 
     // Metodos
