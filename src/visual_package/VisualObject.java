@@ -11,6 +11,10 @@ public abstract class VisualObject {
     private float life;
     private int accountId;
 
+    private VisualGameModel visualGameModel;
+
+    //visualmodel
+
     public VisualObject(int id, BufferedImage skin, Position position, float life, int accountId) {
         this.id = id;
         this.skin = skin;
@@ -18,6 +22,14 @@ public abstract class VisualObject {
         this.life = life;
         this.accountId = accountId;
     }
+
+
+
+    public VisualGameModel getVisualGameModel() {
+        return visualGameModel;
+    }
+
+
 
     public void drawObject(Graphics g) {}
     public void kill() {}

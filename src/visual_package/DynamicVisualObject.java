@@ -82,7 +82,7 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
     }
 
     public void updateRotation(Direction direction) {
-        this.angle = this.pEngine.setDirection(direction, this.angle);
+        this.angle = this.pEngine.setDirection(direction, this.angle, getVisualGameModel().ge);
     }
 
     public void calculateNewPosition() {
