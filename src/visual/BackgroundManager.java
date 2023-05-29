@@ -1,14 +1,16 @@
-package visual_package;
+package visual;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 import javax.imageio.ImageIO;
+import lobby.Maps;
 
 public class BackgroundManager {
 
     // ! Attributes
     private VisualGameView visualGameView;
     private String backgroundTheme;
+    private Maps mapName;
     private String screenID;
     private BufferedImage background;
 
@@ -26,7 +28,7 @@ public class BackgroundManager {
 
     private void loadBackground() {
         try {
-            background = ImageIO.read(Objects.requireNonNull(getClass().getResource("/visual_package/img/backgrounds/" + backgroundTheme + "/background" + screenID + ".png")));
+            background = ImageIO.read(Objects.requireNonNull(getClass().getResource("/visual/img/backgrounds/" + backgroundTheme + "/background" + screenID + ".png")));
         } catch (IOException e) {
             System.err.println("Error en la obtención del fondo");
         }
@@ -35,10 +37,24 @@ public class BackgroundManager {
     private void obtainBackgroundTheme(){
         //backgroundTheme = "defaultBackground";
         //backgroundTheme = "purpleSpace";
-        backgroundTheme = visualGameView.getVisualController().getMainGameController().getBackgroundTheme();
+        mapName = visualGameView.getVisualGameController().getMainGameController().getBackgroundTheme();
+        switch (mapName){
+            case MAP_1:
+                backgroundTheme = "map1";
+                break;
+
+            case MAP_2:
+                backgroundTheme = "map2";        
+                break;
+            
+            case MAP_3:
+                backgroundTheme = "map2";
+                break;
+        }
+
     }
     private void obtainScreenID() {
-        screenID = visualGameView.getVisualController().getMainGameController().getScreenID();
+        screenID = visualGameView.getVisualGameController().getMainGameController().getScreenID();
         //screenID = 1;
     }
     // ! Getters and Setters

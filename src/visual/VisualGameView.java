@@ -1,4 +1,4 @@
-package visual_package;
+package visual;
 
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -105,4 +105,5 @@ public class VisualGameView extends JFrame implements Runnable {
             }
         }
     }
+    
 }

@@ -1,4 +1,4 @@
-package visual_package;
+package visual;
 
 public enum NotificationType {
     positionUpdate

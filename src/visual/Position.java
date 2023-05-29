@@ -1,4 +1,4 @@
-package visual_package;
+package visual;
 
 public class Position {
     private double xPos;
