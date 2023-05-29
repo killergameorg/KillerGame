@@ -22,6 +22,8 @@ public class VisualGameModel {
         return visualObjectsList;
     }
 
+    
+
     // * Methods
 
     public void notifyToVGC(NotificationMsg notificationMsg) {
