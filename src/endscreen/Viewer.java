@@ -25,38 +25,55 @@ public class Viewer extends JPanel {
 
     Viewer() {
         addGameScreen() ;
+        addTeam1Score();
         addTeam1();
         addTeam2();
-        addTeam1Score();
+       
      
     }
    
-    public void addTeam1(){
-        team1 = new JPanel();
+    public void addTeam1() {
+        team1 = new JPanel(new BorderLayout());
         team1.setSize(100, 100);
         team1Label = new JLabel("Team1");
         team1Label.setForeground(Color.white);
         team1Label.setFont(customFont());
         team1Label.setForeground(Color.white);
-        team1.add(team1Label);
+        team1.add(team1Label, BorderLayout.NORTH);
+        team1.add(addTeam1Score(), BorderLayout.CENTER);
         team1.setOpaque(false);
     }
-     
-    public void addTeam1Score(){
-       team1Score = new JLabel("0");
-       team1Score.setSize(50, 50);
-       team1Score.setForeground(Color.white);
-    team1Score.setOpaque(false);
-    }
-    public void addTeam2(){
-        team2 = new JPanel();
-        team2.setSize(100, 100);
     
-        team2Label = new JLabel("Team2");
+     
+    public JLabel addTeam1Score(){
+       team1Score = new JLabel("0");
+       team1Score.setSize(100, 100);
+       team1Score.setFont(customFont());
+       team1Score.setForeground(Color.white);
+        team1Score.setOpaque(false);
+        return team1Score;
+   
+    }
+
+    public JLabel addTeam2Score(){
+        team2Score = new JLabel("0");
+        team2Score.setSize(100, 100);
+        team2Score.setFont(customFont());
+        team2Score.setForeground(Color.white);
+         team2Score.setOpaque(false);
+         return team2Score;
+    
+     }
+
+    public void addTeam2(){
+        team2 = new JPanel(new BorderLayout());
+        team2.setSize(100, 100);
+        team2Label = new JLabel("Team1");
         team2Label.setForeground(Color.white);
         team2Label.setFont(customFont());
         team2Label.setForeground(Color.white);
-        team2.add(team2Label);
+        team2.add(team2Label, BorderLayout.NORTH);
+        team2.add(addTeam1Score(), BorderLayout.EAST);
         team2.setOpaque(false);
     }
   

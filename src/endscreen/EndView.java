@@ -28,18 +28,20 @@ Viewer viewer;
     public void addComponents() {
         JLabel background = new JLabel(new ImageIcon("src/lobby/gameAssets/2space.jpg"));
         background.setLayout(new BorderLayout());
-        JPanel southJLabel = new JPanel(new BorderLayout());
-        
-        southJLabel.add(viewer.team1,BorderLayout.CENTER);
+    
+    
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(viewer.team1, BorderLayout.WEST);
+        topPanel.add(viewer.team2, BorderLayout.EAST);
+        topPanel.setOpaque(false);
 
-       
+        background.add(topPanel, BorderLayout.NORTH);
         background.add(viewer.gameOver, BorderLayout.CENTER);
-        background.add(viewer.team1, BorderLayout.WEST);
-        background.add(viewer.team2, BorderLayout.EAST);
-        background.add(southJLabel, BorderLayout.SOUTH);
-        
+      
+    
         this.setContentPane(background);
     }
+    
 
   
 }
