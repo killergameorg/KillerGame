@@ -1,4 +1,5 @@
-package visual_package;
+package visual;
+import maincontroller.MainGameController;
 
 public class VisualGameController {
 
@@ -13,7 +14,7 @@ public class VisualGameController {
         this.mainGameController = mainGameController;
 
         this.visualGameModel = new VisualGameModel(this);
-        this.visualGameView = new VisualGameView();
+        this.visualGameView = new VisualGameView(this);
     }
 
     // * Getters & Setters
@@ -21,7 +22,10 @@ public class VisualGameController {
     public VisualGameView getVisualGameView() {
         return visualGameView;
     }
-
+     public MainGameController getMainGameController() {
+        return mainGameController;
+    }
+    
     public void setVisualGameView(VisualGameView visualGameView) {
         this.visualGameView = visualGameView;
     }

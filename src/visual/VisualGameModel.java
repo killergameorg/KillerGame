@@ -1,6 +1,8 @@
-package visual_package;
+package visual;
 
 import java.util.ArrayList;
+
+import visual_package.VisualObject;
 
 public class VisualGameModel {
 

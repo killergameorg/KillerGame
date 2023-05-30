@@ -1,4 +1,4 @@
-package visual_package;
+package visual;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
