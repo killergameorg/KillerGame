@@ -4,10 +4,14 @@ public class Position {
     private double xPos;
     private double yPos;
 
+    // * Constructor
+
     public Position(double x, double y) {
         this.xPos = x;
         this.yPos = y;
     }
+
+    // * Methods
 
     public double getxPos() {
         return xPos;

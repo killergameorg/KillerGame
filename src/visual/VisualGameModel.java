@@ -10,6 +10,7 @@ public class VisualGameModel {
 
     private ArrayList<VisualObject> visualObjectsList;
 
+
     private PhysicsEngine physicsEngine;
     private Animation deadBulletAnim;
     private Animation spawnBulletAnim;
@@ -19,11 +20,13 @@ public class VisualGameModel {
 
     public VisualGameModel(VisualGameController visualGameController) {
         this.visualGameController = visualGameController;
-
         this.visualObjectsList = new ArrayList<>();
+
 
         this.physicsEngine = new PhysicsEngine();
         // todo animations
+
+
     }
 
     // * Getters
@@ -31,6 +34,7 @@ public class VisualGameModel {
     public ArrayList<VisualObject> getVisualObjectsList() {
         return visualObjectsList;
     }
+
 
     public VisualGameController getVisualGameController() {
         return visualGameController;

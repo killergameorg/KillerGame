@@ -2,10 +2,9 @@ package visual;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.*;
 
-import javax.swing.JPanel;
-
-public class Viewer extends JPanel{
+public class Viewer extends Canvas{
 
     // ! Attributes
     private BufferedImage background;
@@ -24,4 +23,5 @@ public class Viewer extends JPanel{
     public void setBackground(BufferedImage background) {
         this.background = background;
     }
+
 }
