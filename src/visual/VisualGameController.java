@@ -1,4 +1,5 @@
 package visual;
+
 import maincontroller.MainGameController;
 
 public class VisualGameController {
@@ -8,6 +9,8 @@ public class VisualGameController {
     private VisualGameView visualGameView;
     private VisualGameModel visualGameModel;
 
+    private AssetsManager assetsManager;
+
     // * Constructor
 
     public VisualGameController(MainGameController mainGameController) {
@@ -15,6 +18,8 @@ public class VisualGameController {
 
         this.visualGameModel = new VisualGameModel(this);
         this.visualGameView = new VisualGameView(this);
+
+        this.assetsManager = new AssetsManager();
     }
 
     // * Getters & Setters
@@ -22,10 +27,11 @@ public class VisualGameController {
     public VisualGameView getVisualGameView() {
         return visualGameView;
     }
-     public MainGameController getMainGameController() {
+
+    public MainGameController getMainGameController() {
         return mainGameController;
     }
-    
+
     public void setVisualGameView(VisualGameView visualGameView) {
         this.visualGameView = visualGameView;
     }
@@ -38,16 +44,21 @@ public class VisualGameController {
         this.visualGameModel = visualGameModel;
     }
 
+    
+    public AssetsManager getAssetsManager() {
+        return assetsManager;
+    }
+
     // * Methods
 
     public void notifyToMGC(NotificationMsg notificationMsg) {
-
+        // todo
     }
 
     public void moveObject(VisualObject visualObject) {
 
     }
-    
+
     public void updateObjectPosition(VisualObject visualObject) {
 
     }
@@ -76,4 +87,5 @@ public class VisualGameController {
     public void addVisualObject(VisualObject visualObject, Position position) {
 
     }
+
 }
