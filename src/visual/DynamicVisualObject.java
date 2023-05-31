@@ -4,7 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import visual.PhysicsEngine.Direction;
-import visual_package.VisualObject;
+import visual.VisualObject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -17,16 +17,22 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
     // * Constructor
 
     public DynamicVisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double width, double height,
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim,
             double velocity, double angle) {
-        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, width, height);
+        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim);
         this.velocity = velocity;
         this.angle = angle;
-        this.width = width;
-        this.height = height;
     }
 
     // * Getters & Setters
+
+    public Position getFuturePosition() {
+        return futurePosition;
+    }
+
+    public void setFuturePosition(Position futPos) {
+        this.futurePosition = futPos;
+    }
 
     public double getVelocity() {
         return this.velocity;
@@ -44,37 +50,22 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
         this.angle = angle;
     }
 
-    public double getMaxVelocity() {
-        return this.maxVelocity;
-    }
-
-    public void setMaxVelocity(double maxVelocity) {
-        this.maxVelocity = maxVelocity;
-    }
-
-    public int getWidth() {
+    public double getWidth() {
         return this.width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
-    public double getAcceleration() {
-        return this.acceleration;
-    }
-
-    public void setAcceleration(double acceleration) {
-        this.acceleration = acceleration;
-    }
 
     // * Methods
 
@@ -84,11 +75,11 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
     }
 
     public void updateRotation(Direction direction) {
-        this.angle = this.pEngine.setDirection(direction, this.angle, getVisualGameModel());
+        this.angle = getVisualGameModel().getPhysicsEngine().setDirection(direction, getAngle(), VisualConstants.velocityRotation);
     }
 
     public void calculateNewPosition() {
-        this.futurePosition = this.pEngine.addPosition(this.position, this.angle, this.velocity);
+        this.futurePosition = getVisualGameModel().getPhysicsEngine().calculatePosition(getPosition(), getAngle(), getVelocity());
     }
 
     @Override
@@ -100,5 +91,12 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
 
         g2d.drawImage(this.skin, at, null);
     }
-    
+    @Override
+    public void run(){
+          while(getIsAlive()){
+            if(futurePosition != null){
+                getVisualGameModel().notifyToVGC(new NotificationMsg(NotificationType.positionUpdate, this));
+            }
+        }
+    }
 }

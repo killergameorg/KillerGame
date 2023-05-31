@@ -5,23 +5,20 @@ import java.awt.image.BufferedImage;
 
 public abstract class VisualObject implements Runnable {
 
-    protected int id;
-    protected BufferedImage skin;
-    protected Position position;
-    protected float life;
-    protected int accountId;
+    private int id;
+    private BufferedImage skin;
+    private Position position;
+    private float life;
+    private int accountId;
     private VisualGameModel visualGameModel;
-    protected int playerNumber;
-    protected Animation deadAnim;
-    protected Animation spawnAnim;
-    protected double width;
-    protected double height;
-
+    private int playerNumber;
+    private Animation deadAnim;
+    private Animation spawnAnim;
+    private boolean isAlive; 
     // * Constructor
 
     public VisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double width,
-            double height) {
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim) {
         this.id = id;
         this.skin = skin;
         this.position = position;
@@ -31,14 +28,22 @@ public abstract class VisualObject implements Runnable {
         this.playerNumber = playerNumber;
         this.deadAnim = deadAnim;
         this.spawnAnim = spawnAnim;
-        this.width = width;
-        this.height = height;
+        this.isAlive = true;
     }
 
     // * Getters
 
     public int getId() {
         return id;
+    }
+
+    public double getWidth() {
+        double res = getSkin.getWidth()
+        return res;
+    }
+
+    public double getHeight() {
+        return (double) getSkin.getHeight();
     }
 
     public BufferedImage getSkin() {
@@ -81,6 +86,14 @@ public abstract class VisualObject implements Runnable {
         return height;
     }
 
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
+    public void setIsAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
     // * Methods
 
     public void update() {
@@ -90,9 +103,17 @@ public abstract class VisualObject implements Runnable {
     }
 
     public void kill() {
+        deadAnim.play(this, );
+        setIsAlive(false);
     }
 
     public void decreaseLife() {
         this.setLife(this.getLife()-quantity);
     }
+
+    @Override
+    public void run() {
+      
+    }
+    
 }

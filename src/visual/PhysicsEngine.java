@@ -4,11 +4,7 @@ public class PhysicsEngine {
 
     // * Methods
 
-    public enum Direction {
-        LEFT, RIGHT
-    }
-
-    public Position calculatePath(Position position, double angle, double velocity) {
+    public Position calculatePosition(Position position, double angle, double velocity) {
         return new Position(position.getxPos() + (velocity * Math.sin(angle)),
                 position.getyPos() - (velocity * Math.cos(angle)));
     }
