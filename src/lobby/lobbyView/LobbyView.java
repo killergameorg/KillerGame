@@ -1,4 +1,5 @@
 package lobby.lobbyView;
+
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
 import lobby.*;
@@ -14,12 +15,13 @@ public class LobbyView extends JFrame implements ActionListener {
     private Image image;
     private Timer timer;
     private int y;
-/**
-* Frame for the Lobby
-* 
-* @author Antoni Xavier Bascunana Sanchez
-* 
-*/
+
+    /**
+     * Frame for the Lobby
+     * 
+     * @author Antoni Xavier Bascunana Sanchez
+     * 
+     */
     public LobbyView(LobbyController lobbyController) {
         timer = new Timer(100, this);
         this.lobbyController = lobbyController;
@@ -27,6 +29,7 @@ public class LobbyView extends JFrame implements ActionListener {
         setTitle("Lobby");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         addComponents();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -36,7 +39,7 @@ public class LobbyView extends JFrame implements ActionListener {
         super.paint(g);
         if (image != null) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(image, getHeight()/2, y, rootPane);
+            g2d.drawImage(image, getHeight() / 2, y, rootPane);
         }
     }
 
@@ -53,9 +56,10 @@ public class LobbyView extends JFrame implements ActionListener {
         paint(offScreen);
         g.drawImage(offImage, 0, 0, rootPane);
     }
-  /** 
+
+    /**
      * @param position
-     * Method to display selected position by user
+     *                 Method to display selected position by user
      */
     public void updatePos(LOBBYSECTION position) {
         for (int i = 0; i < viewer.labellist.size(); i++) {
@@ -66,17 +70,18 @@ public class LobbyView extends JFrame implements ActionListener {
             }
         }
     }
-    
-    /* 
+
+    /*
      * Add Viewer components
      * 
-    */
+     */
     public void addComponents() {
         JPanel background = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(new ImageIcon("src/lobby/gameAssets/2space.jpg").getImage(), 0, 0, getWidth(), getHeight(), this);
+                g.drawImage(new ImageIcon("src/lobby/gameAssets/2space.jpg").getImage(), 0, 0, getWidth(), getHeight(),
+                        this);
             }
         };
         background.setLayout(new BorderLayout());
@@ -100,16 +105,16 @@ public class LobbyView extends JFrame implements ActionListener {
 
     /**
      * @param players
-     * refresh number of players in game
+     *                refresh number of players in game
      */
     public void refreshPlayerNum(int players) {
         viewer.getPlayersnum().setText(String.valueOf(players));
     }
 
     public void refreshMasterValues(GameRules gameRules) {
-        viewer.getLifesnum().setText(String.valueOf(gameRules.getLife()));
-        viewer.getBulletDamagenum().setText(String.valueOf(gameRules.getBulletDamage()));
-        viewer.getMapnum().setText(String.valueOf(gameRules.getMap()));
+        viewer.getLifesnum().setText(String.valueOf(gameRules.getDinamicGameRule().getLife()));
+        viewer.getBulletDamagenum().setText(String.valueOf(gameRules.getDinamicGameRule().getBulletDamage()));
+        viewer.getMapnum().setText(String.valueOf(gameRules.getDinamicGameRule().getMap()));
     }
 
     private void KillDemon() {
@@ -140,7 +145,7 @@ public class LobbyView extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         y = y - 100;
         update(getGraphics());
-        if (y == -1000){
+        if (y == -1000) {
             KillDemon();
         }
     }

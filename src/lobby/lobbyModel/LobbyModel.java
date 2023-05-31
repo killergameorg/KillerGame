@@ -1,5 +1,7 @@
 package lobby.lobbyModel;
 
+import java.lang.reflect.Field;
+
 import lobby.LOBBYSECTION;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
@@ -20,7 +22,7 @@ public class LobbyModel {
         this.lobbyController = lobbyController;
         this.selectedRule = 0;
         this.lobbysection = LOBBYSECTION.values()[selectedRule];
-        this.gameRules = new GameRules(100, 10, Maps.MAP_1);
+        this.gameRules = new GameRules();
         this.numChangeableRule = LOBBYSECTION.values().length;
 
         // Update the viewer the selected rule and the values of all game rules
@@ -80,24 +82,28 @@ public class LobbyModel {
      * enum will select previous
      */
     public void minusGameRuleValue() {
-        switch (this.lobbysection) {
-            case LIFE:
-                if (this.gameRules.getLife() > 0) {
-                    this.gameRules.setLife(this.gameRules.getLife() - 5);
+        Field[] campos = this.getGameRules().getDinamicGameRule().getClass().getDeclaredFields();
+        if (this.selectedRule >= campos.length) {
+            this.lobbyController.startGame(gameRules);
+        } else {
+            Field atributo = campos[this.selectedRule];
+            atributo.setAccessible(true);
+            try {
+                if (atributo.getType() == int.class) {
+                    int value = atributo.getInt(this.getGameRules().getDinamicGameRule());
+                    if (value - 5 > 0) {
+                        atributo.setInt(this.getGameRules().getDinamicGameRule(), value - 5);
+                    }
+                } else if (atributo.getType().isEnum()) {
+                    Object[] enumValues = atributo.getType().getEnumConstants();
+                    Object valorEnum = atributo.get(this.getGameRules().getDinamicGameRule());
+                    int indexEnum = indexEnum(enumValues, valorEnum);
+                    int beforeEnumIndex = Math.floorMod((indexEnum - 1), enumValues.length);
+                    atributo.set(this.getGameRules().getDinamicGameRule(), enumValues[beforeEnumIndex]);
                 }
-                break;
-            case BULLETDAMAGE:
-                if (this.gameRules.getBulletDamage() > 0) {
-                    this.gameRules.setBulletDamage(this.gameRules.getBulletDamage() - 5);
-                }
-                break;
-            case MAP:
-                int enumPosition = Maps.valueOf(this.gameRules.getMap().toString()).ordinal();
-                this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition - 1, Maps.values().length)]);
-                break;
-            case GAMEREADY:
-                this.lobbyController.startGame(gameRules);
-                break;
+            } catch (Exception e) {
+                System.out.println("error");
+            }
         }
         // Update the view with the values
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
@@ -108,23 +114,40 @@ public class LobbyModel {
      * enum will select next one
      */
     public void plusGameRuleValue() {
-        switch (this.lobbysection) {
-            case LIFE:
-                this.gameRules.setLife(this.gameRules.getLife() + 5);
-                break;
-            case BULLETDAMAGE:
-                this.gameRules.setBulletDamage(this.gameRules.getBulletDamage() + 5);
-                break;
-            case MAP:
-                int enumPosition = Maps.valueOf(this.gameRules.getMap().toString()).ordinal();
-                this.gameRules.setMap(Maps.values()[Math.floorMod(enumPosition + 1, Maps.values().length)]);
-                break;
-            case GAMEREADY:
-                this.lobbyController.startGame(gameRules);
-                break;
+        Field[] campos = this.getGameRules().getDinamicGameRule().getClass().getDeclaredFields();
+        if (this.selectedRule >= campos.length) {
+            this.lobbyController.startGame(gameRules);
+        } else {
+            Field atributo = campos[this.selectedRule];
+            atributo.setAccessible(true);
+            try {
+                if (atributo.getType() == int.class) {
+                    int value = atributo.getInt(this.getGameRules().getDinamicGameRule());
+                    if (value + 5 > 0) {
+                        atributo.setInt(this.getGameRules().getDinamicGameRule(), value + 5);
+                    }
+                } else if (atributo.getType().isEnum()) {
+                    Object[] enumValues = atributo.getType().getEnumConstants();
+                    Object valorEnum = atributo.get(this.getGameRules().getDinamicGameRule());
+                    int indexEnum = indexEnum(enumValues, valorEnum);
+                    int nextEnumIndex = Math.floorMod((indexEnum + 1), enumValues.length);
+                    atributo.set(this.getGameRules().getDinamicGameRule(), enumValues[nextEnumIndex]);
+                }
+            } catch (Exception e) {
+                System.out.println("error");
+            }
         }
         // Update the view with the values
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
+    }
+
+    private int indexEnum(Object[] array, Object enumObject) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(enumObject)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     // Getter y Setters

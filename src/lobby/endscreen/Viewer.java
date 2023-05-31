@@ -1,15 +1,16 @@
-package endscreen;
+package lobby.endscreen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+
 /**
-* All the components for the LobbyView 
-* 
-* @author Antoni Xavier Bascunana Sanchez
-* 
-*/
+ * All the components for the LobbyView
+ * 
+ * @author Antoni Xavier Bascunana Sanchez
+ * 
+ */
 public class Viewer extends JPanel {
     JPanel gameOver;
     JPanel team2;
@@ -18,20 +19,18 @@ public class Viewer extends JPanel {
     private JLabel team1Label;
     private JLabel team2Label;
 
-
     JLabel team1Score;
     JLabel team2Score;
     private JButton restart;
 
     Viewer() {
-        addGameScreen() ;
+        addGameScreen();
         addTeam1Score();
         addTeam1();
         addTeam2();
-       
-     
+
     }
-   
+
     public void addTeam1() {
         team1 = new JPanel(new BorderLayout());
         team1.setSize(100, 100);
@@ -43,29 +42,28 @@ public class Viewer extends JPanel {
         team1.add(addTeam1Score(), BorderLayout.CENTER);
         team1.setOpaque(false);
     }
-    
-     
-    public JLabel addTeam1Score(){
-       team1Score = new JLabel("0");
-       team1Score.setSize(100, 100);
-       team1Score.setFont(customFont());
-       team1Score.setForeground(Color.white);
+
+    public JLabel addTeam1Score() {
+        team1Score = new JLabel("0");
+        team1Score.setSize(100, 100);
+        team1Score.setFont(customFont());
+        team1Score.setForeground(Color.white);
         team1Score.setOpaque(false);
         return team1Score;
-   
+
     }
 
-    public JLabel addTeam2Score(){
+    public JLabel addTeam2Score() {
         team2Score = new JLabel("0");
         team2Score.setSize(100, 100);
         team2Score.setFont(customFont());
         team2Score.setForeground(Color.white);
-         team2Score.setOpaque(false);
-         return team2Score;
-    
-     }
+        team2Score.setOpaque(false);
+        return team2Score;
 
-    public void addTeam2(){
+    }
+
+    public void addTeam2() {
         team2 = new JPanel(new BorderLayout());
         team2.setSize(100, 100);
         team2Label = new JLabel("Team1");
@@ -76,11 +74,11 @@ public class Viewer extends JPanel {
         team2.add(addTeam1Score(), BorderLayout.EAST);
         team2.setOpaque(false);
     }
-  
+
     public void addGameScreen() {
         gameOver = new JPanel();
         gameOver.setSize(100, 100);
-    
+
         gameLabel = new JLabel("Game Over");
         gameLabel.setForeground(Color.white);
         gameLabel.setFont(customFont());
@@ -88,15 +86,15 @@ public class Viewer extends JPanel {
         gameOver.add(gameLabel);
         gameOver.setOpaque(false);
     }
-    
-    /** 
+
+    /**
      * @return Font
-     * Method to set custom text font for resources
+     *         Method to set custom text font for resources
      */
     public Font customFont() {
         Font font = null;
         try {
-            //Font file set to test the interface.
+            // Font file set to test the interface.
             String fontPath = "lobby/gameAssets/poly.ttf";
             String absoluteFontPath = getClass().getClassLoader().getResource(fontPath).getPath();
             Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(absoluteFontPath));
@@ -109,7 +107,4 @@ public class Viewer extends JPanel {
         return font;
     }
 
-
-    
-  
 }
