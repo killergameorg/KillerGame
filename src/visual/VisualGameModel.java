@@ -10,12 +10,17 @@ public class VisualGameModel {
 
     private ArrayList<VisualObject> visualObjectsList;
 
+    private PhysicsEngine pEngine;
+
+    private VisualConstants vConstants;
+
     // * Constructor
 
     public VisualGameModel(VisualGameController visualGameController) {
         this.visualGameController = visualGameController;
-
         this.visualObjectsList = new ArrayList<>();
+        this.pEngine = new PhysicsEngine();
+        this.vConstants = new VisualConstants();
     }
 
     // * Getters
@@ -24,7 +29,13 @@ public class VisualGameModel {
         return visualObjectsList;
     }
 
-    
+     public PhysicsEngine getPhysicsEngine() {
+        return pEngine;
+    }
+
+    public VisualConstants getVConstants() {
+        return vConstants;
+    }
 
     // * Methods
 

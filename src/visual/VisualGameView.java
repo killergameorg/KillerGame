@@ -39,8 +39,8 @@ public class VisualGameView extends JFrame implements Runnable {
     // ! Methods
 
     public void refresh(Graphics g) {
-        if (visualGameController.getGameModel().getVisualObjectList().size() > 0) {
-            for (VisualObject visualObject : visualGameController.getGameModel().getVisualObjectList()) {
+        if (visualGameController.getVisualGameModel().getVisualObjectsList().size() > 0) {
+            for (VisualObject visualObject : visualGameController.getVisualGameModel().getVisualObjectsList()) {
                 visualObject.drawObject(g);
             }
         } else {
