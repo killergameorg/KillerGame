@@ -14,14 +14,11 @@ public abstract class VisualObject implements Runnable {
     private int playerNumber;
     private Animation deadAnim;
     private Animation spawnAnim;
-    private double width;
-    private double height;
     private boolean isAlive; 
     // * Constructor
 
     public VisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double width,
-            double height) {
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim) {
         this.id = id;
         this.skin = skin;
         this.position = position;
@@ -31,8 +28,6 @@ public abstract class VisualObject implements Runnable {
         this.playerNumber = playerNumber;
         this.deadAnim = deadAnim;
         this.spawnAnim = spawnAnim;
-        this.width = width;
-        this.height = height;
         this.isAlive = true;
     }
 
@@ -40,6 +35,14 @@ public abstract class VisualObject implements Runnable {
 
     public int getId() {
         return id;
+    }
+
+    public double getWidth() {
+        return getSkin.getWidth();
+    }
+
+    public double getHeight() {
+        return getSkin.getHeight();
     }
 
     public BufferedImage getSkin() {

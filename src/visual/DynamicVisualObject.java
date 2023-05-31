@@ -17,9 +17,9 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
     // * Constructor
 
     public DynamicVisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double width, double height,
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim,
             double velocity, double angle) {
-        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, width, height);
+        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim);
         this.velocity = velocity;
         this.angle = angle;
     }
