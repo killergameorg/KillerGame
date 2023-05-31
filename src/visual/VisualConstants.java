@@ -9,5 +9,4 @@ public class VisualConstants {
     public final static double impactexplosionduration = 1500; 
     public final static double spaceshipexplosionduration = 1500; 
     public final static double shootbulletduration = 1500;
-
 }
