@@ -38,11 +38,12 @@ public abstract class VisualObject implements Runnable {
     }
 
     public double getWidth() {
-        return getSkin.getWidth();
+        double res = getSkin.getWidth()
+        return res;
     }
 
     public double getHeight() {
-        return getSkin.getHeight();
+        return (double) getSkin.getHeight();
     }
 
     public BufferedImage getSkin() {
