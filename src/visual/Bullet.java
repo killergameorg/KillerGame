@@ -11,5 +11,13 @@ public class Bullet extends DynamicVisualObject {
     
     // * Methods
 
-    
+    @Override
+    public void run(){
+          while(getIsAlive()){
+            if(getFuturePosition() == null){
+                calculateNewPosition()
+                getVisualGameModel().notifyToVGC(new NotificationMsg(NotificationType.positionUpdate, this));
+            }
+        }
+    }
 }

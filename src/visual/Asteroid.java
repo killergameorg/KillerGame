@@ -15,10 +15,7 @@ public class Asteroid extends DynamicVisualObject {
     }
 
     // * Methods
-    @Override
-    public void update(){
-        rotationAngle += VisualConstants.asteroidRotationSpeed;
-    }
+
 
     @Override
     public void drawObject(Graphics g) {
@@ -32,8 +29,9 @@ public class Asteroid extends DynamicVisualObject {
     @Override
     public void run(){
           while(getIsAlive()){
-            update();
-            if(getFuturePosition() != null){
+            if(getFuturePosition() == null){
+                calculateNewPosition()
+                rotationAngle += VisualConstants.asteroidRotationSpeed;
                 getVisualGameModel().notifyToVGC(new NotificationMsg(NotificationType.positionUpdate, this));
             }
         }
