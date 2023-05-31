@@ -93,5 +93,6 @@ public abstract class VisualObject implements Runnable {
     }
 
     public void decreaseLife() {
+        this.setLife(this.getLife()-quantity);
     }
 }

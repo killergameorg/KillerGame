@@ -93,10 +93,11 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
 
     @Override
     public void drawObject(Graphics g) {
+        AffineTransform at = AffineTransform.getTranslateInstance(this.getPosition().getxPos(), this.getPosition().getyPos());
+        at.rotate(Math.toRadians(this.getAngle()));
+
         Graphics2D g2d = (Graphics2D) g;
-        AffineTransform originalTransform = g2d.getTransform();
-        g2d.translate(position.getxPos(), position.getyPos());
-        g2d.rotate(angle);
+
         g2d.drawImage(this.skin, at, null);
     }
     
