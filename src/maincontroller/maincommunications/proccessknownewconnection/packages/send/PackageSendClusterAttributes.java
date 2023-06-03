@@ -1,6 +1,8 @@
-package maincontroller.maincommunications.proccessknownewconnection.packages;
+package maincontroller.maincommunications.proccessknownewconnection.packages.send;
 
-public class PackageSendClusterAttributes extends PackageKnowNewConnection {
+import maincontroller.maincommunications.proccessknownewconnection.packages.PackageProccessKnowNewConnection;
+
+public class PackageSendClusterAttributes implements PackageProccessKnowNewConnection {
 
     // ! Attributes
     private int id;

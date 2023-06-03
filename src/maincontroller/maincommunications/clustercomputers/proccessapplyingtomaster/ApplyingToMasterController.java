@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import maincontroller.maincommunications.clustercomputers.ClusterCommunicationsController;
+import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.packages.PackageApplyingToMaster;
 
 public class ApplyingToMasterController implements Runnable {
 
@@ -44,8 +45,6 @@ public class ApplyingToMasterController implements Runnable {
 
             if (idMaster == -1) {
 
-                this.getIdsAndVotes().clear();
-
                 try {
                     Thread.sleep(this.getTimeToWaitForVotesFromConfig());
                 } catch (InterruptedException e) {
@@ -55,15 +54,13 @@ public class ApplyingToMasterController implements Runnable {
 
         }
 
-        if (idMaster != this.getMyId()) {
-            this.setSlave();
-
-        } else {
+        if (idMaster == this.getMyId()) {
             this.setMaster();
             this.startLobby();
-        }
 
-        this.getIdsAndVotes().clear();
+        } else {
+            this.setSlave();
+        }
 
     }
 
@@ -74,7 +71,7 @@ public class ApplyingToMasterController implements Runnable {
     }
 
     private void sendApplyingToMaster() {
-        this.getClusterCommunicationsController().sendBroadcastClusterComputers(
+        this.sendFlood(
                 new PackageApplyingToMaster(
                         this.getMyId(),
                         new Random().nextInt(1, 1000000000)
@@ -128,7 +125,18 @@ public class ApplyingToMasterController implements Runnable {
             idMaster = -1;
         }
 
+        this.getIdsAndVotes().clear();
+
         return idMaster;
+    }
+
+    // ! Linking Methods
+
+    private void sendFlood(PackageApplyingToMaster packageApplyingToMaster) {
+        this.getClusterCommunicationsController().sendFlood(
+                packageApplyingToMaster
+
+        );
     }
 
     private int getMyId() {

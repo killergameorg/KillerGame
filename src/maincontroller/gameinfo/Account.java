@@ -29,6 +29,12 @@ public class Account {
 
     }
 
+    public Account(int idAccount, boolean isMaster, Team team) {
+        this.setIdAccount(idAccount);
+        this.setMaster(isMaster);
+        this.setTeam(team);
+    }
+
     // ! Getters and Setters
 
     /**

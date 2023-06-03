@@ -30,23 +30,9 @@ public class MainGameController {
     private VisualGameController visualGameController;
 
     // ! Constructor
-    public MainGameController(
-            String pathConfigurationFile,
-            int sleepWhileKnowConnections,
-            int timeToWaitForVotesFromConfig
+    public MainGameController(String pathConfigurationFile) throws FileNotFoundException, IOException {
 
-    ) throws FileNotFoundException, IOException {
-
-        this.setMainGameModel(
-                new MainGameModel(
-                        this,
-                        pathConfigurationFile,
-                        sleepWhileKnowConnections,
-                        timeToWaitForVotesFromConfig
-
-                )
-
-        );
+        this.setMainGameModel(new MainGameModel(this, pathConfigurationFile));
 
         this.setLobbyController(new LobbyController());
         this.setEventsGameController(new EventsGameController());
@@ -54,17 +40,18 @@ public class MainGameController {
 
     }
 
+    // ! MainGame
+
     public void initializeConnectionController() {
         this.getMainGameModel().initializeConnectionController();
     }
-
-    // ! ConfigurationFileController methods
 
     public int getConfigurationFileId() {
         return this.getMainGameModel().getConfigurationFileController().getId();
     }
 
-    // ! LobbyGameController methods
+    // ! LobbyGame
+
     public void applyingToMaster() {
         this.tryApplyingToMaster();
     }
@@ -101,7 +88,11 @@ public class MainGameController {
         this.getLobbyController().setPlayerCount(numberOfMobiles);
     }
 
-    // ! VisualGameController methods
+    public boolean iAmMaster() {
+        return this.getLobbyController().iAmMaster();
+    }
+
+    // ! VisualGame
 
     /**
      * Get all the visual objects in the game (spaceships, bullets, etc)
@@ -146,8 +137,8 @@ public class MainGameController {
      * 
      * @param visualObject The visual object to move forward
      */
-    public void moveForwardVisualObject(VisualObject visualObject) {
-        this.getVisualGameController().moveObject(visualObject);
+    public void moveForwardVisualObject(int idAccount) {
+        this.getVisualGameController().moveObject(this.getVisualObjectById(idAccount));
     }
 
     /**
@@ -156,9 +147,16 @@ public class MainGameController {
      * @param visualObject The visual object to rotate
      * @param direction    The direction to rotate the visual object (LEFT or RIGHT)
      */
-    public void rotateVisualObject(VisualObject visualObject,
-            Direction direction) {
-        this.getVisualGameController().rotateObject(visualObject, direction);
+    public void rotateVisualObject(
+            int idAccount,
+            Direction direction
+
+    ) {
+        this.getVisualGameController().rotateObject(
+                this.getVisualObjectById(idAccount),
+                direction
+
+        );
     }
 
     /**
@@ -211,6 +209,7 @@ public class MainGameController {
         this.killVisualObject(explosionAction.getVisualObject());
     }
 
+    // ! EventsGame
     public void setGameRules(GameRules gameRules) {
         this.getEventsGameController().setGameRules(gameRules);
     }
@@ -221,6 +220,20 @@ public class MainGameController {
 
     public Maps getMap() {
         return this.getEventsGameController().getMap();
+    }
+
+    // TODO: Mirar de hacerlo en el Modelo o en otro sitio
+    private VisualObject getVisualObjectById(int id) {
+        ArrayList<VisualObject> visualObjects = this.getVisualObjects();
+        VisualObject visualObject = null;
+        int i = 0;
+        while (visualObject != null && i < visualObjects.size()) {
+            if (visualObjects.get(i).getAccountId() == id) {
+                visualObject = visualObjects.get(i);
+            }
+            i++;
+        }
+        return visualObject;
     }
 
     // ! Getters and Setters

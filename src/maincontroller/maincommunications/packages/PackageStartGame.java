@@ -1,12 +1,10 @@
 package maincontroller.maincommunications.packages;
 
-import java.io.Serializable;
-
 import lobby.lobbyModel.GameRules;
 
-public class PackageStartGame implements Serializable {
+public class PackageStartGame implements PackageMainCommunications {
 
-    // ! Atributes
+    // ! Attributes
     private GameRules gameRules;
 
     // ! Constructor

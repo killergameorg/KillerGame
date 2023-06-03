@@ -1,10 +1,12 @@
 package maincontroller.maincommunications.clustercomputers;
 
-import lobby.lobbyModel.GameRules;
+import java.util.ArrayList;
+
 import maincontroller.maincommunications.MainGameCommunications;
+import maincontroller.maincommunications.clustercomputers.packages.PackageClusterCommunications;
 import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.ApplyingToMasterController;
-import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.PackageApplyingToMaster;
-import maincontroller.maincommunications.packages.PackageStartGame;
+import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.packages.PackageApplyingToMaster;
+import maincontroller.maincommunications.typesofconnections.ClusterComputer;
 
 public class ClusterCommunicationsController {
 
@@ -12,6 +14,8 @@ public class ClusterCommunicationsController {
     private MainGameCommunications mainGameCommunications;
 
     private ApplyingToMasterController applyingToMasterController;
+
+    private ArrayList<ClusterComputer> clusterComputers;
 
     // ! Constructor
     public ClusterCommunicationsController(
@@ -30,28 +34,56 @@ public class ClusterCommunicationsController {
                 )
 
         );
+
+        this.setClusterComputers(new ArrayList<ClusterComputer>());
+
     }
 
     // ! Methods
+
+    public void onIncomingMessage(
+            String ip,
+            PackageClusterCommunications packkPackageClusterCommunications
+
+    ) {
+
+        if (packkPackageClusterCommunications instanceof PackageApplyingToMaster) {
+            this.getApplyingToMasterController().onIncomingMessage(
+                    ip,
+                    (PackageApplyingToMaster) packkPackageClusterCommunications
+
+            );
+
+        }
+    }
+
+    public boolean removeConnection(String ip) {
+
+        boolean removed = false;
+        int i = 0;
+        while (i < this.getClusterComputers().size() && !removed) {
+            if (this.getClusterComputers().get(i).getIp().equals(ip)) {
+                this.getClusterComputers().remove(i);
+                removed = true;
+            }
+            i++;
+        }
+
+        return removed;
+    }
+
+    // ! Linking methods
+
+    public void addClusterComputer(int id, String ip) {
+        this.getClusterComputers().add(new ClusterComputer(id, ip));
+    }
 
     public void tryApplyingToMaster() {
         this.getApplyingToMasterController().tryApplyingToMaster();
     }
 
-    public void onIncomingMessage(
-            String ip,
-            PackageApplyingToMaster packageApplyingToMaster
-
-    ) {
-        this.getApplyingToMasterController().onIncomingMessage(
-                ip,
-                packageApplyingToMaster
-
-        );
-    }
-
-    public void sendBroadcastClusterComputers(Object object) {
-        this.getMainGameCommunications().sendBroadcastClusterComputers(object);
+    public void sendFlood(PackageClusterCommunications packageClusterCommunications) {
+        this.getMainGameCommunications().sendFlood(packageClusterCommunications);
     }
 
     public int getMyId() {
@@ -70,25 +102,7 @@ public class ClusterCommunicationsController {
         this.getMainGameCommunications().setSlave();
     }
 
-    public void notifyAllStartGame(GameRules gameRules) {
-        this.sendBroadcastClusterComputers(new PackageStartGame(gameRules));
-    }
-
     // ! Getters and Setters
-
-    /**
-     * @return the applyingToMasterController
-     */
-    public ApplyingToMasterController getApplyingToMasterController() {
-        return applyingToMasterController;
-    }
-
-    /**
-     * @param applyingToMasterController the applyingToMasterController to set
-     */
-    public void setApplyingToMasterController(ApplyingToMasterController applyingToMasterController) {
-        this.applyingToMasterController = applyingToMasterController;
-    }
 
     /**
      * @return the mainGameCommunications
@@ -102,6 +116,34 @@ public class ClusterCommunicationsController {
      */
     public void setMainGameCommunications(MainGameCommunications mainGameCommunications) {
         this.mainGameCommunications = mainGameCommunications;
+    }
+
+    /**
+     * @return the clusterComputers
+     */
+    public ArrayList<ClusterComputer> getClusterComputers() {
+        return clusterComputers;
+    }
+
+    /**
+     * @param clusterComputers the clusterComputers to set
+     */
+    public void setClusterComputers(ArrayList<ClusterComputer> clusterComputers) {
+        this.clusterComputers = clusterComputers;
+    }
+
+    /**
+     * @return the applyingToMasterController
+     */
+    public ApplyingToMasterController getApplyingToMasterController() {
+        return applyingToMasterController;
+    }
+
+    /**
+     * @param applyingToMasterController the applyingToMasterController to set
+     */
+    public void setApplyingToMasterController(ApplyingToMasterController applyingToMasterController) {
+        this.applyingToMasterController = applyingToMasterController;
     }
 
 }

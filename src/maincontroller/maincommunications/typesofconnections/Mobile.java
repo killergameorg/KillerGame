@@ -1,4 +1,4 @@
-package maincontroller.maincommunications;
+package maincontroller.maincommunications.typesofconnections;
 
 import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.Team;
@@ -10,7 +10,11 @@ public class Mobile {
     private String ip;
     private Account account;
 
-    // ! Constructor
+    // ! Constructors
+
+    public Mobile(String ip) {
+        this.setIp(ip);
+    }
 
     public Mobile(String ip, Team team) {
         this.setIp(ip);

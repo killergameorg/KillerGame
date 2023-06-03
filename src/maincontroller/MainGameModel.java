@@ -13,6 +13,9 @@ import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.GameState;
 import maincontroller.maincommunications.MainGameCommunications;
 import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
+import maincontroller.maincommunications.mobiles.packages.PackageShipInfo;
+import maincontroller.maincommunications.mobiles.packages.PackageShipMobile;
+import maincontroller.maincommunications.packages.PackageMainCommunications;
 import maincontroller.maincommunications.soundserver.packages.SoundType;
 import maincontroller.notifications.NotificationsManager;
 import visual.Direction;
@@ -35,12 +38,9 @@ public class MainGameModel {
     // ! Constructor
     public MainGameModel(
             MainGameController mainGameController,
-            String pathConfigurationFile,
-            int sleepWhileKnowConnections,
-            int timeToWaitForVotesFromConfig
+            String pathConfigurationFile
 
-    )
-            throws FileNotFoundException, IOException {
+    ) throws FileNotFoundException, IOException {
 
         this.setMainGameController(mainGameController);
 
@@ -48,15 +48,7 @@ public class MainGameModel {
                 new ConfigurationFileController(pathConfigurationFile)
 
         );
-        this.setMainGameCommunications(
-                new MainGameCommunications(
-                        this,
-                        sleepWhileKnowConnections,
-                        timeToWaitForVotesFromConfig
-
-                )
-
-        );
+        this.setMainGameCommunications(new MainGameCommunications(this));
 
         this.setNotificationsManager(new NotificationsManager(this));
 
@@ -76,6 +68,91 @@ public class MainGameModel {
         // TODO: que se muestre su Frame
     }
 
+    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
+
+        if (visualObject instanceof Ship) {
+            Ship ship = (Ship) visualObject;
+
+            this.sendFlood(
+                    new PackageShipMobile(
+                            ship.getAccountId(),
+                            this.isMobileMaster(ship.getAccountId()),
+                            new PackageShipInfo(
+                                    ship.getLife() - lifeDowngrade,
+                                    ship.getTeam()
+
+                            )
+
+                    )
+
+            );
+
+        }
+
+        this.getMainGameController().decreaseLifeVisualObject(visualObject, lifeDowngrade);
+    }
+
+    public void notifyJoystick(int idAccount, PackageJoystick packageJoystick) {
+
+        if (this.getGameState() == GameState.LOBBY) {
+
+            if (packageJoystick.isRotateLeft()) {
+                this.sendMessageToLobby(MasterOrder.LEFT);
+            }
+            if (packageJoystick.isRotateRight()) {
+                this.sendMessageToLobby(MasterOrder.RIGHT);
+            }
+            if (packageJoystick.isAccelerate()) {
+                this.sendMessageToLobby(MasterOrder.OK);
+            }
+            if (packageJoystick.isShoot()) {
+                this.sendMessageToLobby(MasterOrder.BACK);
+            }
+
+        } else if (this.getGameState() == GameState.GAME) {
+
+            if (packageJoystick.isAccelerate()) {
+                this.getMainGameController().moveForwardVisualObject(
+                        idAccount
+
+                );
+
+            } else if (packageJoystick.isShoot()) {
+
+                // TODO: Preguntar a ver que les parece usar los sonidos así
+                this.playSound(SoundType.LASER);
+                this.getMainGameController().createVisualObjectBullet(
+                        idAccount
+
+                );
+
+            } else if (packageJoystick.isRotateRight()) {
+                this.getMainGameController().rotateVisualObject(
+                        idAccount,
+                        Direction.RIGHT
+
+                );
+
+            } else if (packageJoystick.isRotateLeft()) {
+                this.getMainGameController().rotateVisualObject(
+                        idAccount,
+                        Direction.LEFT
+
+                );
+
+            }
+
+        }
+
+    }
+
+    // ! Linking Methods
+
+    public void processActionExplosion(ExplosionAction explosionAction) {
+        this.playSound(SoundType.EXPLOSION);
+        this.getMainGameController().processActionExplosion(explosionAction);
+    }
+
     public void setGameRules(GameRules gameRules) {
         this.getMainGameController().setGameRules(gameRules);
     }
@@ -90,27 +167,6 @@ public class MainGameModel {
 
     public void updateVisualObjectPosition(VisualObject visualObject) {
         this.getMainGameController().updateVisualObjectPosition(visualObject);
-    }
-
-    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
-
-        if (visualObject instanceof Ship) {
-            Ship ship = (Ship) visualObject;
-
-            this.getMainGameCommunications().decreaseLifeShip(
-                    ship,
-                    lifeDowngrade
-
-            );
-
-        }
-
-        this.getMainGameController().decreaseLifeVisualObject(visualObject, lifeDowngrade);
-    }
-
-    public void processActionExplosion(ExplosionAction explosionAction) {
-        this.playSound(SoundType.EXPLOSION);
-        this.getMainGameController().processActionExplosion(explosionAction);
     }
 
     public int getMyId() {
@@ -137,62 +193,6 @@ public class MainGameModel {
         this.getMainGameController().setSlave();
     }
 
-    public void notifyJoystick(Account account, PackageJoystick packageJoystick) {
-
-        if (this.getGameState() == GameState.LOBBY) {
-
-            MasterOrder masterOrder = null;
-            if (packageJoystick.isRotateLeft()) {
-                masterOrder = MasterOrder.LEFT;
-            } else if (packageJoystick.isRotateRight()) {
-                masterOrder = MasterOrder.RIGHT;
-            } else if (packageJoystick.isAccelerate()) {
-                masterOrder = MasterOrder.OK;
-            } else if (packageJoystick.isShoot()) {
-                masterOrder = MasterOrder.BACK;
-            }
-
-            if (masterOrder != null) {
-                this.getMainGameController().sendMessageToLobby(masterOrder);
-            }
-
-        } else if (this.getGameState() == GameState.GAME) {
-
-            if (packageJoystick.isAccelerate()) {
-                this.getMainGameController().moveForwardVisualObject(
-                        account.getVisualObject()
-
-                );
-
-            } else if (packageJoystick.isShoot()) {
-
-                // TODO: Preguntar a ver que les parece usar los sonidos así
-                this.playSound(SoundType.LASER);
-                this.getMainGameController().createVisualObjectBullet(
-                        account.getIdAccount()
-
-                );
-
-            } else if (packageJoystick.isRotateRight()) {
-                this.getMainGameController().rotateVisualObject(
-                        account.getVisualObject(),
-                        Direction.RIGHT
-
-                );
-
-            } else if (packageJoystick.isRotateLeft()) {
-                this.getMainGameController().rotateVisualObject(
-                        account.getVisualObject(),
-                        Direction.LEFT
-
-                );
-
-            }
-
-        }
-
-    }
-
     private void playSound(SoundType soundType) {
         this.getMainGameCommunications().playSound(soundType);
     }
@@ -203,6 +203,30 @@ public class MainGameModel {
 
     private void notifyAllStartGame(GameRules gameRules) {
         this.getMainGameCommunications().notifyAllStartGame(gameRules);
+    }
+
+    public boolean iAmMaster() {
+        return this.getMainGameController().iAmMaster();
+    }
+
+    public void sendMessageToLobby(MasterOrder masterOrder) {
+        this.getMainGameController().sendMessageToLobby(masterOrder);
+    }
+
+    private boolean isMobileMaster(int idAccount) {
+        return this.getMainGameCommunications().isMobileMaster(idAccount);
+    }
+
+    private void sendFlood(PackageMainCommunications packageMainCommunications) {
+        this.getMainGameCommunications().sendFlood(packageMainCommunications);
+    }
+
+    public int getSleepWhileKnowConnections() {
+        return this.getConfigurationFileController().getSleepWhileKnowConnections();
+    }
+
+    public int getTimeToWaitForVotesFromConfig() {
+        return this.getConfigurationFileController().getTimeToWaitForVotesFromConfig();
     }
 
     // ! Getters and Setters
@@ -246,6 +270,9 @@ public class MainGameModel {
      */
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+
+        // TODO: Aquí tendré que activar todo, tengo que preguntar al departamento
+        // visual como quiere que les llame
     }
 
     /**

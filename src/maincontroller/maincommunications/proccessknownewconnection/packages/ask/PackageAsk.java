@@ -1,6 +1,8 @@
-package maincontroller.maincommunications.proccessknownewconnection.packages;
+package maincontroller.maincommunications.proccessknownewconnection.packages.ask;
 
-public class PackageAsk extends PackageKnowNewConnection {
+import maincontroller.maincommunications.proccessknownewconnection.packages.PackageProccessKnowNewConnection;
+
+public class PackageAsk implements PackageProccessKnowNewConnection {
 
     // ! Attributes
     private OptionsPackageAsk optionsPackageAsk;

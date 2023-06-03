@@ -1,4 +1,4 @@
-package maincontroller.maincommunications;
+package maincontroller.maincommunications.typesofconnections;
 
 public class ClusterComputer {
 

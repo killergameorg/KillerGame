@@ -4,173 +4,175 @@ import java.util.ArrayList;
 
 import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.GameState;
+import maincontroller.gameinfo.Team;
 import maincontroller.maincommunications.MainGameCommunications;
-import maincontroller.maincommunications.Mobile;
 import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
-import maincontroller.maincommunications.mobiles.packages.PackageShipInfo;
+import maincontroller.maincommunications.mobiles.packages.PackageMobileCommunications;
+import maincontroller.maincommunications.mobiles.packages.PackageMobileSetAttributes;
 import maincontroller.maincommunications.mobiles.packages.PackageShipMobile;
-import visual.Ship;
+import maincontroller.maincommunications.typesofconnections.Mobile;
 
-// TODO: Si diese tiempo me gustaría pasar aquí el ArrayList de Accounts y todo lo relacionado con ellos (Métodos y demás)
 public class MobileCommunicationsController {
 
     // ! Attributes
+
     private MainGameCommunications mainGameCommunications;
+
+    private ArrayList<Mobile> mobiles;
+    private int idMobileMaster;
 
     // ! Constructor
     public MobileCommunicationsController(MainGameCommunications mainGameCommunications) {
         this.setMainGameCommunications(mainGameCommunications);
+
+        this.setMobiles(new ArrayList<Mobile>());
     }
 
     // ! Methods
 
-    public void sendPrivateMobile(String ip, PackageShipMobile packageShipMobile) {
-        this.getMainGameCommunications().sendPrivateMobile(ip, packageShipMobile);
-    }
+    public void onIncomingMessage(String ip, PackageMobileCommunications packageMobileCommunications) {
 
-    public void onIncomingMessage(String ip, PackageShipMobile packageShipMobile) throws Exception {
+        if (packageMobileCommunications instanceof PackageMobileSetAttributes) {
+            this.searchAndSetMobile((PackageMobileSetAttributes) packageMobileCommunications);
 
-        Account account = this.getAccountWithAccountId(packageShipMobile.getAccountId());
+        } else if (packageMobileCommunications instanceof PackageShipMobile) {
+            PackageShipMobile packageShipMobile = (PackageShipMobile) packageMobileCommunications;
 
-        if (this.getGameState() == GameState.LOBBY &&
-                this.checkIfMaster(account)) {
+            if (
 
-            if (packageShipMobile.getMessage() instanceof PackageJoystick) {
+            (this.getGameState() == GameState.GAME &&
+                    packageShipMobile.getMessage() instanceof PackageJoystick) ||
+
+                    (this.getGameState() == GameState.LOBBY &&
+                            this.isMobileMaster(packageShipMobile.getAccountId()) &&
+                            packageShipMobile.getMessage() instanceof PackageJoystick)
+
+            ) {
+
                 PackageJoystick packageJoystick = (PackageJoystick) packageShipMobile.getMessage();
 
-                this.getMainGameCommunications().notifyJoystick(
-                        account,
+                this.notifyJoystick(
+                        packageShipMobile.getAccountId(),
                         packageJoystick
 
                 );
 
             }
 
-        } else if (packageShipMobile.getMessage() instanceof PackageJoystick) {
-            PackageJoystick packageJoystick = (PackageJoystick) packageShipMobile.getMessage();
-
-            this.getMainGameCommunications().notifyJoystick(
-                    account,
-                    packageJoystick
-
-            );
         }
 
     }
 
-    private boolean checkIfMaster(Account account) {
-        ArrayList<Mobile> mobiles = this.getMainGameCommunications().getMobiles();
+    public void addMobileInLobbyMaster(String ip) {
+        Mobile mobile = this.addMobile(ip, Team.searchTeamWithMinAccounts());
+        this.notifyNumberOfMobiles(this.getMobiles().size());
+        this.sendFloodMobile(mobile);
+    }
 
-        boolean masterFound = false;
-        int i = 0;
-        while (i < mobiles.size() && !masterFound) {
-            Mobile mobile = mobiles.get(i);
+    private void sendFloodMobile(Mobile mobile) {
 
-            if (mobile.getAccount().getIdAccount() == account.getIdAccount()) {
-                masterFound = true;
+        PackageMobileSetAttributes packageMobileSetAttributes = new PackageMobileSetAttributes(
+                mobile.getIp(),
+                mobile.getAccount().getIdAccount(),
+                mobile.getAccount().isMaster(),
+                mobile.getAccount().getTeam()
+
+        );
+
+        // TODO: Tengo que avisar al departamento de móvil que les llegará este objeto,
+        // TODO: tienen que comprobar si es su misma IP
+        this.sendFlood(packageMobileSetAttributes);
+
+    }
+
+    public synchronized Mobile addMobile(String ip) {
+        Mobile mobile = new Mobile(ip);
+        this.getMobiles().add(mobile);
+        return mobile;
+    }
+
+    private synchronized Mobile addMobile(String ip, Team team) {
+
+        Mobile mobile = new Mobile(ip, team);
+        this.getMobiles().add(mobile);
+        Team.getAccountsForTeams().put(
+                team,
+                Team.getAccountsForTeams().get(team) + 1
+
+        );
+
+        if (this.getMobiles().size() == 1) {
+            mobile.getAccount().setMaster(true);
+            this.setIdMobileMaster(mobile.getAccount().getIdAccount());
+
+        } else {
+            mobile.getAccount().setMaster(false);
+        }
+
+        return mobile;
+    }
+
+    private void searchAndSetMobile(PackageMobileSetAttributes packageMobileSetAttributes) {
+
+        for (int i = 0; i < this.getMobiles().size(); i++) {
+            Mobile mobile = this.getMobiles().get(i);
+
+            if (mobile.getIp() == packageMobileSetAttributes.getIp()) {
+
+                mobile.setAccount(new Account(
+                        packageMobileSetAttributes.getId(),
+                        packageMobileSetAttributes.isMaster(),
+                        packageMobileSetAttributes.getTeam()
+
+                ));
+
             }
+        }
 
+    }
+
+    public boolean removeConnection(String ip) {
+
+        boolean removed = false;
+        int i = 0;
+        while (i < this.getMobiles().size() && !removed) {
+            if (this.getMobiles().get(i).getIp().equals(ip)) {
+                this.getMobiles().remove(i);
+                removed = true;
+            }
             i++;
         }
 
-        return masterFound;
+        return removed;
     }
 
-    public void searchNewMaster() {
-        ArrayList<Mobile> mobiles = this.getMainGameCommunications().getMobiles();
+    // ! Linking methods
 
-        Mobile mobileMaster = null;
-        int masterId = -1;
+    private void sendFlood(PackageMobileCommunications packageMobileCommunications) {
+        this.getMainGameCommunications().sendFlood(packageMobileCommunications);
+    }
 
-        for (int i = 0; i < mobiles.size(); i++) {
-            Mobile mobile = mobiles.get(i);
+    public void notifyNumberOfMobiles(int numberOfMobiles) {
+        this.getMainGameCommunications().notifyNumberOfMobiles(numberOfMobiles);
+    }
 
-            if (mobileMaster == null && masterId == -1) {
-                masterId = mobile.getAccount().getIdAccount();
-                mobileMaster = mobile;
-            } else if (mobile.getAccount().getIdAccount() < masterId) {
-                masterId = mobile.getAccount().getIdAccount();
-                mobileMaster = mobile;
-            }
+    public void notifyNumberOfMobiles() {
+        this.getMainGameCommunications().notifyNumberOfMobiles(
+                this.getMobiles().size()
 
-        }
-
-        if (mobileMaster != null && masterId != -1) {
-            mobileMaster.getAccount().setMaster(true);
-            // TODO: Informar al móvil que ahora es master
-        }
-
+        );
     }
 
     private GameState getGameState() {
         return this.getMainGameCommunications().getGameState();
     }
 
-    private Account getAccountWithAccountId(int accountId) throws Exception {
-        ArrayList<Mobile> mobiles = this.getMainGameCommunications().getMobiles();
-
-        Account account = null;
-
-        int i = 0;
-        while (i < mobiles.size() && account == null) {
-            Mobile mobile = mobiles.get(i);
-
-            if (mobile.getAccount().getIdAccount() == accountId) {
-                account = mobile.getAccount();
-            }
-
-            i++;
-        }
-
-        if (account == null) {
-            throw new Exception("Account not found MobileCommunicationsController.getAccountWithId()");
-        }
-
-        return account;
+    public boolean isMobileMaster(int idAccount) {
+        return this.getIdMobileMaster() == idAccount;
     }
 
-    private Mobile getMobileWithAccountId(int accountId) throws Exception {
-        ArrayList<Mobile> mobiles = this.getMainGameCommunications().getMobiles();
-
-        Mobile mobile = null;
-
-        int i = 0;
-        while (i < mobiles.size() && mobile == null) {
-            Mobile mobileAux = mobiles.get(i);
-
-            if (mobileAux.getAccount().getIdAccount() == accountId) {
-                mobile = mobileAux;
-            }
-
-            i++;
-        }
-
-        if (mobile == null) {
-            throw new Exception("Mobile not found MobileCommunicationsController.getMobileWithAccountId()");
-        }
-
-        return mobile;
-    }
-
-    public void decreaseLifeShip(Ship ship, int lifeDowngrade) throws Exception {
-
-        Mobile mobile = this.getMobileWithAccountId(ship.getAccountId());
-
-        this.sendPrivateMobile(
-                mobile.getIp(),
-                new PackageShipMobile(
-                        mobile.getAccount().getIdAccount(),
-                        mobile.getAccount().isMaster(),
-                        new PackageShipInfo(
-                                ship.getLife() - lifeDowngrade,
-                                mobile.getAccount().getTeam()
-
-                        )
-
-                )
-
-        );
-
+    private void notifyJoystick(int idAccount, PackageJoystick packageJoystick) {
+        this.getMainGameCommunications().notifyJoystick(idAccount, packageJoystick);
     }
 
     // ! Getters and Setters
@@ -187,6 +189,34 @@ public class MobileCommunicationsController {
      */
     public void setMainGameCommunications(MainGameCommunications mainGameCommunications) {
         this.mainGameCommunications = mainGameCommunications;
+    }
+
+    /**
+     * @return the mobiles
+     */
+    public ArrayList<Mobile> getMobiles() {
+        return mobiles;
+    }
+
+    /**
+     * @param mobiles the mobiles to set
+     */
+    public void setMobiles(ArrayList<Mobile> mobiles) {
+        this.mobiles = mobiles;
+    }
+
+    /**
+     * @return the idMobileMaster
+     */
+    public int getIdMobileMaster() {
+        return idMobileMaster;
+    }
+
+    /**
+     * @param idMobileMaster the idMobileMaster to set
+     */
+    public void setIdMobileMaster(int idMobileMaster) {
+        this.idMobileMaster = idMobileMaster;
     }
 
 }

@@ -1,8 +1,8 @@
-package maincontroller.maincommunications.proccessknownewconnection.packages;
+package maincontroller.maincommunications.proccessknownewconnection.packages.send;
 
-import maincontroller.maincommunications.proccessknownewconnection.TypeNewConnection;
+import maincontroller.maincommunications.proccessknownewconnection.packages.PackageProccessKnowNewConnection;
 
-public class PackageSendType extends PackageKnowNewConnection {
+public class PackageSendType implements PackageProccessKnowNewConnection {
 
     // ! Attributes
     private TypeNewConnection typeNewConnection;

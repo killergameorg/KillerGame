@@ -1,6 +1,8 @@
-package maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster;
+package maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.packages;
 
-public class PackageApplyingToMaster {
+import maincontroller.maincommunications.clustercomputers.packages.PackageClusterCommunications;
+
+public class PackageApplyingToMaster implements PackageClusterCommunications {
 
     // ! Attributes
     private int id;

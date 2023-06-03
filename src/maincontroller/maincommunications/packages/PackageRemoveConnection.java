@@ -1,12 +1,12 @@
-package maincontroller.maincommunications;
+package maincontroller.maincommunications.packages;
 
-public class ServerSound {
+public class PackageRemoveConnection implements PackageMainCommunications {
 
     // ! Attributes
     private String ip;
 
     // ! Constructor
-    public ServerSound(String ip) {
+    public PackageRemoveConnection(String ip) {
         this.setIp(ip);
     }
 

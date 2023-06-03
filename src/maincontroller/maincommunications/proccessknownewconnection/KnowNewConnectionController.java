@@ -2,22 +2,15 @@ package maincontroller.maincommunications.proccessknownewconnection;
 
 import java.util.ArrayList;
 
-import communications.ConnectionController;
-import maincontroller.gameinfo.Team;
-import maincontroller.maincommunications.ClusterComputer;
 import maincontroller.maincommunications.MainGameCommunications;
-import maincontroller.maincommunications.Mobile;
-import maincontroller.maincommunications.ServerSound;
-import maincontroller.maincommunications.mobiles.packages.GameStateTypes;
-import maincontroller.maincommunications.mobiles.packages.PackageGameState;
-import maincontroller.maincommunications.mobiles.packages.PackageShipMobile;
-import maincontroller.maincommunications.proccessknownewconnection.packages.OptionsPackageAsk;
-import maincontroller.maincommunications.proccessknownewconnection.packages.PackageAsk;
-import maincontroller.maincommunications.proccessknownewconnection.packages.PackageKnowNewConnection;
-import maincontroller.maincommunications.proccessknownewconnection.packages.PackageSendClusterAttributes;
-import maincontroller.maincommunications.proccessknownewconnection.packages.PackageSendType;
+import maincontroller.maincommunications.proccessknownewconnection.packages.PackageProccessKnowNewConnection;
+import maincontroller.maincommunications.proccessknownewconnection.packages.ask.OptionsPackageAsk;
+import maincontroller.maincommunications.proccessknownewconnection.packages.ask.PackageAsk;
+import maincontroller.maincommunications.proccessknownewconnection.packages.send.PackageSendClusterAttributes;
+import maincontroller.maincommunications.proccessknownewconnection.packages.send.PackageSendNewMobileToLobbyMaster;
+import maincontroller.maincommunications.proccessknownewconnection.packages.send.PackageSendType;
+import maincontroller.maincommunications.proccessknownewconnection.packages.send.TypeNewConnection;
 
-// TODO: Tengo que intentar conectarme con el alrededor al principio
 public class KnowNewConnectionController {
 
     // ! Attributes
@@ -25,10 +18,20 @@ public class KnowNewConnectionController {
 
     private ArrayList<String> knownConnections;
 
+    private int sleepWhileKnowConnections;
+
     // ! Constructor
-    public KnowNewConnectionController(MainGameCommunications mainGameCommunications) {
+    public KnowNewConnectionController(
+            MainGameCommunications mainGameCommunications,
+            int sleepWhileKnowConnections
+
+    ) {
+
         this.setMainGameCommunications(mainGameCommunications);
+
         this.setKnownConnections(new ArrayList<String>());
+
+        this.setSleepWhileKnowConnections(sleepWhileKnowConnections);
     }
 
     // ! Methods
@@ -36,21 +39,20 @@ public class KnowNewConnectionController {
     public void knowNewConnection(String ip) {
         this.getKnownConnections().add(ip);
 
-        this.getConnectionController().sendPrivate(
+        this.sendPrivate(
                 ip,
                 new PackageAsk(OptionsPackageAsk.TYPE_DEVICE)
 
         );
     }
 
-    // TODO: Refactor de este método usando un HashMap
-    public void onIncomingMessage(String ip, PackageKnowNewConnection message) {
+    public void onIncomingMessage(String ip, PackageProccessKnowNewConnection message) {
 
         if (message instanceof PackageAsk) {
             PackageAsk packageAsk = (PackageAsk) message;
 
             if (packageAsk.getOptionsPackageAsk() == OptionsPackageAsk.TYPE_DEVICE) {
-                this.getConnectionController().sendPrivate(
+                this.sendPrivate(
                         ip,
                         new PackageSendType(TypeNewConnection.CLUSTER)
 
@@ -58,7 +60,7 @@ public class KnowNewConnectionController {
 
             } else if (packageAsk.getOptionsPackageAsk() == OptionsPackageAsk.CLUSTER_ATTRIBUTES) {
 
-                this.getConnectionController().sendPrivate(
+                this.sendPrivate(
                         ip,
                         new PackageSendClusterAttributes(this.getMyId())
 
@@ -69,8 +71,17 @@ public class KnowNewConnectionController {
 
             PackageSendType packageSendType = (PackageSendType) message;
 
-            if (packageSendType.getTypeNewConnection() == TypeNewConnection.CLUSTER) {
-                this.getConnectionController().sendPrivate(
+            if (packageSendType.getTypeNewConnection() == TypeNewConnection.SERVER_SOUND) {
+
+                this.setSoundServer(ip);
+
+                // TODO: Tengo que hablar con Sergio por si quisiera que le enviara algún
+                // TODO: atributo al principio de la conexión o no
+
+                this.getKnownConnections().remove(ip);
+
+            } else if (packageSendType.getTypeNewConnection() == TypeNewConnection.CLUSTER) {
+                this.sendPrivate(
                         ip,
                         new PackageAsk(OptionsPackageAsk.CLUSTER_ATTRIBUTES)
 
@@ -78,81 +89,83 @@ public class KnowNewConnectionController {
 
             } else if (packageSendType.getTypeNewConnection() == TypeNewConnection.MOBILE) {
 
-                Mobile mobile = this.createMobile(ip);
-                this.addMobiles(mobile);
+                if (this.iAmMaster()) {
+                    this.addMobileInLobbyMaster(ip);
 
-                this.getConnectionController().sendPrivate(
-                        ip,
-                        new PackageShipMobile(
-                                mobile.getAccount().getIdAccount(),
-                                mobile.getAccount().isMaster(),
-                                new PackageGameState(GameStateTypes.LOBBY)
+                    // TODO: Aquí ya estoy en el Lobby Master, tendré que settear el ID de la
+                    // TODO: Account y hacer un Float con el, tanto el móvil como el PC que tenga la
+                    // TODO: account tienen que recibir ese mensaje y guardarlo como atributo
 
-                        )
+                } else {
+                    this.addMobile(ip);
+                    this.sendFlood(new PackageSendNewMobileToLobbyMaster(ip));
+                }
 
-                );
-
+                // Only remove the connection if ip is in the known connections
                 this.getKnownConnections().remove(ip);
 
-            } else if (packageSendType.getTypeNewConnection() == TypeNewConnection.SERVER_SOUND) {
-
-                this.setServerSound(new ServerSound(ip));
-
-                // TODO: Tengo que hablar con Sergio por si quisiera que le enviara algún
-                // TODO: atributo al principio de la conexión o no
-
-                this.getKnownConnections().remove(ip);
             }
 
         } else if (message instanceof PackageSendClusterAttributes) {
 
-            this.addClusterComputer(this.createClusterComputer(
-                    (PackageSendClusterAttributes) message,
+            PackageSendClusterAttributes packageSendClusterAttributes = (PackageSendClusterAttributes) message;
+
+            this.addClusterComputer(
+                    packageSendClusterAttributes.getId(),
                     ip
 
-            ));
+            );
 
             this.getKnownConnections().remove(ip);
+
+        } else if (message instanceof PackageSendNewMobileToLobbyMaster) {
+
+            PackageSendNewMobileToLobbyMaster packageSendNewMobileToLobbyMaster = (PackageSendNewMobileToLobbyMaster) message;
+
+            if (this.iAmMaster()) {
+                this.addMobileInLobbyMaster(packageSendNewMobileToLobbyMaster.getIp());
+            }
 
         }
 
     }
 
-    private ConnectionController getConnectionController() {
-        return this.getMainGameCommunications().getConnectionController();
+    // ! Linking methods
+
+    private void sendPrivate(String ip, PackageProccessKnowNewConnection message) {
+        this.getMainGameCommunications().sendPrivate(ip, message);
+    }
+
+    private void sendFlood(PackageProccessKnowNewConnection message) {
+        this.getMainGameCommunications().sendFlood(message);
     }
 
     private int getMyId() {
         return this.getMainGameCommunications().getMyId();
     }
 
-    private ClusterComputer createClusterComputer(
-            PackageSendClusterAttributes packageSendClusterAttributes,
-            String ip
-
-    ) {
-
-        return new ClusterComputer(
-                packageSendClusterAttributes.getId(),
-                ip
-
-        );
+    private void setSoundServer(String ip) {
+        this.getMainGameCommunications().setSoundServer(ip);
     }
 
-    private Mobile createMobile(String ip) {
-        return new Mobile(ip, Team.searchTeamWithMinAccounts());
+    private void addMobile(String ip) {
+        this.getMainGameCommunications().addMobile(ip);
     }
 
-    private void addClusterComputer(ClusterComputer clusterComputer) {
-        this.getMainGameCommunications().addClusterComputer(clusterComputer);
+    private void addClusterComputer(int id, String ip) {
+        this.getMainGameCommunications().addClusterComputer(id, ip);
     }
 
-    private void addMobiles(Mobile mobile) {
-        this.getMainGameCommunications().addMobile(mobile);
+    private boolean iAmMaster() {
+        return this.getMainGameCommunications().iAmMaster();
     }
 
-    private void setServerSound(ServerSound serverSound) {
-        this.getMainGameCommunications().setServerSound(serverSound);
+    private void addMobileInLobbyMaster(String ip) {
+        this.getMainGameCommunications().addMobileInLobbyMaster(ip);
+    }
+
+    public boolean removeConnection(String ip) {
+        return this.getKnownConnections().remove(ip);
     }
 
     // ! Getters and Setters
@@ -183,6 +196,20 @@ public class KnowNewConnectionController {
      */
     public void setKnownConnections(ArrayList<String> knownConnections) {
         this.knownConnections = knownConnections;
+    }
+
+    /**
+     * @return the sleepWhileKnowConnections
+     */
+    public int getSleepWhileKnowConnections() {
+        return sleepWhileKnowConnections;
+    }
+
+    /**
+     * @param sleepWhileKnowConnections the sleepWhileKnowConnections to set
+     */
+    public void setSleepWhileKnowConnections(int sleepWhileKnowConnections) {
+        this.sleepWhileKnowConnections = sleepWhileKnowConnections;
     }
 
 }
