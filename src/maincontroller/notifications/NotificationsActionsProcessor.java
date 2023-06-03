@@ -21,8 +21,11 @@ public class NotificationsActionsProcessor {
      * Process a list of actions to execute
      * 
      * @param actions The list of actions to execute
+     * @throws Exception
      */
-    public void processActions(ArrayList<Action> actions) {
+    public void processActions(ArrayList<Action> actions) throws Exception {
+        // TODO: Me molaría ponerme con Juan para ver todas las Acciones resultantes y
+        // TODO: que cree que podría saltar por ello (Sonidos, efectos, etc)
 
         for (int i = 0; i < actions.size(); i++) {
             Action action = actions.get(i);
@@ -41,8 +44,9 @@ public class NotificationsActionsProcessor {
      * Process an action of a visual object (life decrease, explosion, etc)
      * 
      * @param visualObjectsActions The action to process
+     * @throws Exception
      */
-    private void processActionVisualObject(VisualObjectAction visualObjectAction) {
+    private void processActionVisualObject(VisualObjectAction visualObjectAction) throws Exception {
         boolean canMove = true;
 
         if (visualObjectAction instanceof LifeDecreaseAction) {
@@ -62,8 +66,12 @@ public class NotificationsActionsProcessor {
      * Process an action of life decrease of a visual object
      * 
      * @param lifeDecreaseAction The action to process
+     * @throws Exception
      */
-    private void processActionLifeDecrease(LifeDecreaseAction lifeDecreaseAction) {
+    private void processActionLifeDecrease(LifeDecreaseAction lifeDecreaseAction) throws Exception {
+
+        // TODO: Sonido que no existe y podría molar this.playSound(SoundType.???)
+
         this.decreaseLifeVisualObject(
                 lifeDecreaseAction.getVisualObject(),
                 lifeDecreaseAction.getLifeDowngrade()
@@ -76,8 +84,9 @@ public class NotificationsActionsProcessor {
      * 
      * @param visualObject  The visual object to decrease the life
      * @param lifeDowngrade The amount of life to decrease from the visual object
+     * @throws Exception
      */
-    private void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    private void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
         this.getNotificationsManager().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 

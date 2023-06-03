@@ -1,10 +1,12 @@
 package events;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Team;
 import visual.Bullet;
+import visual.Maps;
 import visual.PowerUp;
 import visual.Ship;
 import visual.VisualObject;
@@ -154,6 +156,13 @@ public class EventsModel {
         ArrayList<Action> actions = new ArrayList<>();
         actions.add(new GameWinAction(team));
         return actions;
+    }
+
+
+
+
+    public Maps getMap() {
+        return this.gameRules.getMap();
     }
 
 }

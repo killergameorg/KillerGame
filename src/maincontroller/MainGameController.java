@@ -13,6 +13,7 @@ import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
 import visual.Ship;
 import visual.Direction;
+import visual.Maps;
 import visual.NotificationMsg;
 import visual.Position;
 import visual.VisualGameController;
@@ -29,10 +30,32 @@ public class MainGameController {
     private VisualGameController visualGameController;
 
     // ! Constructor
-    public MainGameController(String pathConfigurationFile) throws FileNotFoundException, IOException {
+    public MainGameController(
+            String pathConfigurationFile,
+            int sleepWhileKnowConnections,
+            int timeToWaitForVotesFromConfig
 
-        this.setMainGameModel(new MainGameModel(pathConfigurationFile));
+    ) throws FileNotFoundException, IOException {
 
+        this.setMainGameModel(
+                new MainGameModel(
+                        this,
+                        pathConfigurationFile,
+                        sleepWhileKnowConnections,
+                        timeToWaitForVotesFromConfig
+
+                )
+
+        );
+
+        this.setLobbyController(new LobbyController());
+        this.setEventsGameController(new EventsGameController());
+        this.setVisualGameController(new VisualGameController(this));
+
+    }
+
+    public void initializeConnectionController() {
+        this.getMainGameModel().initializeConnectionController();
     }
 
     // ! ConfigurationFileController methods
@@ -42,9 +65,20 @@ public class MainGameController {
     }
 
     // ! LobbyGameController methods
-
     public void applyingToMaster() {
-        // TODO
+        this.tryApplyingToMaster();
+    }
+
+    private void tryApplyingToMaster() {
+        this.getMainGameModel().tryApplyingToMaster();
+    }
+
+    public void setSlave() {
+        this.getLobbyController().setSlave();
+    }
+
+    public void setMaster() {
+        this.getLobbyController().setMaster();
     }
 
     public void startLobby() {
@@ -61,6 +95,10 @@ public class MainGameController {
 
     public void startGame(GameRules gameRules) {
         this.getMainGameModel().startGame(gameRules);
+    }
+
+    public void notifyNumberOfMobiles(int numberOfMobiles) {
+        this.getLobbyController().setPlayerCount(numberOfMobiles);
     }
 
     // ! VisualGameController methods
@@ -89,7 +127,7 @@ public class MainGameController {
      * 
      * @param accountId The id of the account that owns the bullet to create
      */
-    public void createVisualObjectBullet(Long accountId) {
+    public void createVisualObjectBullet(int accountId) {
         this.getVisualGameController().createBullet(accountId);
     }
 
@@ -118,7 +156,8 @@ public class MainGameController {
      * @param visualObject The visual object to rotate
      * @param direction    The direction to rotate the visual object (LEFT or RIGHT)
      */
-    public void rotateVisualObject(VisualObject visualObject, Direction direction) {
+    public void rotateVisualObject(VisualObject visualObject,
+            Direction direction) {
         this.getVisualGameController().rotateObject(visualObject, direction);
     }
 
@@ -128,7 +167,8 @@ public class MainGameController {
      * @param visualObject  The visual object to decrease the life
      * @param lifeDowngrade The amount of life to decrease from the visual object
      */
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    public void decreaseLifeVisualObject(VisualObject visualObject,
+            float lifeDowngrade) {
         this.getVisualGameController().decreaseLife(visualObject, lifeDowngrade);
     }
 
@@ -146,8 +186,9 @@ public class MainGameController {
      * 
      * @param notificationMsg The notification message to send to the visual
      *                        department
+     * @throws Exception
      */
-    public void notifyMessage(NotificationMsg notificationMsg) {
+    public void notifyMessage(NotificationMsg notificationMsg) throws Exception {
         this.getMainGameModel().getNotificationsManager().processNotification(notificationMsg);
     }
 
@@ -176,6 +217,10 @@ public class MainGameController {
 
     public ArrayList<Action> processEvent(Colision colision) {
         return this.getEventsGameController().processEvent(colision);
+    }
+
+    public Maps getMap() {
+        return this.getEventsGameController().getMap();
     }
 
     // ! Getters and Setters

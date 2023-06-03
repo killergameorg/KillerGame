@@ -3,12 +3,13 @@ package events;
 import java.util.ArrayList;
 
 import lobby.lobbyModel.GameRules;
+import visual.Maps;
 
 public class EventsGameController {
     private EventsModel eventsModel;
 
-    public EventsGameController(EventsModel eventsModel){
-        this.eventsModel = eventsModel;
+    public EventsGameController(){
+        this.eventsModel = new EventsModel();
     }
 
     /*
@@ -33,5 +34,10 @@ public class EventsGameController {
      */
     public ArrayList<Action> processEvent(Event event){
         return this.eventsModel.processEvent(event);
+    }
+
+
+    public Maps getMap(){
+        return this.eventsModel.getMap();
     }
 }
