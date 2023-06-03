@@ -1,0 +1,342 @@
+package maincontroller.maincommunications;
+
+import java.util.ArrayList;
+
+import communications.ConnectionController;
+import communications.P2PCommListener;
+import lobby.lobbyModel.GameRules;
+import maincontroller.MainGameModel;
+import maincontroller.gameinfo.GameState;
+import maincontroller.maincommunications.clustercomputers.ClusterCommunicationsController;
+import maincontroller.maincommunications.clustercomputers.packages.PackageClusterCommunications;
+import maincontroller.maincommunications.mobiles.MobileCommunicationsController;
+import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
+import maincontroller.maincommunications.mobiles.packages.PackageMobileCommunications;
+import maincontroller.maincommunications.packages.PackageMainCommunications;
+import maincontroller.maincommunications.packages.PackageRemoveConnection;
+import maincontroller.maincommunications.packages.PackageStartGame;
+import maincontroller.maincommunications.proccessknownewconnection.KnowNewConnectionController;
+import maincontroller.maincommunications.proccessknownewconnection.packages.PackageProccessKnowNewConnection;
+import maincontroller.maincommunications.soundserver.SoundServerConnectionController;
+import maincontroller.maincommunications.soundserver.packages.MusicType;
+import maincontroller.maincommunications.soundserver.packages.SoundType;
+
+public class MainGameCommunications implements P2PCommListener {
+
+    // ! Attributes
+    private MainGameModel mainGameModel;
+
+    private ConnectionController connectionController;
+
+    private KnowNewConnectionController knowNewConnectionController;
+
+    private SoundServerConnectionController soundServerConnectionController;
+    private ClusterCommunicationsController clusterCommunicationsController;
+    private MobileCommunicationsController mobileCommunicationsController;
+
+    // ! Constructor
+    public MainGameCommunications(
+            MainGameModel mainGameModel
+
+    ) {
+
+        this.setMainGameModel(mainGameModel);
+
+        this.setKnowNewConnectionController(new KnowNewConnectionController(
+                this,
+                this.getSleepWhileKnowConnections()
+
+        ));
+
+        this.setSoundServerConnectionController(new SoundServerConnectionController(this));
+        this.setClusterCommunicationsController(new ClusterCommunicationsController(
+                this,
+                this.getTimeToWaitForVotesFromConfig()
+
+        ));
+        this.setMobileCommunicationsController(new MobileCommunicationsController(this));
+    }
+
+    // ! Methods
+
+    public void initializeConnectionController() {
+        this.setConnectionController(new ConnectionController());
+        this.getConnectionController().setCommListener(this);
+        this.getConnectionController().initialize();
+    }
+
+    public void tryApplyingToMaster() {
+
+        do {
+
+            try {
+                Thread.sleep(this.getSleepWhileKnowConnections());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        } while (this.getKnownConnections().size() > 0);
+
+        this.getClusterCommunicationsController().tryApplyingToMaster();
+    }
+
+    public void startLobby() {
+        this.getSoundServerConnectionController().playMusic(MusicType.CALMA);
+        this.getMainGameModel().startLobby();
+    }
+
+    public void notifyAllStartGame(GameRules gameRules) {
+        this.sendFlood(new PackageStartGame(gameRules));
+    }
+
+    private void removeConnection(String ip) {
+
+        boolean found = false;
+
+        found = this.getKnowNewConnectionController().removeConnection(ip);
+
+        if (!found) {
+            found = this.getSoundServerConnectionController().removeConnection(ip);
+        }
+        if (!found) {
+            found = this.getClusterCommunicationsController().removeConnection(ip);
+        }
+        if (!found) {
+            found = this.getMobileCommunicationsController().removeConnection(ip);
+        }
+
+        if (found) {
+            this.notifyNumberOfMobiles();
+        }
+
+    }
+
+    // ! P2PCommListener methods
+
+    @Override
+    public void onNewConnection(String ip) {
+        this.getKnowNewConnectionController().knowNewConnection(ip);
+    }
+
+    @Override
+    public void onIncomingMessage(String ip, Object message) {
+
+        if (message instanceof PackageProccessKnowNewConnection) {
+            this.getKnowNewConnectionController().onIncomingMessage(
+                    ip,
+                    (PackageProccessKnowNewConnection) message
+
+            );
+
+        } else if (message instanceof PackageClusterCommunications) {
+            this.getClusterCommunicationsController().onIncomingMessage(
+                    ip,
+                    (PackageClusterCommunications) message
+
+            );
+
+        } else if (message instanceof PackageMobileCommunications) {
+            this.getMobileCommunicationsController().onIncomingMessage(
+                    ip,
+                    (PackageMobileCommunications) message
+
+            );
+
+        } else if (message instanceof PackageStartGame) {
+            this.setGameState(GameState.GAME);
+
+        } else if (message instanceof PackageRemoveConnection) {
+            this.removeConnection(((PackageRemoveConnection) message).getIp());
+
+        }
+
+    }
+
+    @Override
+    public void onConnectionClosed(String ip) {
+        this.removeConnection(ip);
+        this.sendFloodRemoveConnection(ip);
+    }
+
+    @Override
+    public void onConnectionLost(String ip) {
+        this.removeConnection(ip);
+        this.sendFloodRemoveConnection(ip);
+    }
+
+    // ! Linking methods
+
+    public int getMyId() {
+        return this.getMainGameModel().getMyId();
+    }
+
+    public void setSoundServer(String ip) {
+        this.getSoundServerConnectionController().setSoundServer(ip);
+    }
+
+    private int getSleepWhileKnowConnections() {
+        return this.getMainGameModel().getSleepWhileKnowConnections();
+    }
+
+    private int getTimeToWaitForVotesFromConfig() {
+        return this.getMainGameModel().getTimeToWaitForVotesFromConfig();
+    }
+
+    private ArrayList<String> getKnownConnections() {
+        return this.getKnowNewConnectionController().getKnownConnections();
+    }
+
+    public void sendPrivate(String ip, PackageMainCommunications packageMainCommunications) {
+        this.getConnectionController().sendPrivate(ip, packageMainCommunications);
+    }
+
+    public void sendFlood(PackageMainCommunications packageMainCommunications) {
+        this.getConnectionController().sendFlood(packageMainCommunications);
+    }
+
+    public void setMaster() {
+        this.getMainGameModel().setMaster();
+    }
+
+    public void setSlave() {
+        this.getMainGameModel().setSlave();
+    }
+
+    public void playSound(SoundType soundType) {
+        this.getSoundServerConnectionController().playSound(soundType);
+    }
+
+    public void notifyNumberOfMobiles(int numberOfMobiles) {
+        this.getMainGameModel().notifyNumberOfMobiles(numberOfMobiles);
+    }
+
+    private void notifyNumberOfMobiles() {
+        this.getMobileCommunicationsController().notifyNumberOfMobiles();
+    }
+
+    public void addMobile(String ip) {
+        this.getMobileCommunicationsController().addMobile(ip);
+    }
+
+    public void addClusterComputer(int id, String ip) {
+        this.getClusterCommunicationsController().addClusterComputer(id, ip);
+    }
+
+    public void addMobileInLobbyMaster(String ip) {
+        this.getMobileCommunicationsController().addMobileInLobbyMaster(ip);
+    }
+
+    public boolean iAmMaster() {
+        return this.getMainGameModel().iAmMaster();
+    }
+
+    private void setGameState(GameState gameState) {
+        this.getMainGameModel().setGameState(gameState);
+    }
+
+    public GameState getGameState() {
+        return this.getMainGameModel().getGameState();
+    }
+
+    public boolean isMobileMaster(int idAccount) {
+        return this.getMobileCommunicationsController().isMobileMaster(idAccount);
+    }
+
+    public void notifyJoystick(int idAccount, PackageJoystick joystick) {
+        this.getMainGameModel().notifyJoystick(idAccount, joystick);
+    }
+
+    private void sendFloodRemoveConnection(String ip) {
+        this.sendFlood(new PackageRemoveConnection(ip));
+    }
+
+    // ! Getters and Setters
+
+    /**
+     * @return the mainGameModel
+     */
+    public MainGameModel getMainGameModel() {
+        return mainGameModel;
+    }
+
+    /**
+     * @param mainGameModel the mainGameModel to set
+     */
+    public void setMainGameModel(MainGameModel mainGameModel) {
+        this.mainGameModel = mainGameModel;
+    }
+
+    /**
+     * @return the knowNewConnectionController
+     */
+    public KnowNewConnectionController getKnowNewConnectionController() {
+        return knowNewConnectionController;
+    }
+
+    /**
+     * @param knowNewConnectionController the knowNewConnectionController to set
+     */
+    public void setKnowNewConnectionController(KnowNewConnectionController knowNewConnectionController) {
+        this.knowNewConnectionController = knowNewConnectionController;
+    }
+
+    /**
+     * @return the connectionController
+     */
+    public ConnectionController getConnectionController() {
+        return connectionController;
+    }
+
+    /**
+     * @param connectionController the connectionController to set
+     */
+    public void setConnectionController(ConnectionController connectionController) {
+        this.connectionController = connectionController;
+    }
+
+    /**
+     * @return the soundServerConnectionController
+     */
+    public SoundServerConnectionController getSoundServerConnectionController() {
+        return soundServerConnectionController;
+    }
+
+    /**
+     * @param soundServerConnectionController the soundServerConnectionController to
+     *                                        set
+     */
+    public void setSoundServerConnectionController(SoundServerConnectionController soundServerConnectionController) {
+        this.soundServerConnectionController = soundServerConnectionController;
+    }
+
+    /**
+     * @return the clusterCommunicationsController
+     */
+    public ClusterCommunicationsController getClusterCommunicationsController() {
+        return clusterCommunicationsController;
+    }
+
+    /**
+     * @param clusterCommunicationsController the clusterCommunicationsController to
+     *                                        set
+     */
+    public void setClusterCommunicationsController(ClusterCommunicationsController clusterCommunicationsController) {
+        this.clusterCommunicationsController = clusterCommunicationsController;
+    }
+
+    /**
+     * @return the mobileCommunicationsController
+     */
+    public MobileCommunicationsController getMobileCommunicationsController() {
+        return mobileCommunicationsController;
+    }
+
+    /**
+     * @param mobileCommunicationsController the mobileCommunicationsController to
+     *                                       set
+     */
+    public void setMobileCommunicationsController(MobileCommunicationsController mobileCommunicationsController) {
+        this.mobileCommunicationsController = mobileCommunicationsController;
+    }
+
+}

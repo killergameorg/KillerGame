@@ -7,10 +7,19 @@ import java.util.ArrayList;
 import events.Action;
 import events.Colision;
 import events.ExplosionAction;
+import lobby.MasterOrder;
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.GameState;
+import maincontroller.maincommunications.MainGameCommunications;
+import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
+import maincontroller.maincommunications.mobiles.packages.PackageShipInfo;
+import maincontroller.maincommunications.mobiles.packages.PackageShipMobile;
+import maincontroller.maincommunications.packages.PackageMainCommunications;
+import maincontroller.maincommunications.soundserver.packages.SoundType;
 import maincontroller.notifications.NotificationsManager;
+import visual.Direction;
+import visual.Ship;
 import visual.VisualObject;
 
 public class MainGameModel {
@@ -19,15 +28,28 @@ public class MainGameModel {
     private MainGameController mainGameController;
 
     private ConfigurationFileController configurationFileController;
+    private MainGameCommunications mainGameCommunications;
+
     private NotificationsManager notificationsManager;
 
     private GameState gameState;
     private ArrayList<Account> accounts;
 
     // ! Constructor
-    public MainGameModel(String pathConfigurationFile) throws FileNotFoundException, IOException {
+    public MainGameModel(
+            MainGameController mainGameController,
+            String pathConfigurationFile
 
-        this.setConfigurationFileController(new ConfigurationFileController(pathConfigurationFile));
+    ) throws FileNotFoundException, IOException {
+
+        this.setMainGameController(mainGameController);
+
+        this.setConfigurationFileController(
+                new ConfigurationFileController(pathConfigurationFile)
+
+        );
+        this.setMainGameCommunications(new MainGameCommunications(this));
+
         this.setNotificationsManager(new NotificationsManager(this));
 
         this.setGameState(GameState.UNDEFINED);
@@ -39,11 +61,99 @@ public class MainGameModel {
     public void startGame(GameRules gameRules) {
 
         this.setGameRules(gameRules);
-        // TODO
+
+        this.notifyAllStartGame(gameRules);
+
+        // TODO: El equipo visual me tiene que indicar como quieren que les avise para
+        // TODO: que se muestre su Frame
     }
 
+    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
 
-    public void setGameRules(GameRules gameRules){
+        if (visualObject instanceof Ship) {
+            Ship ship = (Ship) visualObject;
+
+            this.sendFlood(
+                    new PackageShipMobile(
+                            ship.getAccountId(),
+                            this.isMobileMaster(ship.getAccountId()),
+                            new PackageShipInfo(
+                                    ship.getLife() - lifeDowngrade,
+                                    ship.getTeam()
+
+                            )
+
+                    )
+
+            );
+
+        }
+
+        this.getMainGameController().decreaseLifeVisualObject(visualObject, lifeDowngrade);
+    }
+
+    public void notifyJoystick(int idAccount, PackageJoystick packageJoystick) {
+
+        if (this.getGameState() == GameState.LOBBY) {
+
+            if (packageJoystick.isRotateLeft()) {
+                this.sendMessageToLobby(MasterOrder.LEFT);
+            }
+            if (packageJoystick.isRotateRight()) {
+                this.sendMessageToLobby(MasterOrder.RIGHT);
+            }
+            if (packageJoystick.isAccelerate()) {
+                this.sendMessageToLobby(MasterOrder.OK);
+            }
+            if (packageJoystick.isShoot()) {
+                this.sendMessageToLobby(MasterOrder.BACK);
+            }
+
+        } else if (this.getGameState() == GameState.GAME) {
+
+            if (packageJoystick.isAccelerate()) {
+                this.getMainGameController().moveForwardVisualObject(
+                        idAccount
+
+                );
+
+            } else if (packageJoystick.isShoot()) {
+
+                // TODO: Preguntar a ver que les parece usar los sonidos así
+                this.playSound(SoundType.LASER);
+                this.getMainGameController().createVisualObjectBullet(
+                        idAccount
+
+                );
+
+            } else if (packageJoystick.isRotateRight()) {
+                this.getMainGameController().rotateVisualObject(
+                        idAccount,
+                        Direction.RIGHT
+
+                );
+
+            } else if (packageJoystick.isRotateLeft()) {
+                this.getMainGameController().rotateVisualObject(
+                        idAccount,
+                        Direction.LEFT
+
+                );
+
+            }
+
+        }
+
+    }
+
+    // ! Linking Methods
+
+    public void processActionExplosion(ExplosionAction explosionAction) {
+        this.playSound(SoundType.EXPLOSION);
+        this.getMainGameController().processActionExplosion(explosionAction);
+    }
+
+    public void setGameRules(GameRules gameRules) {
         this.getMainGameController().setGameRules(gameRules);
     }
 
@@ -59,12 +169,64 @@ public class MainGameModel {
         this.getMainGameController().updateVisualObjectPosition(visualObject);
     }
 
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
-        this.getMainGameController().decreaseLifeVisualObject(visualObject, lifeDowngrade);
+    public int getMyId() {
+        return this.getConfigurationFileController().getId();
     }
 
-    public void processActionExplosion(ExplosionAction explosionAction) {
-        this.getMainGameController().processActionExplosion(explosionAction);
+    public void initializeConnectionController() {
+        this.getMainGameCommunications().initializeConnectionController();
+    }
+
+    public void tryApplyingToMaster() {
+        this.getMainGameCommunications().tryApplyingToMaster();
+    }
+
+    public void startLobby() {
+        this.getMainGameController().startLobby();
+    }
+
+    public void setMaster() {
+        this.getMainGameController().setMaster();
+    }
+
+    public void setSlave() {
+        this.getMainGameController().setSlave();
+    }
+
+    private void playSound(SoundType soundType) {
+        this.getMainGameCommunications().playSound(soundType);
+    }
+
+    public void notifyNumberOfMobiles(int numberOfMobiles) {
+        this.getMainGameController().notifyNumberOfMobiles(numberOfMobiles);
+    }
+
+    private void notifyAllStartGame(GameRules gameRules) {
+        this.getMainGameCommunications().notifyAllStartGame(gameRules);
+    }
+
+    public boolean iAmMaster() {
+        return this.getMainGameController().iAmMaster();
+    }
+
+    public void sendMessageToLobby(MasterOrder masterOrder) {
+        this.getMainGameController().sendMessageToLobby(masterOrder);
+    }
+
+    private boolean isMobileMaster(int idAccount) {
+        return this.getMainGameCommunications().isMobileMaster(idAccount);
+    }
+
+    private void sendFlood(PackageMainCommunications packageMainCommunications) {
+        this.getMainGameCommunications().sendFlood(packageMainCommunications);
+    }
+
+    public int getSleepWhileKnowConnections() {
+        return this.getConfigurationFileController().getSleepWhileKnowConnections();
+    }
+
+    public int getTimeToWaitForVotesFromConfig() {
+        return this.getConfigurationFileController().getTimeToWaitForVotesFromConfig();
     }
 
     // ! Getters and Setters
@@ -108,6 +270,9 @@ public class MainGameModel {
      */
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+
+        // TODO: Aquí tendré que activar todo, tengo que preguntar al departamento
+        // visual como quiere que les llame
     }
 
     /**
@@ -136,6 +301,20 @@ public class MainGameModel {
      */
     public void setMainGameController(MainGameController mainGameController) {
         this.mainGameController = mainGameController;
+    }
+
+    /**
+     * @return the mainGameCommunications
+     */
+    public MainGameCommunications getMainGameCommunications() {
+        return mainGameCommunications;
+    }
+
+    /**
+     * @param mainGameCommunications the mainGameCommunications to set
+     */
+    public void setMainGameCommunications(MainGameCommunications mainGameCommunications) {
+        this.mainGameCommunications = mainGameCommunications;
     }
 
 }

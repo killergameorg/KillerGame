@@ -13,6 +13,7 @@ import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
 import visual.Ship;
 import visual.Direction;
+import visual.Maps;
 import visual.NotificationMsg;
 import visual.Position;
 import visual.VisualGameController;
@@ -31,20 +32,40 @@ public class MainGameController {
     // ! Constructor
     public MainGameController(String pathConfigurationFile) throws FileNotFoundException, IOException {
 
-        this.setMainGameModel(new MainGameModel(pathConfigurationFile));
+        this.setMainGameModel(new MainGameModel(this, pathConfigurationFile));
+
+        this.setLobbyController(new LobbyController());
+        this.setEventsGameController(new EventsGameController());
+        this.setVisualGameController(new VisualGameController(this));
 
     }
 
-    // ! ConfigurationFileController methods
+    // ! MainGame
+
+    public void initializeConnectionController() {
+        this.getMainGameModel().initializeConnectionController();
+    }
 
     public int getConfigurationFileId() {
         return this.getMainGameModel().getConfigurationFileController().getId();
     }
 
-    // ! LobbyGameController methods
+    // ! LobbyGame
 
     public void applyingToMaster() {
-        // TODO
+        this.tryApplyingToMaster();
+    }
+
+    private void tryApplyingToMaster() {
+        this.getMainGameModel().tryApplyingToMaster();
+    }
+
+    public void setSlave() {
+        this.getLobbyController().setSlave();
+    }
+
+    public void setMaster() {
+        this.getLobbyController().setMaster();
     }
 
     public void startLobby() {
@@ -63,7 +84,15 @@ public class MainGameController {
         this.getMainGameModel().startGame(gameRules);
     }
 
-    // ! VisualGameController methods
+    public void notifyNumberOfMobiles(int numberOfMobiles) {
+        this.getLobbyController().setPlayerCount(numberOfMobiles);
+    }
+
+    public boolean iAmMaster() {
+        return this.getLobbyController().iAmMaster();
+    }
+
+    // ! VisualGame
 
     /**
      * Get all the visual objects in the game (spaceships, bullets, etc)
@@ -89,7 +118,7 @@ public class MainGameController {
      * 
      * @param accountId The id of the account that owns the bullet to create
      */
-    public void createVisualObjectBullet(Long accountId) {
+    public void createVisualObjectBullet(int accountId) {
         this.getVisualGameController().createBullet(accountId);
     }
 
@@ -108,8 +137,8 @@ public class MainGameController {
      * 
      * @param visualObject The visual object to move forward
      */
-    public void moveForwardVisualObject(VisualObject visualObject) {
-        this.getVisualGameController().moveObject(visualObject);
+    public void moveForwardVisualObject(int idAccount) {
+        this.getVisualGameController().moveObject(this.getVisualObjectById(idAccount));
     }
 
     /**
@@ -118,8 +147,16 @@ public class MainGameController {
      * @param visualObject The visual object to rotate
      * @param direction    The direction to rotate the visual object (LEFT or RIGHT)
      */
-    public void rotateVisualObject(VisualObject visualObject, Direction direction) {
-        this.getVisualGameController().rotateObject(visualObject, direction);
+    public void rotateVisualObject(
+            int idAccount,
+            Direction direction
+
+    ) {
+        this.getVisualGameController().rotateObject(
+                this.getVisualObjectById(idAccount),
+                direction
+
+        );
     }
 
     /**
@@ -128,7 +165,8 @@ public class MainGameController {
      * @param visualObject  The visual object to decrease the life
      * @param lifeDowngrade The amount of life to decrease from the visual object
      */
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    public void decreaseLifeVisualObject(VisualObject visualObject,
+            float lifeDowngrade) {
         this.getVisualGameController().decreaseLife(visualObject, lifeDowngrade);
     }
 
@@ -146,8 +184,9 @@ public class MainGameController {
      * 
      * @param notificationMsg The notification message to send to the visual
      *                        department
+     * @throws Exception
      */
-    public void notifyMessage(NotificationMsg notificationMsg) {
+    public void notifyMessage(NotificationMsg notificationMsg) throws Exception {
         this.getMainGameModel().getNotificationsManager().processNotification(notificationMsg);
     }
 
@@ -170,12 +209,31 @@ public class MainGameController {
         this.killVisualObject(explosionAction.getVisualObject());
     }
 
+    // ! EventsGame
     public void setGameRules(GameRules gameRules) {
         this.getEventsGameController().setGameRules(gameRules);
     }
 
     public ArrayList<Action> processEvent(Colision colision) {
         return this.getEventsGameController().processEvent(colision);
+    }
+
+    public Maps getMap() {
+        return this.getEventsGameController().getMap();
+    }
+
+    // TODO: Mirar de hacerlo en el Modelo o en otro sitio
+    private VisualObject getVisualObjectById(int id) {
+        ArrayList<VisualObject> visualObjects = this.getVisualObjects();
+        VisualObject visualObject = null;
+        int i = 0;
+        while (visualObject != null && i < visualObjects.size()) {
+            if (visualObjects.get(i).getAccountId() == id) {
+                visualObject = visualObjects.get(i);
+            }
+            i++;
+        }
+        return visualObject;
     }
 
     // ! Getters and Setters

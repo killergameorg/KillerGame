@@ -43,8 +43,9 @@ public class NotificationsManager {
      * Process a notification
      * 
      * @param notificationMsg The notification to process
+     * @throws Exception
      */
-    public void processNotification(NotificationMsg notificationMsg) {
+    public void processNotification(NotificationMsg notificationMsg) throws Exception {
 
         VisualObject visualObject = notificationMsg.getVisualObject();
         NotificationType notificationType = notificationMsg.getNotificationType();
@@ -64,7 +65,7 @@ public class NotificationsManager {
         this.getMainGameModel().updateVisualObjectPosition(visualObject);
     }
 
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
         this.getMainGameModel().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 
