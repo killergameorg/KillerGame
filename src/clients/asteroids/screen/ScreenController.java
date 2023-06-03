@@ -23,7 +23,7 @@ public class ScreenController implements P2PCommListener{
 	
 
 	private int id;
-	private int team;
+	private Integer team;
 
 	public ScreenController() {
 		neighbour = new String[4];
@@ -32,7 +32,10 @@ public class ScreenController implements P2PCommListener{
 		try {
 			properties.load(new FileInputStream(new File("asteroids_screen.properties")));
 			id = Integer.parseInt(properties.getProperty("id"));
-			team = Integer.parseInt(properties.getProperty("team"));
+			String teamData = properties.getProperty("team");
+			if(teamData != null) {
+				team = Integer.parseInt(properties.getProperty("team"));
+			}
 			int msRefresh = Integer.parseInt(properties.getProperty("ms_refresh"));
 			viewer = new ScreenViewer(this, msRefresh);
 		} catch (IOException e) {
@@ -122,14 +125,16 @@ public class ScreenController implements P2PCommListener{
 				}
 			}
 		} else if (message instanceof RequestShipIdMessage) {
-			var m = (RequestShipIdMessage) message;
-			if(m.team == team) {
-				var petitionaryId = m.petitionaryId;
-				var shipId = viewer.getNewShip();
-				var idShipMessage = new IdShipMessage();
-				idShipMessage.petitonaryId = petitionaryId;
-				idShipMessage.shipId = shipId;
-				comm.sendFlood(idShipMessage);
+			if(team != null) {
+				var m = (RequestShipIdMessage) message;
+				if(m.team == team) {
+					var petitionaryId = m.petitionaryId;
+					var shipId = viewer.getNewShip();
+					var idShipMessage = new IdShipMessage();
+					idShipMessage.petitonaryId = petitionaryId;
+					idShipMessage.shipId = shipId;
+					comm.sendFlood(idShipMessage);
+				}
 			}
 		} else if (message instanceof IdScreenMessage) {
 			IdScreenMessage m = (IdScreenMessage) message;

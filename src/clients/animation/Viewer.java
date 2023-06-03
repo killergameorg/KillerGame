@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Viewer extends Canvas {
 
-	private static final long serialVersionUID = 580963772543020837L;
+	private static final long serialVersionUID = 1L;
 
 	private Set<Ball> ballsList;
 

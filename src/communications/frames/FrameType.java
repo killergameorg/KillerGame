@@ -7,5 +7,23 @@ package communications.frames;
  * @author Miquel A. Fuster
  */
 public enum FrameType {
-	PING, PING_ACK, CLOSE, MESSAGE
+	 /**
+     * Represents a PING frame used for network connectivity checking.
+     */
+    PING,
+    
+    /**
+     * Represents a PING_ACK frame used as a response to a PING frame.
+     */
+    PING_ACK,
+    
+    /**
+     * Represents a CLOSE frame used for closing a connection.
+     */
+    CLOSE,
+    
+    /**
+     * Represents a MESSAGE frame used for exchanging messages.
+     */
+    MESSAGE
 }

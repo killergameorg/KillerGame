@@ -13,7 +13,7 @@ import javax.swing.Timer;
 
 public class AnimationViewer extends JFrame {
 
-	private static final long serialVersionUID = 7660754719681217972L;
+	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(AnimationViewer.class.getClass().getName());
@@ -37,6 +37,8 @@ public class AnimationViewer extends JFrame {
 	private int msRefresh;
 	private int ballMaxSpeed;
 
+	private Viewer canvas;
+	
 	public AnimationViewer(AnimationController controller, int numBalls, int ballMaxSpeed, int msRefresh) {
 		this.controller = controller;
 		this.numBalls = numBalls;
@@ -48,7 +50,7 @@ public class AnimationViewer extends JFrame {
 		
 		ballsList = new HashSet<>();
 
-		Viewer canvas = new Viewer(ballsList);
+		canvas = new Viewer(ballsList);
 		add(canvas);
 
 		setTitle("Pelota Rebotando");
@@ -58,7 +60,9 @@ public class AnimationViewer extends JFrame {
 		t = new Timer(msRefresh, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				canvas.repaint();
+				synchronized(canvas) {
+					canvas.repaint();
+				}
 			}
 		});
 	}
@@ -73,9 +77,11 @@ public class AnimationViewer extends JFrame {
 	}
 
 	public void ballOutOfLimits(Ball ball, Edge edge) {
-		ball.stop();
-		controller.ballOutOfLimits(ball, edge);
-		ballsList.remove(ball);
+		synchronized(canvas) {
+			ball.stop();
+			controller.ballOutOfLimits(ball, edge);
+			ballsList.remove(ball);
+		}
 	}
 
 	private void createBall() {

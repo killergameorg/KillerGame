@@ -7,7 +7,7 @@ import communications.ConnectionController;
 public class Main {
 
 	public static void main(String[] args) {
-		startAsteroidsController();
+		startAnimation();
 	}
 
 	@SuppressWarnings("unused")

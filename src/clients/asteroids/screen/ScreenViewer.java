@@ -42,7 +42,8 @@ public class ScreenViewer extends JFrame {
 		this.controller = controller;
 		this.msRefresh = msRefresh;
 		
-		setSize(600, 600);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
 		
 		shipList = new HashSet<>();
 		

@@ -14,7 +14,10 @@ package communications.frames;
  */
 public class PingAckFrame extends Frame {
 
-	private static final long serialVersionUID = -5514130143056617042L;
+	/**
+	 * The serialVersionUID for version control of serialized objects.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs a new {@code PingAckFrame} instance with the frame type set to

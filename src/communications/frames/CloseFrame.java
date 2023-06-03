@@ -13,7 +13,10 @@ package communications.frames;
 */
 public class CloseFrame extends Frame {
 
-	private static final long serialVersionUID = 1916770907617445458L;
+	/**
+	 * The serialVersionUID for version control of serialized objects.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
      * Constructs a new CloseFrame with no payload.

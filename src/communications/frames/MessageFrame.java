@@ -13,7 +13,10 @@ package communications.frames;
  */
 public class MessageFrame extends Frame {
 
-	private static final long serialVersionUID = -2062082288195104049L;
+	/**
+	 * The serialVersionUID for version control of serialized objects.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs a new {@code MessageFrame} instance with the frame type set to
