@@ -23,13 +23,14 @@ public class LobbyView extends JFrame implements ActionListener {
      * 
      */
     public LobbyView(LobbyController lobbyController) {
-        timer = new Timer(100, this);
+        timer = new Timer(50, this);
         this.lobbyController = lobbyController;
         viewer = new Viewer();
         setTitle("Lobby");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         addComponents();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -39,7 +40,8 @@ public class LobbyView extends JFrame implements ActionListener {
         super.paint(g);
         if (image != null) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(image, getHeight() / 2, y, rootPane);
+            int halfScreen = (getWidth() - image.getWidth(rootPane)) / 2;
+            g2d.drawImage(image, halfScreen, y, rootPane);
         }
     }
 
@@ -143,9 +145,9 @@ public class LobbyView extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        y = y - 100;
+        y = y - 50;
         update(getGraphics());
-        if (y == -1000) {
+        if (y == -200) {
             KillDemon();
         }
     }

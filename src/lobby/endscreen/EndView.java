@@ -23,6 +23,7 @@ public class EndView extends JFrame {
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         addComponents();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -41,5 +42,14 @@ public class EndView extends JFrame {
 
         this.setContentPane(background);
     }
+
+    public Viewer getViewer() {
+        return viewer;
+    }
+
+    public void setViewer(Viewer viewer) {
+        this.viewer = viewer;
+    }
+    
 
 }

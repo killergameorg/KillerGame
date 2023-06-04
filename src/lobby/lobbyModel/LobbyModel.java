@@ -1,11 +1,12 @@
 package lobby.lobbyModel;
 
 import java.lang.reflect.Field;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import lobby.LOBBYSECTION;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
-import lobby.Maps;
 
 public class LobbyModel {
 
@@ -52,7 +53,6 @@ public class LobbyModel {
                 minusGameRuleValue();
                 break;
         }
-
     }
 
     /** When activated, the following gamer rule will be selected */
@@ -82,29 +82,7 @@ public class LobbyModel {
      * enum will select previous
      */
     public void minusGameRuleValue() {
-        Field[] campos = this.getGameRules().getDinamicGameRule().getClass().getDeclaredFields();
-        if (this.selectedRule >= campos.length) {
-            this.lobbyController.startGame(gameRules);
-        } else {
-            Field atributo = campos[this.selectedRule];
-            atributo.setAccessible(true);
-            try {
-                if (atributo.getType() == int.class) {
-                    int value = atributo.getInt(this.getGameRules().getDinamicGameRule());
-                    if (value - 5 > 0) {
-                        atributo.setInt(this.getGameRules().getDinamicGameRule(), value - 5);
-                    }
-                } else if (atributo.getType().isEnum()) {
-                    Object[] enumValues = atributo.getType().getEnumConstants();
-                    Object valorEnum = atributo.get(this.getGameRules().getDinamicGameRule());
-                    int indexEnum = indexEnum(enumValues, valorEnum);
-                    int beforeEnumIndex = Math.floorMod((indexEnum - 1), enumValues.length);
-                    atributo.set(this.getGameRules().getDinamicGameRule(), enumValues[beforeEnumIndex]);
-                }
-            } catch (Exception e) {
-                System.out.println("error");
-            }
-        }
+        this.startGameOrChangeValueSelectedRule(false);
         // Update the view with the values
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
     }
@@ -114,31 +92,82 @@ public class LobbyModel {
      * enum will select next one
      */
     public void plusGameRuleValue() {
-        Field[] campos = this.getGameRules().getDinamicGameRule().getClass().getDeclaredFields();
-        if (this.selectedRule >= campos.length) {
-            this.lobbyController.startGame(gameRules);
-        } else {
-            Field atributo = campos[this.selectedRule];
-            atributo.setAccessible(true);
-            try {
-                if (atributo.getType() == int.class) {
-                    int value = atributo.getInt(this.getGameRules().getDinamicGameRule());
-                    if (value + 5 > 0) {
-                        atributo.setInt(this.getGameRules().getDinamicGameRule(), value + 5);
-                    }
-                } else if (atributo.getType().isEnum()) {
-                    Object[] enumValues = atributo.getType().getEnumConstants();
-                    Object valorEnum = atributo.get(this.getGameRules().getDinamicGameRule());
-                    int indexEnum = indexEnum(enumValues, valorEnum);
-                    int nextEnumIndex = Math.floorMod((indexEnum + 1), enumValues.length);
-                    atributo.set(this.getGameRules().getDinamicGameRule(), enumValues[nextEnumIndex]);
-                }
-            } catch (Exception e) {
-                System.out.println("error");
-            }
-        }
+        this.startGameOrChangeValueSelectedRule(true);
         // Update the view with the values
         lobbyController.getLobbyView().refreshMasterValues(this.gameRules);
+    }
+
+    /**
+     * If the selected rule is the last changeable rule, it starts the game.
+     * As easter egg if the damage is more or eaqual to life invoque demon
+     * If not change the value
+     * 
+     * @param plus
+     */
+    public void startGameOrChangeValueSelectedRule(boolean plus) {
+        if (this.selectedRule == this.numChangeableRule - 1) {
+            if (this.getGameRules().getDinamicGameRule().getLife() <= this.getGameRules().getDinamicGameRule()
+                    .getBulletDamage()) {
+                TimerTask animationTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        lobbyController.startGame(gameRules);
+                    }
+                };
+                this.lobbyController.getLobbyView().invoqueDemon();
+                Timer timer = new Timer();
+                timer.schedule(animationTask, 1500);
+            }else{
+                this.lobbyController.startGame(gameRules);
+            }
+        } else {
+            this.changeValueSelectedRule(plus);
+        }
+    }
+
+    /**
+     * Changes the value of the selected rule depending of the boolean.
+     * 
+     * In case you add more attribute of int or enum in class DinamicGameRule
+     * this method dont need to change, but you need to add a enum to LOBBYSECTION
+     * with exact same order as attribute of DinamicGameRule.
+     * 
+     * @param plus incicate to increment the value (true)
+     *             or decrement the value (false)
+     */
+    public void changeValueSelectedRule(boolean plus) {
+        DinamicGameRule dinamicGameRule = this.getGameRules().getDinamicGameRule();
+        Field[] campos = dinamicGameRule.getClass().getDeclaredFields();
+        Field atributo = campos[this.selectedRule];
+        atributo.setAccessible(true);
+        try {
+            // See what type of attribute is and plus of minus the value
+            if (atributo.getType() == int.class) {
+                int value = atributo.getInt(dinamicGameRule);
+                if (plus) {
+                    atributo.setInt(dinamicGameRule, value + 5);
+                } else {
+                    if (value - 5 > 0) {
+                        atributo.setInt(dinamicGameRule, value - 5);
+                    }
+                }
+            } else if (atributo.getType().isEnum()) {
+                Object[] enumValues = atributo.getType().getEnumConstants();
+                Object valorEnum = atributo.get(dinamicGameRule);
+                int indexEnum = indexEnum(enumValues, valorEnum);
+                int nextEnumIndex;
+                if (plus) {
+                    nextEnumIndex = (indexEnum + 1) % enumValues.length;
+                } else {
+                    nextEnumIndex = Math.floorMod((indexEnum - 1), enumValues.length);
+                }
+                atributo.set(dinamicGameRule, enumValues[nextEnumIndex]);
+            } // If adding a different type of attribute need to add other else if to check
+              // and do what you need
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+
     }
 
     private int indexEnum(Object[] array, Object enumObject) {

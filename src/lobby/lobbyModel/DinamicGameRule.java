@@ -5,6 +5,13 @@ import lobby.Maps;
 public class DinamicGameRule {
     // Atributos
     // Data that can be modified
+    /**
+     * If adding new attribute like int or enum you need to add a enum 
+     * inside of LOBBYSECTION with the exact order.
+     * 
+     * In case of adding new type of attribute you need to do the same and
+     * add an else if inside of method changeValueSelectedRule() on LobbyModel
+     */
     private int life;
     private int bulletDamage;
     private Maps map;
