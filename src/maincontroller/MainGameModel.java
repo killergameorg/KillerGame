@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import events.Action;
 import events.Colision;
 import events.ExplosionAction;
+import events.PointWinAction;
 import lobby.MasterOrder;
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.GameState;
+import maincontroller.gameinfo.Team;
 import maincontroller.maincommunications.MainGameCommunications;
 import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
 import maincontroller.maincommunications.mobiles.packages.PackageShipInfo;
@@ -33,6 +35,7 @@ public class MainGameModel {
     private NotificationsManager notificationsManager;
 
     private GameState gameState;
+    private ArrayList<Team> teams;
     private ArrayList<Account> accounts;
 
     // ! Constructor
@@ -144,6 +147,30 @@ public class MainGameModel {
 
         }
 
+    }
+
+    public void processActionPointWin(PointWinAction pointWinAction) {
+        pointWinAction.getTeam().setScore(
+                pointWinAction.getTeam().getScore() + 1
+
+        );
+
+        this.loadPointWinAction(pointWinAction);
+
+        this.sendFlood(pointWinAction);
+    }
+
+    public synchronized void loadPointWinAction(PointWinAction pointWinAction) {
+
+        boolean load = false;
+        int i = 0;
+        while (!load && i < this.getTeams().size()) {
+            if (this.getTeams().get(i).getTeamName() == pointWinAction.getTeam().getTeamName()) {
+                this.getTeams().get(i).setScore(pointWinAction.getTeam().getScore());
+                load = true;
+            }
+            i++;
+        }
     }
 
     // ! Linking Methods
@@ -315,6 +342,20 @@ public class MainGameModel {
      */
     public void setMainGameCommunications(MainGameCommunications mainGameCommunications) {
         this.mainGameCommunications = mainGameCommunications;
+    }
+
+    /**
+     * @return the teams
+     */
+    public ArrayList<Team> getTeams() {
+        return teams;
+    }
+
+    /**
+     * @param teams the teams to set
+     */
+    public void setTeams(ArrayList<Team> teams) {
+        this.teams = teams;
     }
 
 }

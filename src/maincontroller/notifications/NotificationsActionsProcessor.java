@@ -6,6 +6,7 @@ import events.Action;
 import events.ExplosionAction;
 import events.GameWinAction;
 import events.LifeDecreaseAction;
+import events.PointWinAction;
 import events.TeamActions;
 import events.VisualObjectAction;
 import visual.VisualObject;
@@ -112,9 +113,18 @@ public class NotificationsActionsProcessor {
      * @param teamActions The action to process
      */
     private void processActionTeam(TeamActions teamActions) {
-        if (teamActions instanceof GameWinAction) {
+
+        if (teamActions instanceof PointWinAction) {
+            this.processActionPointWin((PointWinAction) teamActions);
+
+        } else if (teamActions instanceof GameWinAction) {
             this.processActionGameWin((GameWinAction) teamActions);
         }
+    }
+
+    private void processActionPointWin(PointWinAction pointWinAction) {
+        this.getNotificationsManager().processActionPointWin(pointWinAction);
+
     }
 
     private void processActionGameWin(GameWinAction gameWinAction) {

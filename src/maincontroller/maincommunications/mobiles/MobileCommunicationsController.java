@@ -38,14 +38,14 @@ public class MobileCommunicationsController {
         } else if (packageMobileCommunications instanceof PackageShipMobile) {
             PackageShipMobile packageShipMobile = (PackageShipMobile) packageMobileCommunications;
 
-            if (
+            if (packageShipMobile.getMessage() instanceof PackageJoystick && (
 
-            (this.getGameState() == GameState.GAME &&
-                    packageShipMobile.getMessage() instanceof PackageJoystick) ||
+            this.getGameState() == GameState.LOBBY &&
+                    this.isMobileMaster(packageShipMobile.getAccountId()) ||
 
-                    (this.getGameState() == GameState.LOBBY &&
-                            this.isMobileMaster(packageShipMobile.getAccountId()) &&
-                            packageShipMobile.getMessage() instanceof PackageJoystick)
+                    this.getGameState() == GameState.GAME
+
+            )
 
             ) {
 
@@ -114,11 +114,13 @@ public class MobileCommunicationsController {
 
     private void searchAndSetMobile(PackageMobileSetAttributes packageMobileSetAttributes) {
 
-        for (int i = 0; i < this.getMobiles().size(); i++) {
+        boolean found = false;
+        int i = 0;
+
+        while (i < this.getMobiles().size() && !found) {
             Mobile mobile = this.getMobiles().get(i);
 
-            if (mobile.getIp() == packageMobileSetAttributes.getIp()) {
-
+            if (mobile.getIp().equals(packageMobileSetAttributes.getIp())) {
                 mobile.setAccount(new Account(
                         packageMobileSetAttributes.getId(),
                         packageMobileSetAttributes.isMaster(),
@@ -126,7 +128,10 @@ public class MobileCommunicationsController {
 
                 ));
 
+                found = true;
             }
+
+            i++;
         }
 
     }
