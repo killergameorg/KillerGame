@@ -1,5 +1,7 @@
 package maincontroller.maincommunications.packages;
 
-public interface PackageMainCommunications {
+import java.io.Serializable;
+
+public interface PackageMainCommunications extends Serializable {
 
 }
