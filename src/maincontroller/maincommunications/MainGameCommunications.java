@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import communications.ConnectionController;
 import communications.P2PCommListener;
+import events.Action;
+import events.PointWinAction;
 import lobby.lobbyModel.GameRules;
 import maincontroller.MainGameModel;
 import maincontroller.gameinfo.GameState;
@@ -120,36 +122,48 @@ public class MainGameCommunications implements P2PCommListener {
 
     @Override
     public void onIncomingMessage(String ip, Object message) {
+        if (message instanceof PackageMainCommunications) {
+            PackageMainCommunications packageMainCommunications = (PackageMainCommunications) message;
 
-        if (message instanceof PackageProccessKnowNewConnection) {
-            this.getKnowNewConnectionController().onIncomingMessage(
-                    ip,
-                    (PackageProccessKnowNewConnection) message
+            if (packageMainCommunications instanceof PackageProccessKnowNewConnection) {
+                this.getKnowNewConnectionController().onIncomingMessage(
+                        ip,
+                        (PackageProccessKnowNewConnection) packageMainCommunications
 
-            );
+                );
 
-        } else if (message instanceof PackageClusterCommunications) {
-            this.getClusterCommunicationsController().onIncomingMessage(
-                    ip,
-                    (PackageClusterCommunications) message
+            } else if (packageMainCommunications instanceof PackageClusterCommunications) {
+                this.getClusterCommunicationsController().onIncomingMessage(
+                        ip,
+                        (PackageClusterCommunications) packageMainCommunications
 
-            );
+                );
 
-        } else if (message instanceof PackageMobileCommunications) {
-            this.getMobileCommunicationsController().onIncomingMessage(
-                    ip,
-                    (PackageMobileCommunications) message
+            } else if (packageMainCommunications instanceof PackageMobileCommunications) {
+                this.getMobileCommunicationsController().onIncomingMessage(
+                        ip,
+                        (PackageMobileCommunications) packageMainCommunications
 
-            );
+                );
 
-        } else if (message instanceof PackageStartGame) {
-            this.setGameState(GameState.GAME);
+            } else if (packageMainCommunications instanceof PackageStartGame) {
+                this.setGameState(GameState.GAME);
 
-        } else if (message instanceof PackageRemoveConnection) {
-            this.removeConnection(((PackageRemoveConnection) message).getIp());
+            } else if (packageMainCommunications instanceof PackageRemoveConnection) {
+                this.removeConnection(((PackageRemoveConnection) packageMainCommunications).getIp());
+
+            } else if (packageMainCommunications instanceof Action) {
+                Action action = (Action) packageMainCommunications;
+                // TODO: Hacer una controladora para estas cosas
+                if (action instanceof PointWinAction) {
+                    PointWinAction pointWinAction = (PointWinAction) action;
+                    this.loadPointWinAction(pointWinAction);
+
+                }
+
+            }
 
         }
-
     }
 
     @Override
@@ -248,6 +262,10 @@ public class MainGameCommunications implements P2PCommListener {
 
     private void sendFloodRemoveConnection(String ip) {
         this.sendFlood(new PackageRemoveConnection(ip));
+    }
+
+    private void loadPointWinAction(PointWinAction pointWinAction) {
+        this.getMainGameModel().loadPointWinAction(pointWinAction);
     }
 
     // ! Getters and Setters

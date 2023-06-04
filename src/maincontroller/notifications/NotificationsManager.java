@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import events.Action;
 import events.ExplosionAction;
+import events.PointWinAction;
 import maincontroller.MainGameModel;
 import visual.NotificationMsg;
 import visual.NotificationType;
@@ -71,6 +72,10 @@ public class NotificationsManager {
 
     public void processActionExplosion(ExplosionAction explosionAction) {
         this.getMainGameModel().processActionExplosion(explosionAction);
+    }
+
+    public void processActionPointWin(PointWinAction pointWinAction) {
+        this.getMainGameModel().processActionPointWin(pointWinAction);
     }
 
     // ! Getters and Setters
