@@ -65,6 +65,7 @@ public class MainGameModel {
 
         this.setGameRules(gameRules);
 
+        this.setGameState(GameState.GAME);
         this.notifyAllStartGame(gameRules);
 
         // TODO: El equipo visual me tiene que indicar como quieren que les avise para
@@ -299,7 +300,7 @@ public class MainGameModel {
         this.gameState = gameState;
 
         // TODO: Aquí tendré que activar todo, tengo que preguntar al departamento
-        // visual como quiere que les llame
+        // TODO: visual como quiere que les llame
     }
 
     /**

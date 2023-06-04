@@ -1,8 +1,7 @@
 package maincontroller.maincommunications.mobiles.packages;
 
-import java.io.Serializable;
 
-public class PackageShipMobile implements PackageMobileCommunications, Serializable {
+public class PackageShipMobile implements PackageMobileCommunications {
     private static final long serialVersionUID = 9133567L;
 
     private int accountId;

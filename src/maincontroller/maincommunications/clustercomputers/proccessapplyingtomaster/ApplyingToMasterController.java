@@ -3,6 +3,7 @@ package maincontroller.maincommunications.clustercomputers.proccessapplyingtomas
 import java.util.HashMap;
 import java.util.Random;
 
+import maincontroller.gameinfo.GameState;
 import maincontroller.maincommunications.clustercomputers.ClusterCommunicationsController;
 import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.packages.PackageApplyingToMaster;
 
@@ -61,6 +62,8 @@ public class ApplyingToMasterController implements Runnable {
         } else {
             this.setSlave();
         }
+
+        this.setGameState(GameState.LOBBY);
 
     }
 
@@ -153,6 +156,10 @@ public class ApplyingToMasterController implements Runnable {
 
     private void setSlave() {
         this.getClusterCommunicationsController().setSlave();
+    }
+
+    private void setGameState(GameState gameState) {
+        this.getClusterCommunicationsController().setGameState(gameState);
     }
 
     // ! Getters and Setters
