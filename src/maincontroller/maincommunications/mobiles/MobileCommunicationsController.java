@@ -45,9 +45,7 @@ public class MobileCommunicationsController {
 
                     this.getGameState() == GameState.GAME
 
-            )
-
-            ) {
+            )) {
 
                 PackageJoystick packageJoystick = (PackageJoystick) packageShipMobile.getMessage();
 
@@ -138,17 +136,49 @@ public class MobileCommunicationsController {
 
     public boolean removeConnection(String ip) {
 
+        boolean masterRemoved = false;
         boolean removed = false;
         int i = 0;
         while (i < this.getMobiles().size() && !removed) {
-            if (this.getMobiles().get(i).getIp().equals(ip)) {
+            Mobile mobile = this.getMobiles().get(i);
+
+            if (mobile.getIp().equals(ip)) {
+
+                if (this.isMobileMaster(mobile.getAccount().getIdAccount()) &&
+                        this.getGameState() == GameState.LOBBY &&
+                        this.iAmMaster()
+
+                ) {
+                    masterRemoved = true;
+                }
+
                 this.getMobiles().remove(i);
                 removed = true;
             }
-            i++;
+        }
+        i++;
+
+        if (masterRemoved) {
+            this.searchNewMobileMaster();
         }
 
         return removed;
+
+    }
+
+    private void searchNewMobileMaster() {
+
+        if (this.getMobiles().size() > 0) {
+            Mobile mobile = this.getMobiles().get(0);
+            mobile.getAccount().setMaster(true);
+            this.setIdMobileMaster(mobile.getAccount().getIdAccount());
+
+            this.sendFloodMobile(mobile);
+
+        } else {
+            this.setIdMobileMaster(-1);
+        }
+
     }
 
     // ! Linking methods
@@ -178,6 +208,10 @@ public class MobileCommunicationsController {
 
     private void notifyJoystick(int idAccount, PackageJoystick packageJoystick) {
         this.getMainGameCommunications().notifyJoystick(idAccount, packageJoystick);
+    }
+
+    private boolean iAmMaster() {
+        return this.getMainGameCommunications().iAmMaster();
     }
 
     // ! Getters and Setters

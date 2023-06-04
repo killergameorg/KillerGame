@@ -2,6 +2,7 @@ package maincontroller.maincommunications.clustercomputers;
 
 import java.util.ArrayList;
 
+import maincontroller.gameinfo.GameState;
 import maincontroller.maincommunications.MainGameCommunications;
 import maincontroller.maincommunications.clustercomputers.packages.PackageClusterCommunications;
 import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.ApplyingToMasterController;
@@ -100,6 +101,10 @@ public class ClusterCommunicationsController {
 
     public void setSlave() {
         this.getMainGameCommunications().setSlave();
+    }
+
+    public void setGameState(GameState gameState) {
+        this.getMainGameCommunications().setGameState(gameState);
     }
 
     // ! Getters and Setters

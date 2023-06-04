@@ -16,7 +16,7 @@ import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
 import maincontroller.maincommunications.mobiles.packages.PackageMobileCommunications;
 import maincontroller.maincommunications.packages.PackageMainCommunications;
 import maincontroller.maincommunications.packages.PackageRemoveConnection;
-import maincontroller.maincommunications.packages.PackageStartGame;
+import maincontroller.maincommunications.packages.PackageGameState;
 import maincontroller.maincommunications.proccessknownewconnection.KnowNewConnectionController;
 import maincontroller.maincommunications.proccessknownewconnection.packages.PackageProccessKnowNewConnection;
 import maincontroller.maincommunications.soundserver.SoundServerConnectionController;
@@ -88,7 +88,7 @@ public class MainGameCommunications implements P2PCommListener {
     }
 
     public void notifyAllStartGame(GameRules gameRules) {
-        this.sendFlood(new PackageStartGame(gameRules));
+        this.sendFlood(new PackageGameState(GameState.GAME, gameRules));
     }
 
     private void removeConnection(String ip) {
@@ -146,8 +146,12 @@ public class MainGameCommunications implements P2PCommListener {
 
                 );
 
-            } else if (packageMainCommunications instanceof PackageStartGame) {
-                this.setGameState(GameState.GAME);
+            } else if (packageMainCommunications instanceof PackageGameState) {
+                PackageGameState packageGameState = (PackageGameState) packageMainCommunications;
+
+                if (packageGameState.getGameState() == GameState.GAME) {
+                    this.setGameState(GameState.GAME);
+                }
 
             } else if (packageMainCommunications instanceof PackageRemoveConnection) {
                 this.removeConnection(((PackageRemoveConnection) packageMainCommunications).getIp());
@@ -244,7 +248,7 @@ public class MainGameCommunications implements P2PCommListener {
         return this.getMainGameModel().iAmMaster();
     }
 
-    private void setGameState(GameState gameState) {
+    public void setGameState(GameState gameState) {
         this.getMainGameModel().setGameState(gameState);
     }
 
