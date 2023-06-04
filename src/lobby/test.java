@@ -17,6 +17,7 @@ public class test {
         lobbyController.setLobbyView(lobbyView);
         LobbyModel lobbyModel = new LobbyModel(lobbyController);
         lobbyController.setLobbyModel(lobbyModel);
+        // lobbyController.startEndView(150, 5);
 
         lobbyView.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
@@ -40,6 +41,6 @@ public class test {
                 }
             }
         });
-
+        
     }
 }

@@ -2,6 +2,7 @@ package lobby.lobbyController;
 
 import lobby.MasterOrder;
 import lobby.MasterStatus;
+import lobby.endscreen.EndView;
 import lobby.lobbyModel.GameRules;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
@@ -14,12 +15,13 @@ public class LobbyController {
     private MasterStatus status;
     private LobbyView lobbyView;
     private LobbyModel lobbyModel;
+    private EndView endView;
 
     // Constructor
     // When created, it asks the maincontroller to apply the master
     public LobbyController() {
-        // this.mainGameController.applyingToMaster();
-        // this.status = MasterStatus.ApplyingToMaster;
+        this.mainGameController.applyingToMaster();
+        this.status = MasterStatus.ApplyingToMaster;
     }
 
     // Metodos
@@ -28,6 +30,9 @@ public class LobbyController {
      * The object view and lobbymodel are created.
      */
     public void startLobby() {
+        if (endView != null) {
+            this.endView.dispose();
+        }
         LobbyView lobbyView = new LobbyView(this);
         this.setLobbyView(lobbyView);
         LobbyModel lobbyModel = new LobbyModel(this);
@@ -53,8 +58,8 @@ public class LobbyController {
      * @param gameRules
      */
     public void startGame(GameRules gameRules) {
-        this.mainGameController.startGame(gameRules);
         this.lobbyView.dispose();
+        this.mainGameController.startGame(gameRules);
     }
 
     /**
@@ -78,6 +83,13 @@ public class LobbyController {
 
     public void setMaster() {
         this.status = MasterStatus.LobbyMaster;
+    }
+
+    public void startEndView(int team1Score, int team2Score) {
+        EndView endView = new EndView();
+        endView.getViewer().getTeam1Score().setText(String.valueOf(team1Score));
+        endView.getViewer().getTeam2Score().setText(String.valueOf(team2Score));
+        this.setEndView(endView);
     }
 
     // Getter y Setters
@@ -111,6 +123,14 @@ public class LobbyController {
 
     public void setMainGameController(MainGameController mainGameController) {
         this.mainGameController = mainGameController;
+    }
+
+    public EndView getEndView() {
+        return endView;
+    }
+
+    public void setEndView(EndView endView) {
+        this.endView = endView;
     }
 
 }
