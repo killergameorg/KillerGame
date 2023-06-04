@@ -92,10 +92,6 @@ public class KnowNewConnectionController {
                 if (this.iAmMaster()) {
                     this.addMobileInLobbyMaster(ip);
 
-                    // TODO: Aquí ya estoy en el Lobby Master, tendré que settear el ID de la
-                    // TODO: Account y hacer un Float con el, tanto el móvil como el PC que tenga la
-                    // TODO: account tienen que recibir ese mensaje y guardarlo como atributo
-
                 } else {
                     this.addMobile(ip);
                     this.sendFlood(new PackageSendNewMobileToLobbyMaster(ip));
