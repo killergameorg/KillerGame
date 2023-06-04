@@ -298,9 +298,6 @@ public class MainGameModel {
      */
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
-
-        // TODO: Aquí tendré que activar todo, tengo que preguntar al departamento
-        // TODO: visual como quiere que les llame
     }
 
     /**

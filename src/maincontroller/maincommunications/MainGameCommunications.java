@@ -149,8 +149,18 @@ public class MainGameCommunications implements P2PCommListener {
             } else if (packageMainCommunications instanceof PackageGameState) {
                 PackageGameState packageGameState = (PackageGameState) packageMainCommunications;
 
-                if (packageGameState.getGameState() == GameState.GAME) {
+                if (packageGameState.getGameState() == GameState.UNDEFINED) {
+                    this.setGameState(GameState.UNDEFINED);
+
+                } else if (packageGameState.getGameState() == GameState.LOBBY) {
+                    this.setGameState(GameState.LOBBY);
+
+                } else if (packageGameState.getGameState() == GameState.GAME) {
                     this.setGameState(GameState.GAME);
+
+                } else if (packageGameState.getGameState() == GameState.GAME_END) {
+                    this.setGameState(GameState.GAME_END);
+
                 }
 
             } else if (packageMainCommunications instanceof PackageRemoveConnection) {

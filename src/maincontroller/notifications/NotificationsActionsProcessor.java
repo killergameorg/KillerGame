@@ -25,8 +25,6 @@ public class NotificationsActionsProcessor {
      * @throws Exception
      */
     public void processActions(ArrayList<Action> actions) throws Exception {
-        // TODO: Me molaría ponerme con Juan para ver todas las Acciones resultantes y
-        // TODO: que cree que podría saltar por ello (Sonidos, efectos, etc)
 
         for (int i = 0; i < actions.size(); i++) {
             Action action = actions.get(i);
@@ -124,7 +122,6 @@ public class NotificationsActionsProcessor {
 
     private void processActionPointWin(PointWinAction pointWinAction) {
         this.getNotificationsManager().processActionPointWin(pointWinAction);
-
     }
 
     private void processActionGameWin(GameWinAction gameWinAction) {
