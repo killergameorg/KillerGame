@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 
 public class VisualGameView extends JFrame implements Runnable {

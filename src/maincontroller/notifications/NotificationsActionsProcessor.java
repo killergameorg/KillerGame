@@ -91,7 +91,7 @@ public class NotificationsActionsProcessor {
      * @param lifeDowngrade The amount of life to decrease from the visual object
      * @throws Exception
      */
-    private void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
+    private void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) throws Exception {
         this.getNotificationsManager().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 

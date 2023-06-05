@@ -1,5 +1,7 @@
 package visual;
 
+import java.util.ArrayList;
+
 import maincontroller.MainGameController;
 import maincontroller.gameinfo.Team;
 
@@ -51,10 +53,14 @@ public class VisualGameController {
         return assetsManager;
     }
 
+    public ArrayList<VisualObject> getVisualObjectsList() {
+        return visualGameModel.getVisualObjectsList();
+    }
+
     // * Methods
 
     public void notifyToMGC(NotificationMsg notificationMsg) {
-        // todo
+        this.getMainGameController().notifyMessage(notificationMsg);
     }
 
     public void moveObject(VisualObject visualObject) {
@@ -83,6 +89,10 @@ public class VisualGameController {
 
     public SpaceShip createSpaceship(int accountId, Team team) {
         return visualGameModel.createSpaceship(accountId, team);
+    }
+
+    public void removeVisualObject(VisualObject visualObject) {
+        this.getVisualGameModel().removeFromVisualObjectList(visualObject);
     }
 
     // ! Method for manage spaceships between screens

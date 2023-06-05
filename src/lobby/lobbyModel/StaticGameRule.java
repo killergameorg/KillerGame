@@ -1,5 +1,9 @@
 package lobby.lobbyModel;
 
+import java.util.HashMap;
+
+import maincontroller.gameinfo.TeamName;
+
 public class StaticGameRule {
     // Static data
     // Data that can't be modified
@@ -15,6 +19,8 @@ public class StaticGameRule {
     private double acc;
     private double increaseSpeed;
     private double maxSpeed;
+    private float colisionDamage;
+    private HashMap<TeamName, Integer> winScore;
 
     // Contructor
     public StaticGameRule() {
@@ -128,5 +134,35 @@ public class StaticGameRule {
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
+
+    /**
+     * @return the winScore
+     */
+    public HashMap<TeamName, Integer> getWinScore() {
+        return winScore;
+    }
+
+    /**
+     * @param winScore the winScore to set
+     */
+    public void setWinScore(HashMap<TeamName, Integer> winScore) {
+        this.winScore = winScore;
+    }
+
+    /**
+     * @return the colisionDamage
+     */
+    public float getColisionDamage() {
+        return colisionDamage;
+    }
+
+    /**
+     * @param colisionDamage the colisionDamage to set
+     */
+    public void setColisionDamage(float colisionDamage) {
+        this.colisionDamage = colisionDamage;
+    }
+
+    
 
 }

@@ -4,7 +4,6 @@ package lobby;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import lobby.endscreen.*;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;

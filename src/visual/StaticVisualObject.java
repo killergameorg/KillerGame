@@ -2,12 +2,14 @@ package visual;
 
 import java.awt.image.BufferedImage;
 
+import maincontroller.gameinfo.Team;
+
 public class StaticVisualObject extends VisualObject{
     // * Constructor
 
     public StaticVisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-    VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double angle) {
-        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, angle);
+    VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double angle, Team team) {
+        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, angle,team);
     }
 
     // * Methods

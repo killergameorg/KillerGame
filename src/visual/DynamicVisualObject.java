@@ -3,9 +3,6 @@ package visual;
 import java.awt.geom.AffineTransform;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
-import visual.Direction;
-import visual.VisualObject;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import maincontroller.gameinfo.Team;
 
@@ -17,7 +14,7 @@ public abstract class DynamicVisualObject extends VisualObject {
     // * Constructor
 
     public DynamicVisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, Team team
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, Team team,
             double velocity, double angle) {
         super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, angle, team);
         this.velocity = velocity;

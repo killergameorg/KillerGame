@@ -25,7 +25,7 @@ import maincontroller.maincommunications.typesofconnections.Mobile;
 import maincontroller.notifications.NotificationsManager;
 import visual.Direction;
 import visual.Position;
-import visual.Ship;
+import visual.SpaceShip;
 import visual.VisualObject;
 
 public class MainGameModel {
@@ -84,8 +84,8 @@ public class MainGameModel {
             }
         }
 
-        gameRules.getWinScore().put(TeamName.RED, winScoreRedTeam);
-        gameRules.getWinScore().put(TeamName.BLUE, winScoreBlueTeam);
+        gameRules.getStaticGameRule().getWinScore().put(TeamName.RED, winScoreRedTeam);
+        gameRules.getStaticGameRule().getWinScore().put(TeamName.BLUE, winScoreBlueTeam);
 
         // TODO: Refactorizar hasta aqui
 
@@ -94,14 +94,23 @@ public class MainGameModel {
         this.setGameState(GameState.GAME);
         this.notifyAllStartGame(gameRules);
 
-        // TODO: El equipo visual me tiene que indicar como quieren que les avise para
-        // TODO: que se muestre su Frame
+        // * Notify to VisualGameController
+        this.setVisualGameController();
+        for (int i = 0; i < this.getAccounts().size(); i++) {
+            Account account = this.getAccounts().get(i);
+            this.createVisualObjectControllableSpaceShip(
+                    account.getIdAccount(),
+                    account.getTeam()
+
+            );
+        }
+
     }
 
-    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
+    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) throws Exception {
 
-        if (visualObject instanceof Ship) {
-            Ship ship = (Ship) visualObject;
+        if (visualObject instanceof SpaceShip) {
+            SpaceShip ship = (SpaceShip) visualObject;
 
             this.sendFlood(
                     new PackageShipMobile(
@@ -336,6 +345,15 @@ public class MainGameModel {
 
     public void addVisualObject(VisualObject visualObject, Position newPositionVisualObject) {
         this.getMainGameController().addVisualObject(visualObject, newPositionVisualObject);
+    }
+
+
+    private void setVisualGameController() {
+        this.getMainGameController().setVisualGameController();
+    }
+
+    private void createVisualObjectControllableSpaceShip(int accountId, Team team) {
+        this.getMainGameController().createVisualObjectControllableSpaceShip(accountId, team);
     }
 
     // ! Getters and Setters

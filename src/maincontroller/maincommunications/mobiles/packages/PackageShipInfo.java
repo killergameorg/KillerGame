@@ -7,15 +7,15 @@ import maincontroller.gameinfo.Team;
 public class PackageShipInfo implements Serializable {
     private static final long serialVersionUID = 2753167L;
 
-    private int life;
+    private float life;
     private Team team;
 
-    public PackageShipInfo(int life, Team team) {
+    public PackageShipInfo(float life, Team team) {
         this.life = life;
         this.team = team;
     }
 
-    public int getLife() {
+    public float getLife() {
         return life;
     }
 
