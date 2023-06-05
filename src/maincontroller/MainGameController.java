@@ -11,6 +11,8 @@ import events.ExplosionAction;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 import visual.Ship;
 import visual.Direction;
 import visual.Maps;
@@ -19,8 +21,14 @@ import visual.Position;
 import visual.VisualGameController;
 import visual.VisualObject;
 
+// TODO: Para mañana:
+/*
+ * - Revisar que se tendrá que hacer en el proceso de pasar del Lobby al Game, en que momento se crean los Spaceships?
+ * - Revisar que se tendrá que hacer en el proceso de pasar del Game al EndGame.
+ * - Revisar con Juan lo que le he escrito por Whats.
+ */
+
 public class MainGameController {
-    // TODO: Ordenar todos los métodos según sus departamentos
 
     // ! Attributes
     private MainGameModel mainGameModel;
@@ -35,7 +43,7 @@ public class MainGameController {
         this.setMainGameModel(new MainGameModel(this, pathConfigurationFile));
 
         this.setLobbyController(new LobbyController());
-        this.setEventsGameController(new EventsGameController());
+        this.setEventsGameController(new EventsGameController(this));
         this.setVisualGameController(new VisualGameController(this));
 
     }
@@ -53,19 +61,15 @@ public class MainGameController {
     // ! LobbyGame
 
     public void applyingToMaster() {
-        this.tryApplyingToMaster();
-    }
-
-    private void tryApplyingToMaster() {
         this.getMainGameModel().tryApplyingToMaster();
-    }
-
-    public void setSlave() {
-        this.getLobbyController().setSlave();
     }
 
     public void setMaster() {
         this.getLobbyController().setMaster();
+    }
+
+    public void setSlave() {
+        this.getLobbyController().setSlave();
     }
 
     public void startLobby() {
@@ -74,10 +78,6 @@ public class MainGameController {
 
     public void sendMessageToLobby(MasterOrder order) {
         this.getLobbyController().reciveMasterMsg(order);
-    }
-
-    public void sendPlayerCountToLobby(int playerCount) {
-        this.getLobbyController().setPlayerCount(playerCount);
     }
 
     public void startGame(GameRules gameRules) {
@@ -91,6 +91,14 @@ public class MainGameController {
     public boolean iAmMaster() {
         return this.getLobbyController().iAmMaster();
     }
+
+
+    // ! Events
+    public Team contraryTeam(TeamName teamName) {
+        return this.getMainGameModel().contraryTeam(teamName);
+    }
+
+
 
     // ! VisualGame
 
@@ -128,8 +136,8 @@ public class MainGameController {
      * @param visualObject The visual object to add to the game
      * @param position     The position where the visual object will be added
      */
-    public void addVisualObject(VisualObject visualObject, Position position) {
-        this.getVisualGameController().addVisualObject(visualObject, position);
+    public void addVisualObject(VisualObject visualObject, Position newPositionVisualObject) {
+        this.getVisualGameController().addVisualObject(visualObject, newPositionVisualObject);
     }
 
     /**
@@ -209,6 +217,10 @@ public class MainGameController {
         this.killVisualObject(explosionAction.getVisualObject());
     }
 
+    public void removeVisualObject(VisualObject visualObject) {
+        this.getVisualGameController().removeVisualObject(visualObject);
+    }
+
     // ! EventsGame
     public void setGameRules(GameRules gameRules) {
         this.getEventsGameController().setGameRules(gameRules);
@@ -222,18 +234,8 @@ public class MainGameController {
         return this.getEventsGameController().getMap();
     }
 
-    // TODO: Mirar de hacerlo en el Modelo o en otro sitio
     private VisualObject getVisualObjectById(int id) {
-        ArrayList<VisualObject> visualObjects = this.getVisualObjects();
-        VisualObject visualObject = null;
-        int i = 0;
-        while (visualObject != null && i < visualObjects.size()) {
-            if (visualObjects.get(i).getAccountId() == id) {
-                visualObject = visualObjects.get(i);
-            }
-            i++;
-        }
-        return visualObject;
+        return this.getMainGameModel().getVisualObjectById(id);
     }
 
     // ! Getters and Setters

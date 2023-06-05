@@ -106,11 +106,10 @@ public class KnowNewConnectionController {
 
             PackageSendClusterAttributes packageSendClusterAttributes = (PackageSendClusterAttributes) message;
 
-            this.addClusterComputer(
-                    packageSendClusterAttributes.getId(),
-                    ip
+            int idNewCluster = packageSendClusterAttributes.getId();
 
-            );
+            this.addClusterComputer(idNewCluster, ip);
+            this.loadIdClusterDirection(idNewCluster);
 
             this.getKnownConnections().remove(ip);
 
@@ -162,6 +161,10 @@ public class KnowNewConnectionController {
 
     public boolean removeConnection(String ip) {
         return this.getKnownConnections().remove(ip);
+    }
+
+    private void loadIdClusterDirection(int idNewCluster) {
+        this.getMainGameCommunications().loadIdClusterDirection(idNewCluster);
     }
 
     // ! Getters and Setters

@@ -3,14 +3,29 @@ package events;
 import java.util.ArrayList;
 
 import lobby.lobbyModel.GameRules;
+import maincontroller.MainGameController;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 import visual.Maps;
 
 public class EventsGameController {
+    
+    private MainGameController mainGameController;
     private EventsModel eventsModel;
+    
 
-    public EventsGameController(){
-        this.eventsModel = new EventsModel();
+    public EventsGameController(MainGameController mainGameController){
+        this.mainGameController = mainGameController;
+        this.eventsModel = new EventsModel(this);
     }
+
+
+
+
+    public Team contraryTeam(TeamName teamName) {
+        return this.mainGameController.contraryTeam(teamName);
+    }
+
 
     /*
      * @param gameRules : The game rules defined at the lobby

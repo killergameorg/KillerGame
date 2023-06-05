@@ -6,6 +6,7 @@ import events.Action;
 import events.ExplosionAction;
 import events.GameWinAction;
 import events.LifeDecreaseAction;
+import events.MoveWindowVisualObjectAction;
 import events.PointWinAction;
 import events.TeamActions;
 import events.VisualObjectAction;
@@ -50,10 +51,15 @@ public class NotificationsActionsProcessor {
 
         if (visualObjectAction instanceof LifeDecreaseAction) {
             this.processActionLifeDecrease((LifeDecreaseAction) visualObjectAction);
+
         } else if (visualObjectAction instanceof ExplosionAction) {
             this.processActionExplosion((ExplosionAction) visualObjectAction);
+            canMove = false;
 
-            canMove = false; // The object can't move
+        } else if (visualObjectAction instanceof MoveWindowVisualObjectAction) {
+            this.processActionMoveWindowVisualObject((MoveWindowVisualObjectAction) visualObjectAction);
+            canMove = false;
+
         }
 
         if (canMove) {
@@ -97,6 +103,11 @@ public class NotificationsActionsProcessor {
     private void processActionExplosion(ExplosionAction explosionAction) {
         // TODO: Ask to the visual department about the kill visual object
         this.getNotificationsManager().processActionExplosion(explosionAction);
+    }
+
+    private void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getNotificationsManager().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
+
     }
 
     private void updateVisualObjectPosition(VisualObject visualObject) {

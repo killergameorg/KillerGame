@@ -7,7 +7,6 @@ public class Team implements Serializable {
 
     // ! Attributes
 
-    // TODO: Cuando se creen los 2 Teams entiendo que el el modelo, se deberá añadir al HashMap
     private static HashMap<Team, Integer> accountsForTeams = new HashMap<Team, Integer>();
 
     private TeamName teamName;
