@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import communications.ConnectionController;
 import communications.P2PCommListener;
 import events.Action;
+import events.MoveWindowVisualObjectAction;
 import events.PointWinAction;
 import lobby.lobbyModel.GameRules;
 import maincontroller.MainGameModel;
@@ -22,6 +23,8 @@ import maincontroller.maincommunications.proccessknownewconnection.packages.Pack
 import maincontroller.maincommunications.soundserver.SoundServerConnectionController;
 import maincontroller.maincommunications.soundserver.packages.MusicType;
 import maincontroller.maincommunications.soundserver.packages.SoundType;
+import visual.Position;
+import visual.VisualObject;
 
 public class MainGameCommunications implements P2PCommListener {
 
@@ -156,6 +159,7 @@ public class MainGameCommunications implements P2PCommListener {
                     this.setGameState(GameState.LOBBY);
 
                 } else if (packageGameState.getGameState() == GameState.GAME) {
+                    this.setGameRules(packageGameState.getGameRules());
                     this.setGameState(GameState.GAME);
 
                 } else if (packageGameState.getGameState() == GameState.GAME_END) {
@@ -280,6 +284,30 @@ public class MainGameCommunications implements P2PCommListener {
 
     private void loadPointWinAction(PointWinAction pointWinAction) {
         this.getMainGameModel().loadPointWinAction(pointWinAction);
+    }
+
+    public void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getClusterCommunicationsController().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
+    }
+
+    public void killVisualObject(VisualObject visualObject) {
+        this.getMainGameModel().killVisualObject(visualObject);
+    }
+
+    public void removeVisualObject(VisualObject visualObject) {
+        this.getMainGameModel().removeVisualObject(visualObject);
+    }
+
+    public void addVisualObject(VisualObject visualObject, Position newPositionVisualObject) {
+        this.getMainGameModel().addVisualObject(visualObject, newPositionVisualObject);
+    }
+
+    public void loadIdClusterDirection(int idNewCluster) {
+        this.getClusterCommunicationsController().loadIdClusterDirection(idNewCluster);
+    }
+
+    public void setGameRules(GameRules gameRules) {
+        this.getMainGameModel().setGameRules(gameRules);
     }
 
     // ! Getters and Setters

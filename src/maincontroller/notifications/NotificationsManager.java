@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import events.Action;
 import events.ExplosionAction;
+import events.MoveWindowVisualObjectAction;
 import events.PointWinAction;
 import maincontroller.MainGameModel;
 import visual.NotificationMsg;
@@ -72,6 +73,10 @@ public class NotificationsManager {
 
     public void processActionExplosion(ExplosionAction explosionAction) {
         this.getMainGameModel().processActionExplosion(explosionAction);
+    }
+
+    public void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getMainGameModel().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
     }
 
     public void processActionPointWin(PointWinAction pointWinAction) {

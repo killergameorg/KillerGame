@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 import maincontroller.gameinfo.GameState;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 import maincontroller.maincommunications.clustercomputers.ClusterCommunicationsController;
 import maincontroller.maincommunications.clustercomputers.proccessapplyingtomaster.packages.PackageApplyingToMaster;
 
@@ -57,6 +59,7 @@ public class ApplyingToMasterController implements Runnable {
 
         if (idMaster == this.getMyId()) {
             this.setMaster();
+            this.createTeams();
             this.startLobby();
 
         } else {
@@ -133,6 +136,17 @@ public class ApplyingToMasterController implements Runnable {
         return idMaster;
     }
 
+    private void createTeams() {
+        for (int i = 0; i < TeamName.values().length; i++) {
+            Team.getAccountsForTeams().put(
+                    new Team(TeamName.values()[i]),
+                    0
+
+            );
+
+        }
+    }
+
     // ! Linking Methods
 
     private void sendFlood(PackageApplyingToMaster packageApplyingToMaster) {
@@ -146,16 +160,16 @@ public class ApplyingToMasterController implements Runnable {
         return this.getClusterCommunicationsController().getMyId();
     }
 
-    private void startLobby() {
-        this.getClusterCommunicationsController().startLobby();
-    }
-
     private void setMaster() {
         this.getClusterCommunicationsController().setMaster();
     }
 
     private void setSlave() {
         this.getClusterCommunicationsController().setSlave();
+    }
+
+    private void startLobby() {
+        this.getClusterCommunicationsController().startLobby();
     }
 
     private void setGameState(GameState gameState) {

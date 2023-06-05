@@ -7,20 +7,24 @@ import java.util.ArrayList;
 import events.Action;
 import events.Colision;
 import events.ExplosionAction;
+import events.MoveWindowVisualObjectAction;
 import events.PointWinAction;
 import lobby.MasterOrder;
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Account;
 import maincontroller.gameinfo.GameState;
 import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 import maincontroller.maincommunications.MainGameCommunications;
 import maincontroller.maincommunications.mobiles.packages.PackageJoystick;
 import maincontroller.maincommunications.mobiles.packages.PackageShipInfo;
 import maincontroller.maincommunications.mobiles.packages.PackageShipMobile;
 import maincontroller.maincommunications.packages.PackageMainCommunications;
 import maincontroller.maincommunications.soundserver.packages.SoundType;
+import maincontroller.maincommunications.typesofconnections.Mobile;
 import maincontroller.notifications.NotificationsManager;
 import visual.Direction;
+import visual.Position;
 import visual.Ship;
 import visual.VisualObject;
 
@@ -62,6 +66,28 @@ public class MainGameModel {
 
     // ! Methods
     public void startGame(GameRules gameRules) {
+
+        // TODO: Refactorizar todo esto
+        ArrayList<Mobile> mobiles = this.getMainGameCommunications().getMobileCommunicationsController().getMobiles();
+
+        int winScoreBlueTeam = 0;
+        for (int i = 0; i < mobiles.size(); i++) {
+            if (mobiles.get(i).getAccount().getTeam().getTeamName() == TeamName.RED) {
+                winScoreBlueTeam++;
+            }
+        }
+
+        int winScoreRedTeam = 0;
+        for (int i = 0; i < mobiles.size(); i++) {
+            if (mobiles.get(i).getAccount().getTeam().getTeamName() == TeamName.BLUE) {
+                winScoreRedTeam++;
+            }
+        }
+
+        gameRules.getWinScore().put(TeamName.RED, winScoreRedTeam);
+        gameRules.getWinScore().put(TeamName.BLUE, winScoreBlueTeam);
+
+        // TODO: Refactorizar hasta aqui
 
         this.setGameRules(gameRules);
 
@@ -174,11 +200,54 @@ public class MainGameModel {
         }
     }
 
+    public VisualObject getVisualObjectById(int id) {
+        ArrayList<VisualObject> visualObjects = this.getVisualObjects();
+        VisualObject visualObject = null;
+        int i = 0;
+        while (visualObject != null && i < visualObjects.size()) {
+            if (visualObjects.get(i).getAccountId() == id) {
+                visualObject = visualObjects.get(i);
+            }
+            i++;
+        }
+        return visualObject;
+    }
+
+    public Team contraryTeam(TeamName teamName) {
+        this.getTeams();
+
+        TeamName contraryTeamName = null;
+
+        if (teamName == TeamName.BLUE) {
+            contraryTeamName = TeamName.RED;
+        } else if (teamName == TeamName.RED) {
+            contraryTeamName = TeamName.BLUE;
+        }
+
+        Team team = null;
+
+        boolean found = false;
+        int i = 0;
+        while (!found && i < this.getTeams().size()) {
+            if (this.getTeams().get(i).getTeamName() == contraryTeamName) {
+                team = this.getTeams().get(i);
+            }
+            i++;
+        }
+
+        return team;
+    }
+
     // ! Linking Methods
 
     public void processActionExplosion(ExplosionAction explosionAction) {
         this.playSound(SoundType.EXPLOSION);
         this.getMainGameController().processActionExplosion(explosionAction);
+    }
+
+    public void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getMainGameCommunications().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
+
     }
 
     public void setGameRules(GameRules gameRules) {
@@ -255,6 +324,18 @@ public class MainGameModel {
 
     public int getTimeToWaitForVotesFromConfig() {
         return this.getConfigurationFileController().getTimeToWaitForVotesFromConfig();
+    }
+
+    public void killVisualObject(VisualObject visualObject) {
+        this.getMainGameController().killVisualObject(visualObject);
+    }
+
+    public void removeVisualObject(VisualObject visualObject) {
+        this.getMainGameController().removeVisualObject(visualObject);
+    }
+
+    public void addVisualObject(VisualObject visualObject, Position newPositionVisualObject) {
+        this.getMainGameController().addVisualObject(visualObject, newPositionVisualObject);
     }
 
     // ! Getters and Setters

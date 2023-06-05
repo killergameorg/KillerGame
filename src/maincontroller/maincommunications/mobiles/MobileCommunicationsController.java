@@ -77,8 +77,6 @@ public class MobileCommunicationsController {
 
         );
 
-        // TODO: Tengo que avisar al departamento de móvil que les llegará este objeto,
-        // TODO: tienen que comprobar si es su misma IP
         this.sendFlood(packageMobileSetAttributes);
 
     }
