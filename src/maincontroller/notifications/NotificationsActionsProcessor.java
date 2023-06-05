@@ -6,6 +6,8 @@ import events.Action;
 import events.ExplosionAction;
 import events.GameWinAction;
 import events.LifeDecreaseAction;
+import events.MoveWindowVisualObjectAction;
+import events.PointWinAction;
 import events.TeamActions;
 import events.VisualObjectAction;
 import visual.VisualObject;
@@ -21,8 +23,9 @@ public class NotificationsActionsProcessor {
      * Process a list of actions to execute
      * 
      * @param actions The list of actions to execute
+     * @throws Exception
      */
-    public void processActions(ArrayList<Action> actions) {
+    public void processActions(ArrayList<Action> actions) throws Exception {
 
         for (int i = 0; i < actions.size(); i++) {
             Action action = actions.get(i);
@@ -41,16 +44,22 @@ public class NotificationsActionsProcessor {
      * Process an action of a visual object (life decrease, explosion, etc)
      * 
      * @param visualObjectsActions The action to process
+     * @throws Exception
      */
-    private void processActionVisualObject(VisualObjectAction visualObjectAction) {
+    private void processActionVisualObject(VisualObjectAction visualObjectAction) throws Exception {
         boolean canMove = true;
 
         if (visualObjectAction instanceof LifeDecreaseAction) {
             this.processActionLifeDecrease((LifeDecreaseAction) visualObjectAction);
+
         } else if (visualObjectAction instanceof ExplosionAction) {
             this.processActionExplosion((ExplosionAction) visualObjectAction);
+            canMove = false;
 
-            canMove = false; // The object can't move
+        } else if (visualObjectAction instanceof MoveWindowVisualObjectAction) {
+            this.processActionMoveWindowVisualObject((MoveWindowVisualObjectAction) visualObjectAction);
+            canMove = false;
+
         }
 
         if (canMove) {
@@ -62,8 +71,12 @@ public class NotificationsActionsProcessor {
      * Process an action of life decrease of a visual object
      * 
      * @param lifeDecreaseAction The action to process
+     * @throws Exception
      */
-    private void processActionLifeDecrease(LifeDecreaseAction lifeDecreaseAction) {
+    private void processActionLifeDecrease(LifeDecreaseAction lifeDecreaseAction) throws Exception {
+
+        // TODO: Sonido que no existe y podría molar this.playSound(SoundType.???)
+
         this.decreaseLifeVisualObject(
                 lifeDecreaseAction.getVisualObject(),
                 lifeDecreaseAction.getLifeDowngrade()
@@ -76,8 +89,9 @@ public class NotificationsActionsProcessor {
      * 
      * @param visualObject  The visual object to decrease the life
      * @param lifeDowngrade The amount of life to decrease from the visual object
+     * @throws Exception
      */
-    private void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    private void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) throws Exception {
         this.getNotificationsManager().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 
@@ -89,6 +103,11 @@ public class NotificationsActionsProcessor {
     private void processActionExplosion(ExplosionAction explosionAction) {
         // TODO: Ask to the visual department about the kill visual object
         this.getNotificationsManager().processActionExplosion(explosionAction);
+    }
+
+    private void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getNotificationsManager().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
+
     }
 
     private void updateVisualObjectPosition(VisualObject visualObject) {
@@ -103,9 +122,17 @@ public class NotificationsActionsProcessor {
      * @param teamActions The action to process
      */
     private void processActionTeam(TeamActions teamActions) {
-        if (teamActions instanceof GameWinAction) {
+
+        if (teamActions instanceof PointWinAction) {
+            this.processActionPointWin((PointWinAction) teamActions);
+
+        } else if (teamActions instanceof GameWinAction) {
             this.processActionGameWin((GameWinAction) teamActions);
         }
+    }
+
+    private void processActionPointWin(PointWinAction pointWinAction) {
+        this.getNotificationsManager().processActionPointWin(pointWinAction);
     }
 
     private void processActionGameWin(GameWinAction gameWinAction) {

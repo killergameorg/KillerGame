@@ -2,30 +2,41 @@ package events;
 
 import java.util.ArrayList;
 
+import lobby.Maps;
 import lobby.lobbyModel.GameRules;
+import maincontroller.MainGameController;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 
 /**
  * The EventsGameController class is responsible for controlling game events in
  * the game.
  */
 public class EventsGameController {
+    
+    private MainGameController mainGameController;
     private EventsModel eventsModel;
+    
 
-    /**
-     * Creates a new instance of the EventsGameController class with the specified
-     * EventsModel.
-     *
-     * @param eventsModel EventsModel instance to be associated with the
-     *                    controller.
-     */
-    public EventsGameController(EventsModel eventsModel) {
-        this.eventsModel = eventsModel;
+    public EventsGameController(MainGameController mainGameController){
+        this.mainGameController = mainGameController;
+        this.eventsModel = new EventsModel(this);
     }
 
-    /**
-     * Sets the game rules to decide at the game which actions do.
-     *
-     * @param gameRules Represents the game rules to be set defined at the lobby.
+
+
+
+    public Team contraryTeam(TeamName teamName) {
+        return this.mainGameController.contraryTeam(teamName);
+    }
+
+
+    /*
+     * @param gameRules : The game rules defined at the lobby
+     * 
+     * Calls the model's setter method to define which are
+     * gonna be the game rules, to decide depending the event 
+     * which rule take in account
      */
 
     public void setGameRules(GameRules gameRules) {
@@ -43,5 +54,10 @@ public class EventsGameController {
 
     public ArrayList<Action> proccessEvent(Event event) {
         return this.eventsModel.processEvent(event);
+    }
+
+
+    public Maps getMap(){
+        return this.eventsModel.getMap();
     }
 }
