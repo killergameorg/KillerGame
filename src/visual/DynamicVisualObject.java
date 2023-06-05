@@ -66,7 +66,6 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
         this.height = height;
     }
 
-
     // * Methods
 
     public void updatePosition() {
@@ -75,26 +74,30 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
     }
 
     public void updateRotation(Direction direction) {
-        this.angle = getVisualGameModel().getPhysicsEngine().setDirection(direction, getAngle(), VisualConstants.velocityRotation);
+        this.angle = getVisualGameModel().getPhysicsEngine().setDirection(direction, getAngle(),
+                VisualConstants.velocityRotation);
     }
 
     public void calculateNewPosition() {
-        this.futurePosition = getVisualGameModel().getPhysicsEngine().calculatePosition(getPosition(), getAngle(), getVelocity());
+        this.futurePosition = getVisualGameModel().getPhysicsEngine().calculatePosition(getPosition(), getAngle(),
+                getVelocity());
     }
 
     @Override
     public void drawObject(Graphics g) {
-        AffineTransform at = AffineTransform.getTranslateInstance(this.getPosition().getxPos(), this.getPosition().getyPos());
+        AffineTransform at = AffineTransform.getTranslateInstance(this.getPosition().getxPos(),
+                this.getPosition().getyPos());
         at.rotate(Math.toRadians(this.getAngle()));
 
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.drawImage(this.skin, at, null);
     }
+
     @Override
-    public void run(){
-          while(getIsAlive()){
-            if(futurePosition != null){
+    public void run() {
+        while (getIsAlive()) {
+            if (futurePosition != null) {
                 getVisualGameModel().notifyToVGC(new NotificationMsg(NotificationType.positionUpdate, this));
             }
         }

@@ -1,21 +1,22 @@
 package visual;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 
-
 public class Asteroid extends DynamicVisualObject {
     private double rotationAngle;
 
     // * Constructor
-    public Asteroid(int id, BufferedImage skin, Position position, float life, int accountId, VisualGameModel visualGameModel,int playerNumber,Animation deadAnim, Animation spawnAnim, double velocity, double angle) {
+    public Asteroid(int id, BufferedImage skin, Position position, float life, int accountId,
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double velocity,
+            double angle) {
         super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, velocity, angle);
         rotationAngle = 0;
     }
 
     // * Methods
-
 
     @Override
     public void drawObject(Graphics g) {
@@ -27,10 +28,10 @@ public class Asteroid extends DynamicVisualObject {
     }
 
     @Override
-    public void run(){
-          while(getIsAlive()){
-            if(getFuturePosition() == null){
-                calculateNewPosition()
+    public void run() {
+        while (getIsAlive()) {
+            if (getFuturePosition() == null) {
+                calculateNewPosition();
                 rotationAngle += VisualConstants.asteroidRotationSpeed;
                 getVisualGameModel().notifyToVGC(new NotificationMsg(NotificationType.positionUpdate, this));
             }

@@ -1,4 +1,5 @@
 package visual;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -15,47 +16,48 @@ public class BackgroundManager {
     private BufferedImage background;
 
     // ! Constructor
-    public BackgroundManager(VisualGameView visualGameView){
+    public BackgroundManager(VisualGameView visualGameView) {
         this.visualGameView = visualGameView;
         obtainBackgroundTheme();
         obtainScreenID();
         loadBackground();
     }
 
-
-
     // ! Methods
 
     private void loadBackground() {
         try {
-            background = ImageIO.read(Objects.requireNonNull(getClass().getResource("/visual/img/backgrounds/" + backgroundTheme + "/background" + screenID + ".png")));
+            background = ImageIO.read(Objects.requireNonNull(getClass()
+                    .getResource("/visual/img/backgrounds/" + backgroundTheme + "/background" + screenID + ".png")));
         } catch (IOException e) {
             System.err.println("Error en la obtención del fondo");
         }
 
     }
-    private void obtainBackgroundTheme(){
-        //backgroundTheme = "defaultBackground";
-        //backgroundTheme = "purpleSpace";
+
+    private void obtainBackgroundTheme() {
+        // backgroundTheme = "defaultBackground";
+        // backgroundTheme = "purpleSpace";
         mapName = visualGameView.getVisualGameController().getMainGameController().getBackgroundTheme();
-        switch (mapName){
+        switch (mapName) {
             case MAP_1:
                 backgroundTheme = "map1";
                 break;
 
             case MAP_2:
-                backgroundTheme = "map2";        
+                backgroundTheme = "map2";
                 break;
-            
+
             case MAP_3:
                 backgroundTheme = "map2";
                 break;
         }
 
     }
+
     private void obtainScreenID() {
         screenID = visualGameView.getVisualGameController().getMainGameController().getScreenID();
-        //screenID = 1;
+        // screenID = 1;
     }
     // ! Getters and Setters
 

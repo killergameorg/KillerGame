@@ -1,8 +1,10 @@
 package visual;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -25,12 +27,12 @@ public class VisualGameView extends JFrame implements Runnable {
         this.bckgManager = new BackgroundManager(this);
         this.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-    
+
         this.viewer = new Viewer(bckgManager.getBackground());
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
-        gbc.weighty = 1.0; 
+        gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         this.getContentPane().add(viewer, gbc);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -47,17 +49,18 @@ public class VisualGameView extends JFrame implements Runnable {
             return;
         }
     }
-    public int getScreenWidth(){
+
+    public int getScreenWidth() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         return (int) screenSize.getWidth();
     }
-    public int getScreenHeight(){
+
+    public int getScreenHeight() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         return (int) screenSize.getHeight();
     }
 
     // Getters and Setters
-
 
     public VisualGameController getVisualGameController() {
         return visualGameController;
@@ -92,7 +95,8 @@ public class VisualGameView extends JFrame implements Runnable {
         viewer.createBufferStrategy(2);
 
         while (true) {
-            // The main loop of the program. It is called every `refreshMilis` milliseconds. It draws
+            // The main loop of the program. It is called every `refreshMilis` milliseconds.
+            // It draws
             // the objects on the screen using a double-buffer technique
             BufferStrategy bs = viewer.getBufferStrategy();
             Graphics gg = bs.getDrawGraphics();
@@ -113,5 +117,5 @@ public class VisualGameView extends JFrame implements Runnable {
             }
         }
     }
-    
+
 }

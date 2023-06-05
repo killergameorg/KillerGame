@@ -2,14 +2,13 @@ package visual;
 
 import java.util.ArrayList;
 
-import visual_package.VisualObject;
+import visual.VisualObject;
 
 public class VisualGameModel {
 
     private VisualGameController visualGameController;
 
     private ArrayList<VisualObject> visualObjectsList;
-
 
     private PhysicsEngine physicsEngine;
     private Animation deadBulletAnim;
@@ -22,10 +21,8 @@ public class VisualGameModel {
         this.visualGameController = visualGameController;
         this.visualObjectsList = new ArrayList<>();
 
-
         this.physicsEngine = new PhysicsEngine();
         // todo animations
-
 
     }
 
@@ -34,7 +31,6 @@ public class VisualGameModel {
     public ArrayList<VisualObject> getVisualObjectsList() {
         return visualObjectsList;
     }
-
 
     public VisualGameController getVisualGameController() {
         return visualGameController;

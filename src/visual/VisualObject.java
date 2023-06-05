@@ -6,15 +6,15 @@ import java.awt.image.BufferedImage;
 public abstract class VisualObject implements Runnable {
 
     private int id;
-    private BufferedImage skin;
-    private Position position;
+    protected BufferedImage skin;
+    protected Position position;
     private float life;
     private int accountId;
     private VisualGameModel visualGameModel;
     private int playerNumber;
     private Animation deadAnim;
     private Animation spawnAnim;
-    private boolean isAlive; 
+    private boolean isAlive;
     // * Constructor
 
     public VisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
@@ -38,12 +38,13 @@ public abstract class VisualObject implements Runnable {
     }
 
     public double getWidth() {
-        double res = getSkin.getWidth()
+        double res = getSkin().getWidth();
         return res;
     }
 
     public double getHeight() {
-        return (double) getSkin.getHeight();
+        double res = getSkin().getHeight();
+        return res;
     }
 
     public BufferedImage getSkin() {
@@ -78,14 +79,6 @@ public abstract class VisualObject implements Runnable {
         return spawnAnim;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
     public boolean getIsAlive() {
         return isAlive;
     }
@@ -108,12 +101,12 @@ public abstract class VisualObject implements Runnable {
     }
 
     public void decreaseLife() {
-        this.setLife(this.getLife()-quantity);
+        this.setLife(this.getLife() - quantity);
     }
 
     @Override
     public void run() {
-      
+
     }
-    
+
 }
