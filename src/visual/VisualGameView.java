@@ -14,7 +14,7 @@ public class VisualGameView extends JFrame implements Runnable {
     private VisualGameController visualGameController;
     private Viewer viewer;
     private boolean isRunning;
-    private Graphics g;
+    private Graphics gg;
     private BufferStrategy bs;
     private BackgroundManager bckgManager;
 
@@ -72,11 +72,11 @@ public class VisualGameView extends JFrame implements Runnable {
     }
 
     public Graphics getG() {
-        return g;
+        return gg;
     }
 
-    public void setG(Graphics g) {
-        this.g = g;
+    public void setG(Graphics gg) {
+        this.gg = gg;
     }
 
     public BufferStrategy getBs() {

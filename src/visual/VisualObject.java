@@ -2,6 +2,7 @@ package visual;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import maincontroller.gameinfo.Team;
 
 public abstract class VisualObject implements Runnable {
 
@@ -16,11 +17,13 @@ public abstract class VisualObject implements Runnable {
     private Animation spawnAnim;
     private boolean isAlive;
     private double angle;
+    private Team team;
 
     // * Constructor
 
     public VisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double angle) {
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double angle, Team team) {
+
         this.id = id;
         this.skin = skin;
         this.position = position;
@@ -32,6 +35,8 @@ public abstract class VisualObject implements Runnable {
         this.spawnAnim = spawnAnim;
         this.isAlive = true;
         this.angle = angle;
+        this.team = team;
+
     }
 
     // * Getters
