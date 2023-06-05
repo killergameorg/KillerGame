@@ -7,6 +7,7 @@ import visual.PhysicsEngine.Direction;
 import visual.VisualObject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import maincontroller.gameinfo.Team;
 
 public abstract class DynamicVisualObject extends VisualObject implements Runnable {
 
@@ -17,11 +18,17 @@ public abstract class DynamicVisualObject extends VisualObject implements Runnab
     // * Constructor
 
     public DynamicVisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
-            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim,
+            VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, Team team
             double velocity, double angle) {
+<<<<<<< Updated upstream
         super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim);
         this.velocity = velocity;
         this.angle = angle;
+=======
+        super(id, skin, position, life, accountId, visualGameModel, playerNumber, deadAnim, spawnAnim, angle, team);
+        this.velocity = velocity;
+        this.futurePosition = null;
+>>>>>>> Stashed changes
     }
 
     // * Getters & Setters
