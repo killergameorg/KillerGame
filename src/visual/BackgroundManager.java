@@ -40,15 +40,19 @@ public class BackgroundManager {
         mapName = visualGameView.getVisualGameController().getMainGameController().getBackgroundTheme();
         switch (mapName){
             case MAP_1:
-                backgroundTheme = "map1";
+                backgroundTheme = "theme1";
                 break;
 
             case MAP_2:
-                backgroundTheme = "map2";        
+                backgroundTheme = "theme2";
                 break;
             
             case MAP_3:
-                backgroundTheme = "map2";
+                backgroundTheme = "theme3";
+                break;
+
+            case MAP_4:
+                backgroundTheme = "theme4";
                 break;
         }
 
