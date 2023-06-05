@@ -22,17 +22,17 @@ public class Asteroid extends DynamicVisualObject {
     public void drawObject(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform at = g2d.getTransform();
-        g2d.translate(position.getxPos(), position.getyPos());
+        g2d.translate(getPosition().getxPos(), getPosition().getyPos());
         g2d.rotate(rotationAngle);
-        g2d.drawImage(this.skin, at, null);
+        g2d.drawImage(getSkin(), at, null);
     }
 
     @Override
     public void run(){
           while(getIsAlive()){
             if(getFuturePosition() == null){
-                calculateNewPosition()
-                rotationAngle += VisualConstants.asteroidRotationSpeed;
+                calculateNewPosition();
+                rotationAngle += VisualConstants.rotationVelocity;
                 getVisualGameModel().notifyToVGC(new NotificationMsg(NotificationType.positionUpdate, this));
             }
         }

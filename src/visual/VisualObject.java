@@ -106,6 +106,10 @@ public abstract class VisualObject implements Runnable {
         this.angle = angle;
     }
 
+    public void setLife(float life) {
+        this.life = life;
+    }
+    
     // * Methods
 
     public void update() {

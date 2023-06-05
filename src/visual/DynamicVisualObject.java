@@ -63,15 +63,15 @@ public abstract class DynamicVisualObject extends VisualObject {
                 getVelocity());
     }
 
-    /* @Override
+    @Override
     public void drawObject(Graphics g) {
         AffineTransform at = AffineTransform.getTranslateInstance(this.getPosition().getxPos(), this.getPosition().getyPos());
         at.rotate(Math.toRadians(this.getAngle()));
 
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.drawImage(this.skin, at, null);
-    } */
+        g2d.drawImage(getSkin(), at, null);
+    }
 
     @Override
     public void run() {

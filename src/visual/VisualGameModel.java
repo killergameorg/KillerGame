@@ -2,7 +2,8 @@ package visual;
 
 import java.util.ArrayList;
 
-import visual.VisualObject;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 
 public class VisualGameModel {
 
@@ -106,15 +107,17 @@ public class VisualGameModel {
         visualObject.decreaseLife(damage);
     }
 
-    public SpaceShip createSpaceship(int accountId, Teams team) {
+    public SpaceShip createSpaceship(int accountId, Team team) {
 
         SpaceShip newSpaceShip = new SpaceShip(0,
-                team.RED ? visualGameController.getAssetsManager().getSpaceShipA()
+                team.getTeamName() == TeamName.RED ? visualGameController.getAssetsManager().getSpaceShipA()
                         : visualGameController.getAssetsManager().getSpaceShipB(),
                 new Position(0, 0), 100, accountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
                 VisualConstants.velocitySpaceship, 0);
 
         addToVisualObjectList(newSpaceShip);
+
+        return newSpaceShip;
     }
 
     // ! Method for manage spaceships between screens
