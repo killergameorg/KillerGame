@@ -2,6 +2,8 @@ package visual;
 import java.awt.image.BufferedImage;
 import maincontroller.gameinfo.Team;
 
+import java.awt.image.BufferedImage;
+
 public class SpaceShip extends DynamicVisualObject {
     // * Constructor
     

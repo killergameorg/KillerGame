@@ -47,6 +47,14 @@ public class VisualGameView extends JFrame implements Runnable {
             return;
         }
     }
+    public int getScreenWidth(){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return (int) screenSize.getWidth();
+    }
+    public int getScreenHeight(){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return (int) screenSize.getHeight();
+    }
 
     // Getters and Setters
 

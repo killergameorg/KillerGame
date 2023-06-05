@@ -23,6 +23,7 @@ public abstract class VisualObject implements Runnable {
 
     public VisualObject(int id, BufferedImage skin, Position position, float life, int accountId,
             VisualGameModel visualGameModel, int playerNumber, Animation deadAnim, Animation spawnAnim, double angle, Team team) {
+
         this.id = id;
         this.skin = skin;
         this.position = position;
@@ -35,6 +36,7 @@ public abstract class VisualObject implements Runnable {
         this.isAlive = true;
         this.angle = angle;
         this.team = team;
+
     }
 
     // * Getters
@@ -44,12 +46,12 @@ public abstract class VisualObject implements Runnable {
     }
 
     public double getWidth() {
-        double res = getSkin.getWidth()
+        double res = getSkin().getWidth();
         return res;
     }
 
     public double getHeight() {
-        return (double) getSkin.getHeight();
+        return (double) getSkin().getHeight();
     }
 
     public BufferedImage getSkin() {
@@ -84,20 +86,24 @@ public abstract class VisualObject implements Runnable {
         return spawnAnim;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
     public boolean getIsAlive() {
         return isAlive;
     }
 
     public void setIsAlive(boolean isAlive) {
         this.isAlive = isAlive;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public double getAngle() {
+        return this.angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
     }
 
     // * Methods
@@ -108,17 +114,25 @@ public abstract class VisualObject implements Runnable {
     public void drawObject(Graphics g) {
     }
 
+    public abstract void updatePosition();
+
+    public abstract void updateRotation(Direction direction);
+
+    public abstract void calculateNewPosition();
+
     public void kill() {
-        deadAnim.play(this, );
+        // todo
+        // deadAnim.play(this, );
         setIsAlive(false);
     }
 
-    public void decreaseLife() {
+
+    public void decreaseLife(float damage) {
+        this.setLife(this.getLife()-damage);
     }
 
     @Override
     public void run() {
-      
     }
-    
+
 }
