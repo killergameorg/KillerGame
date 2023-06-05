@@ -121,7 +121,9 @@ public abstract class VisualObject implements Runnable {
         setIsAlive(false);
     }
 
+
     public void decreaseLife(float damage) {
+        this.setLife(this.getLife()-damage);
     }
 
     @Override
