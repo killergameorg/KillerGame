@@ -19,7 +19,7 @@ public class EndView extends JFrame {
      */
     public EndView() {
         viewer = new Viewer();
-        setTitle("GAME OVER");
+        setTitle("GAME END");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         addComponents();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

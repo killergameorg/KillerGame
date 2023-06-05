@@ -79,7 +79,7 @@ public class Viewer extends JPanel {
         gameOver = new JPanel();
         gameOver.setSize(100, 100);
 
-        gameLabel = new JLabel("Game Over");
+        gameLabel = new JLabel("Game END");
         gameLabel.setForeground(Color.white);
         gameLabel.setFont(customFont());
         gameLabel.setForeground(Color.red);
