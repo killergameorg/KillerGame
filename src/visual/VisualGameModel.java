@@ -2,14 +2,13 @@ package visual;
 
 import java.util.ArrayList;
 
-import visual_package.VisualObject;
+import visual.VisualObject;
 
 public class VisualGameModel {
 
     private VisualGameController visualGameController;
 
     private ArrayList<VisualObject> visualObjectsList;
-
 
     private PhysicsEngine physicsEngine;
     private Animation deadBulletAnim;
@@ -22,10 +21,8 @@ public class VisualGameModel {
         this.visualGameController = visualGameController;
         this.visualObjectsList = new ArrayList<>();
 
-
         this.physicsEngine = new PhysicsEngine();
         // todo animations
-
 
     }
 
@@ -34,7 +31,6 @@ public class VisualGameModel {
     public ArrayList<VisualObject> getVisualObjectsList() {
         return visualObjectsList;
     }
-
 
     public VisualGameController getVisualGameController() {
         return visualGameController;
@@ -67,6 +63,7 @@ public class VisualGameModel {
     }
 
     public void removeFromVisualObjectList(VisualObject visualObject) {
+        visualObject.setIsAlive(false);
         visualObjectsList.remove(visualObject);
     }
 
@@ -84,32 +81,49 @@ public class VisualGameModel {
 
     public void killObject(VisualObject visualObject) {
         visualObject.kill();
+        visualObjectsList.remove(visualObject);
     }
 
     public void createBullet(int acountId) {
-        VisualObject spaceShip;
+        // ? CHECK SI ESTO FUNCIONA COMO TOCA
+        VisualObject spaceShipParent = null;
 
         for (VisualObject visualObject : visualObjectsList) {
             if (visualObject.getAccountId() == acountId) {
-                spaceShip = visualObject;
+                spaceShipParent = visualObject;
                 break;
             }
         }
 
-        //todo
-        Bullet newBullet = new Bullet(null, visualGameController.getAssetsManager().getBullet(), spaceShip.getPosition(), 1, acountId, this, null, getDeadBulletAnim(), getSpawnBulletAnim(), acountId, acountId, acountId, acountId, physicsEngine)
+        Bullet newBullet = new Bullet(0, visualGameController.getAssetsManager().getBullet(),
+                spaceShipParent.getPosition(), 1, acountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
+                VisualConstants.velocityBullet, spaceShipParent.getAngle());
+
+        addToVisualObjectList(newBullet);
     }
 
-    public void decreaseLife(VisualObject visualObject, float) {
-
+    public void decreaseLife(VisualObject visualObject, float damage) {
+        visualObject.decreaseLife(damage);
     }
 
-    public SpaceShip createSpaceship(int accountId) {
+    public SpaceShip createSpaceship(int accountId, Teams team) {
 
+        SpaceShip newSpaceShip = new SpaceShip(0,
+                team.RED ? visualGameController.getAssetsManager().getSpaceShipA()
+                        : visualGameController.getAssetsManager().getSpaceShipB(),
+                new Position(0, 0), 100, accountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
+                VisualConstants.velocitySpaceship, 0);
+
+        addToVisualObjectList(newSpaceShip);
     }
 
     // ! Method for manage spaceships between screens
     public void addVisualObject(VisualObject visualObject, Position position) {
+        DynamicVisualObject aux = (DynamicVisualObject) visualObject;
 
+        aux.setPosition(position);
+        aux.setFuturePosition(null);
+
+        addToVisualObjectList(visualObject);
     }
 }

@@ -56,36 +56,36 @@ public class VisualGameController {
     }
 
     public void moveObject(VisualObject visualObject) {
-
+        visualGameModel.moveObject(visualObject);
     }
 
     public void updateObjectPosition(VisualObject visualObject) {
-
+        visualGameModel.updateObjectPosition(visualObject);
     }
 
-    public void rotateObject(VisualObject visualObject, float) {
-    
+    public void rotateObject(VisualObject visualObject, Direction direction) {
+        visualGameModel.rotateObject(visualObject, direction);
     }
 
     public void killObject(VisualObject visualObject) {
-
+        visualGameModel.killObject(visualObject);
     }
 
     public void createBullet(int acountId) {
-
+        visualGameModel.createBullet(acountId);
     }
 
-    public void decreaseLife(VisualObject visualObject, float) {
-    
+    public void decreaseLife(VisualObject visualObject, float damage) {
+        visualGameModel.decreaseLife(visualObject, damage);
     }
 
-    public SpaceShip createSpaceship(int accountId) {
-
+    public SpaceShip createSpaceship(int accountId, Teams team) {
+        visualGameModel.createSpaceship(accountId, team);
     }
 
     // ! Method for manage spaceships between screens
     public void addVisualObject(VisualObject visualObject, Position position) {
-
+        visualGameModel.addVisualObject(visualObject, position);
     }
 
 }
