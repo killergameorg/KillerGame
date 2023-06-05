@@ -3,7 +3,7 @@ package visual;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Animation implements Runnable {
+public class Animation {
 
     public Boolean isRunning;
     public float durationSleep;
@@ -44,7 +44,7 @@ public class Animation implements Runnable {
         this.framesList = framesList;
     }
 
-    public void playAnimation(VisualObject visualObject, BufferedImage[] frameList) {
+    /* public void playAnimation(VisualObject visualObject, BufferedImage[] frameList) {
         Thread animationThread = new Thread(() -> {
             while (isRunning) {
                 for (int i = 0; i < frameList.length; i++) {
@@ -66,6 +66,6 @@ public class Animation implements Runnable {
                 }
             }
         }).start();
-    }
+    } */
 
 }

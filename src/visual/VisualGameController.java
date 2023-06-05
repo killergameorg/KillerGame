@@ -1,6 +1,8 @@
 package visual;
 
 import maincontroller.MainGameController;
+import maincontroller.gameinfo.Team;
+
 
 public class VisualGameController {
 
@@ -79,8 +81,8 @@ public class VisualGameController {
         visualGameModel.decreaseLife(visualObject, damage);
     }
 
-    public SpaceShip createSpaceship(int accountId, Teams team) {
-        visualGameModel.createSpaceship(accountId, team);
+    public SpaceShip createSpaceship(int accountId, Team team) {
+        return visualGameModel.createSpaceship(accountId, team);
     }
 
     // ! Method for manage spaceships between screens

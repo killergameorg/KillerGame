@@ -1,8 +1,10 @@
 package visual;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -87,6 +89,12 @@ public class VisualGameView extends JFrame implements Runnable {
         this.bs = bs;
     }
 
+    public Graphics getBufferStrategyGraphics() {
+        bs = viewer.getBufferStrategy();
+        Graphics gg = bs.getDrawGraphics();
+        return gg;
+    }
+
     public void run() {
 
         viewer.createBufferStrategy(2);
@@ -94,7 +102,7 @@ public class VisualGameView extends JFrame implements Runnable {
         while (true) {
             // The main loop of the program. It is called every `refreshMilis` milliseconds. It draws
             // the objects on the screen using a double-buffer technique
-            BufferStrategy bs = viewer.getBufferStrategy();
+            bs = viewer.getBufferStrategy();
             Graphics gg = bs.getDrawGraphics();
 
             if (bs == null) {
