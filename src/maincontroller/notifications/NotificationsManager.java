@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import events.Action;
 import events.ExplosionAction;
+import events.MoveWindowVisualObjectAction;
+import events.PointWinAction;
 import maincontroller.MainGameModel;
 import visual.NotificationMsg;
 import visual.NotificationType;
@@ -43,8 +45,9 @@ public class NotificationsManager {
      * Process a notification
      * 
      * @param notificationMsg The notification to process
+     * @throws Exception
      */
-    public void processNotification(NotificationMsg notificationMsg) {
+    public void processNotification(NotificationMsg notificationMsg) throws Exception {
 
         VisualObject visualObject = notificationMsg.getVisualObject();
         NotificationType notificationType = notificationMsg.getNotificationType();
@@ -64,12 +67,20 @@ public class NotificationsManager {
         this.getMainGameModel().updateVisualObjectPosition(visualObject);
     }
 
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
         this.getMainGameModel().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 
     public void processActionExplosion(ExplosionAction explosionAction) {
         this.getMainGameModel().processActionExplosion(explosionAction);
+    }
+
+    public void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getMainGameModel().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
+    }
+
+    public void processActionPointWin(PointWinAction pointWinAction) {
+        this.getMainGameModel().processActionPointWin(pointWinAction);
     }
 
     // ! Getters and Setters

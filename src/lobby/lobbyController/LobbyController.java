@@ -80,6 +80,11 @@ public class LobbyController {
         this.status = MasterStatus.LobbyMaster;
     }
 
+
+    public boolean iAmMaster() {
+        return this.status == MasterStatus.LobbyMaster;
+    }
+
     // Getter y Setters
     public MasterStatus getStatus() {
         return status;

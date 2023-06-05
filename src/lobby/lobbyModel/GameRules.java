@@ -1,8 +1,10 @@
 package lobby.lobbyModel;
 
+import java.io.Serializable;
+
 import visual.Maps;
 
-public class GameRules {
+public class GameRules implements Serializable{
 
     // Atributos
     // Data that can be modified
