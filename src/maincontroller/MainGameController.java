@@ -11,15 +11,24 @@ import events.ExplosionAction;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 import visual.Ship;
 import visual.Direction;
+import visual.Maps;
 import visual.NotificationMsg;
 import visual.Position;
 import visual.VisualGameController;
 import visual.VisualObject;
 
+// TODO: Para mañana:
+/*
+ * - Revisar que se tendrá que hacer en el proceso de pasar del Lobby al Game, en que momento se crean los Spaceships?
+ * - Revisar que se tendrá que hacer en el proceso de pasar del Game al EndGame.
+ * - Revisar con Juan lo que le he escrito por Whats.
+ */
+
 public class MainGameController {
-    // TODO: Ordenar todos los métodos según sus departamentos
 
     // ! Attributes
     private MainGameModel mainGameModel;
@@ -31,20 +40,36 @@ public class MainGameController {
     // ! Constructor
     public MainGameController(String pathConfigurationFile) throws FileNotFoundException, IOException {
 
-        this.setMainGameModel(new MainGameModel(pathConfigurationFile));
+        this.setMainGameModel(new MainGameModel(this, pathConfigurationFile));
+
+        this.setLobbyController(new LobbyController());
+        this.setEventsGameController(new EventsGameController(this));
+        this.setVisualGameController(new VisualGameController(this));
 
     }
 
-    // ! ConfigurationFileController methods
+    // ! MainGame
+
+    public void initializeConnectionController() {
+        this.getMainGameModel().initializeConnectionController();
+    }
 
     public int getConfigurationFileId() {
         return this.getMainGameModel().getConfigurationFileController().getId();
     }
 
-    // ! LobbyGameController methods
+    // ! LobbyGame
 
     public void applyingToMaster() {
-        // TODO
+        this.getMainGameModel().tryApplyingToMaster();
+    }
+
+    public void setMaster() {
+        this.getLobbyController().setMaster();
+    }
+
+    public void setSlave() {
+        this.getLobbyController().setSlave();
     }
 
     public void startLobby() {
@@ -55,15 +80,27 @@ public class MainGameController {
         this.getLobbyController().reciveMasterMsg(order);
     }
 
-    public void sendPlayerCountToLobby(int playerCount) {
-        this.getLobbyController().setPlayerCount(playerCount);
-    }
-
     public void startGame(GameRules gameRules) {
         this.getMainGameModel().startGame(gameRules);
     }
 
-    // ! VisualGameController methods
+    public void notifyNumberOfMobiles(int numberOfMobiles) {
+        this.getLobbyController().setPlayerCount(numberOfMobiles);
+    }
+
+    public boolean iAmMaster() {
+        return this.getLobbyController().iAmMaster();
+    }
+
+
+    // ! Events
+    public Team contraryTeam(TeamName teamName) {
+        return this.getMainGameModel().contraryTeam(teamName);
+    }
+
+
+
+    // ! VisualGame
 
     /**
      * Get all the visual objects in the game (spaceships, bullets, etc)
@@ -89,7 +126,7 @@ public class MainGameController {
      * 
      * @param accountId The id of the account that owns the bullet to create
      */
-    public void createVisualObjectBullet(Long accountId) {
+    public void createVisualObjectBullet(int accountId) {
         this.getVisualGameController().createBullet(accountId);
     }
 
@@ -99,8 +136,8 @@ public class MainGameController {
      * @param visualObject The visual object to add to the game
      * @param position     The position where the visual object will be added
      */
-    public void addVisualObject(VisualObject visualObject, Position position) {
-        this.getVisualGameController().addVisualObject(visualObject, position);
+    public void addVisualObject(VisualObject visualObject, Position newPositionVisualObject) {
+        this.getVisualGameController().addVisualObject(visualObject, newPositionVisualObject);
     }
 
     /**
@@ -108,8 +145,8 @@ public class MainGameController {
      * 
      * @param visualObject The visual object to move forward
      */
-    public void moveForwardVisualObject(VisualObject visualObject) {
-        this.getVisualGameController().moveObject(visualObject);
+    public void moveForwardVisualObject(int idAccount) {
+        this.getVisualGameController().moveObject(this.getVisualObjectById(idAccount));
     }
 
     /**
@@ -118,8 +155,16 @@ public class MainGameController {
      * @param visualObject The visual object to rotate
      * @param direction    The direction to rotate the visual object (LEFT or RIGHT)
      */
-    public void rotateVisualObject(VisualObject visualObject, Direction direction) {
-        this.getVisualGameController().rotateObject(visualObject, direction);
+    public void rotateVisualObject(
+            int idAccount,
+            Direction direction
+
+    ) {
+        this.getVisualGameController().rotateObject(
+                this.getVisualObjectById(idAccount),
+                direction
+
+        );
     }
 
     /**
@@ -128,7 +173,8 @@ public class MainGameController {
      * @param visualObject  The visual object to decrease the life
      * @param lifeDowngrade The amount of life to decrease from the visual object
      */
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    public void decreaseLifeVisualObject(VisualObject visualObject,
+            float lifeDowngrade) {
         this.getVisualGameController().decreaseLife(visualObject, lifeDowngrade);
     }
 
@@ -146,8 +192,9 @@ public class MainGameController {
      * 
      * @param notificationMsg The notification message to send to the visual
      *                        department
+     * @throws Exception
      */
-    public void notifyMessage(NotificationMsg notificationMsg) {
+    public void notifyMessage(NotificationMsg notificationMsg) throws Exception {
         this.getMainGameModel().getNotificationsManager().processNotification(notificationMsg);
     }
 
@@ -170,12 +217,25 @@ public class MainGameController {
         this.killVisualObject(explosionAction.getVisualObject());
     }
 
+    public void removeVisualObject(VisualObject visualObject) {
+        this.getVisualGameController().removeVisualObject(visualObject);
+    }
+
+    // ! EventsGame
     public void setGameRules(GameRules gameRules) {
         this.getEventsGameController().setGameRules(gameRules);
     }
 
     public ArrayList<Action> processEvent(Colision colision) {
         return this.getEventsGameController().processEvent(colision);
+    }
+
+    public Maps getMap() {
+        return this.getEventsGameController().getMap();
+    }
+
+    private VisualObject getVisualObjectById(int id) {
+        return this.getMainGameModel().getVisualObjectById(id);
     }
 
     // ! Getters and Setters

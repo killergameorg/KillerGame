@@ -1,8 +1,12 @@
 package lobby.lobbyModel;
 
+
 import lobby.Maps;
 
-public class GameRules {
+import java.io.Serializable;
+
+
+public class GameRules implements Serializable{
 
     private DinamicGameRule dinamicGameRule;
     private StaticGameRule staticGameRule;

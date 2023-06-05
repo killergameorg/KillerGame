@@ -99,6 +99,7 @@ public class LobbyController {
         this.status = MasterStatus.LobbyMaster;
     }
 
+
     /*
      * Afther finish the game maingamecontroller pass the team and their score
      */
@@ -110,6 +111,11 @@ public class LobbyController {
         endView.getViewer().getTeam2Score().setText(String.valueOf(team2.getScore()));
         this.setEndView(endView);
         System.out.println("Start End");
+    }
+
+
+    public boolean iAmMaster() {
+        return this.status == MasterStatus.LobbyMaster;
     }
 
     // Getter y Setters

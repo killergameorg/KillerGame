@@ -1,5 +1,7 @@
 package events;
 
-public abstract class Action {
+import maincontroller.maincommunications.packages.PackageMainCommunications;
+
+public abstract class Action implements PackageMainCommunications {
 
 }
