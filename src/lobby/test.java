@@ -8,6 +8,8 @@ import lobby.endscreen.*;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
+import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 
 public class test {
     public static void main(String[] args) {
@@ -17,7 +19,12 @@ public class test {
         lobbyController.setLobbyView(lobbyView);
         LobbyModel lobbyModel = new LobbyModel(lobbyController);
         lobbyController.setLobbyModel(lobbyModel);
-        // lobbyController.startEndView(150, 5);
+
+        Team t1= new Team(TeamName.RED);
+        t1.setScore(100);
+        Team t2= new Team(TeamName.BLUE);
+        t2.setScore(500);
+        lobbyController.startEndView(t1,t2);
 
         lobbyView.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
