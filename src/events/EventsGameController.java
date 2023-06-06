@@ -2,11 +2,11 @@ package events;
 
 import java.util.ArrayList;
 
+import lobby.Maps;
 import lobby.lobbyModel.GameRules;
 import maincontroller.MainGameController;
 import maincontroller.gameinfo.Team;
 import maincontroller.gameinfo.TeamName;
-import visual.Maps;
 
 public class EventsGameController {
     

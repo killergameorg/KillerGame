@@ -3,18 +3,18 @@ package events;
 import visual.VisualObject;
 
 public class LifeDecreaseAction extends VisualObjectAction {
-    private int lifeDowngrade;
+    private float lifeDowngrade;
 
-    public LifeDecreaseAction(VisualObject visualObject,int lifeDowngrade) {
+    public LifeDecreaseAction(VisualObject visualObject,float lifeDowngrade) {
         super(visualObject);
         this.lifeDowngrade=lifeDowngrade;
     }
 
-    public int getLifeDowngrade() {
+    public float getLifeDowngrade() {
         return lifeDowngrade;
     }
 
-    public void setLifeDowngrade(int lifeDowngrade) {
+    public void setLifeDowngrade(float lifeDowngrade) {
         this.lifeDowngrade = lifeDowngrade;
     }
 

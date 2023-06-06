@@ -8,16 +8,16 @@ import events.Action;
 import events.Colision;
 import events.EventsGameController;
 import events.ExplosionAction;
+import lobby.Maps;
 import lobby.MasterOrder;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Team;
 import maincontroller.gameinfo.TeamName;
-import visual.Ship;
 import visual.Direction;
-import visual.Maps;
 import visual.NotificationMsg;
 import visual.Position;
+import visual.SpaceShip;
 import visual.VisualGameController;
 import visual.VisualObject;
 
@@ -25,7 +25,6 @@ import visual.VisualObject;
 /*
  * - Revisar que se tendrá que hacer en el proceso de pasar del Lobby al Game, en que momento se crean los Spaceships?
  * - Revisar que se tendrá que hacer en el proceso de pasar del Game al EndGame.
- * - Revisar con Juan lo que le he escrito por Whats.
  */
 
 public class MainGameController {
@@ -92,13 +91,10 @@ public class MainGameController {
         return this.getLobbyController().iAmMaster();
     }
 
-
     // ! Events
     public Team contraryTeam(TeamName teamName) {
         return this.getMainGameModel().contraryTeam(teamName);
     }
-
-
 
     // ! VisualGame
 
@@ -108,7 +104,7 @@ public class MainGameController {
      * @return ArrayList<VisualObject> with all the visual objects in the game
      */
     public ArrayList<VisualObject> getVisualObjects() {
-        return this.getVisualGameController().getVisualObjects();
+        return this.getVisualGameController().getVisualObjectsList();
     }
 
     /**
@@ -117,8 +113,8 @@ public class MainGameController {
      * @param accountId The id of the account that owns the spaceship to create
      * @return The ControllableSpaceShip created
      */
-    public Ship createVisualObjectControllableSpaceShip(Long accountId) {
-        return this.getVisualGameController().createSpaceship(accountId);
+    public SpaceShip createVisualObjectControllableSpaceShip(int accountId, Team team) {
+        return this.getVisualGameController().createSpaceship(accountId, team);
     }
 
     /**
@@ -194,8 +190,12 @@ public class MainGameController {
      *                        department
      * @throws Exception
      */
-    public void notifyMessage(NotificationMsg notificationMsg) throws Exception {
-        this.getMainGameModel().getNotificationsManager().processNotification(notificationMsg);
+    public void notifyMessage(NotificationMsg notificationMsg) {
+        try {
+            this.getMainGameModel().getNotificationsManager().processNotification(notificationMsg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -230,7 +230,7 @@ public class MainGameController {
         return this.getEventsGameController().processEvent(colision);
     }
 
-    public Maps getMap() {
+    public Maps getBackgroundTheme() {
         return this.getEventsGameController().getMap();
     }
 
@@ -259,6 +259,10 @@ public class MainGameController {
      */
     public VisualGameController getVisualGameController() {
         return visualGameController;
+    }
+
+    public void setVisualGameController() {
+        this.setVisualGameController(new VisualGameController(this));
     }
 
     /**

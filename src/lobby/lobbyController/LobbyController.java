@@ -2,10 +2,12 @@ package lobby.lobbyController;
 
 import lobby.MasterOrder;
 import lobby.MasterStatus;
+import lobby.endscreen.EndView;
 import lobby.lobbyModel.GameRules;
 import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
 import maincontroller.MainGameController;
+import maincontroller.gameinfo.Team;
 
 public class LobbyController {
 
@@ -14,11 +16,13 @@ public class LobbyController {
     private MasterStatus status;
     private LobbyView lobbyView;
     private LobbyModel lobbyModel;
+    private EndView endView;
 
     // Constructor
     // When created, it asks the maincontroller to apply the master
     public LobbyController() {
         this.mainGameController.applyingToMaster();
+        System.out.println("Pedir ser master");
         this.status = MasterStatus.ApplyingToMaster;
     }
 
@@ -28,10 +32,15 @@ public class LobbyController {
      * The object view and lobbymodel are created.
      */
     public void startLobby() {
+        if (endView != null) {
+            this.endView.dispose();
+            this.endView=null;
+        }
         LobbyView lobbyView = new LobbyView(this);
         this.setLobbyView(lobbyView);
         LobbyModel lobbyModel = new LobbyModel(this);
         this.setLobbyModel(lobbyModel);
+        System.out.println("Start lobby");
     }
 
     /**
@@ -39,10 +48,18 @@ public class LobbyController {
      * selected ,also enum Ok or Back is used to increase or decrease the value of
      * the rule.
      * 
+     * IF the endview is launched and recive another msg from master
+     * start the game again
+     * 
      * @param order enum Left, Right, Ok, Back
      */
     public void reciveMasterMsg(MasterOrder order) {
-        lobbyModel.reciveMasterMsg(order);
+        if (endView == null) {
+            lobbyModel.reciveMasterMsg(order);
+        } else {
+            this.startLobby();
+        }
+        System.out.println("Recived master msg");
     }
 
     /**
@@ -53,8 +70,9 @@ public class LobbyController {
      * @param gameRules
      */
     public void startGame(GameRules gameRules) {
-        this.mainGameController.startGame(gameRules);
         this.lobbyView.dispose();
+        this.mainGameController.startGame(gameRules);
+        System.out.println("Start Game");
     }
 
     /**
@@ -78,6 +96,20 @@ public class LobbyController {
 
     public void setMaster() {
         this.status = MasterStatus.LobbyMaster;
+    }
+
+
+    /*
+     * Afther finish the game maingamecontroller pass the team and their score
+     */
+    public void startEndView(Team team1, Team team2) {
+        EndView endView = new EndView();
+        endView.getViewer().getTeam1Label().setText(team1.getTeamName().toString());
+        endView.getViewer().getTeam2Label().setText(team2.getTeamName().toString());
+        endView.getViewer().getTeam1Score().setText(String.valueOf(team1.getScore()));
+        endView.getViewer().getTeam2Score().setText(String.valueOf(team2.getScore()));
+        this.setEndView(endView);
+        System.out.println("Start End");
     }
 
 
@@ -116,6 +148,14 @@ public class LobbyController {
 
     public void setMainGameController(MainGameController mainGameController) {
         this.mainGameController = mainGameController;
+    }
+
+    public EndView getEndView() {
+        return endView;
+    }
+
+    public void setEndView(EndView endView) {
+        this.endView = endView;
     }
 
 }
