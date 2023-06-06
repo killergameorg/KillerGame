@@ -13,7 +13,10 @@ package communications.frames;
  */
 public class PingFrame extends Frame {
 
-	private static final long serialVersionUID = 2388421454502439090L;
+	/**
+	 * The serialVersionUID for version control of serialized objects.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs a new {@code PingFrame} instance with the frame type set to

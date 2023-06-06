@@ -27,6 +27,10 @@ public class ConnectionController {
 
 	/**
      * This private record is used to represent a connection with another peer.
+     * 
+     * @param socket     the socket representing the connection
+     * @param inStream   the ObjectInputStream for receiving data
+     * @param outStream  the ObjectOutputStream for sending data
      */
 	private record ConnectionData(Socket socket, ObjectInputStream inStream, ObjectOutputStream outStream) {
 		@Override
@@ -204,7 +208,7 @@ public class ConnectionController {
 	public void initialize() {
 		if(serverPort != null) { // Arranca el servidor si se ha pasado un puerto válido
 			try {
-					new Thread(new ServerManager(this, serverPort)).start();
+				new Thread(new ServerManager(this, serverPort)).start();
 			} catch (IOException e) {
 				LOGGER.warning("[FATAL] No se puede crear el socket de servidor. La aplicación se va a cerrar.");
 				System.exit(-1);
@@ -236,6 +240,7 @@ public class ConnectionController {
 	/**
 	 * Closes the connection with the specified IP address.
 	 * @param ip The IP address of the connection to close.
+	 * @param intentional True if the desconnection is planned. Fals if not.
 	 */
 	void killConnection(String ip, boolean intentional) {
 		if (connectedPeers.containsKey(ip)) {
@@ -260,12 +265,12 @@ public class ConnectionController {
 
 	/**
 	 * Pushes a message received from a peer to the communication listener.
-	 * @param sourceIp The IP address of the peer that sent the message.@
-	 * param payload The message payload.
+	 * @param sourceIp The IP address of the peer that sent the message.
+	 * @param payload The message payload.
 	 */
 	void pushMessage(String sourceIp, Object payload) {
 		if (commListener != null) {
-			commListener.onIncomingMessage(sourceIp, payload);
+			commListener.onIncomingMessage(sourceIp, payload); 
 		}
 	}
 
@@ -373,7 +378,7 @@ public class ConnectionController {
 
 	/**
 	 * Sets the local IP address used for this connection.
-	 * @param localIp The local IP address to set.
+	 * @param ip The local IP address to set.
 	 */
 	private void setLocalIp(String ip) {
 		if (localIp == null || !localIp.equals(ip)) {

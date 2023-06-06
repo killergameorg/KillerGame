@@ -18,7 +18,10 @@ import java.io.Serializable;
  */
 public abstract class Frame implements Serializable {
 
-	private static final long serialVersionUID = 8929688478778125237L;
+	/**
+	 * The serialVersionUID for version control of serialized objects.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** The type of communication frame represented by this object. */
 	private FrameType frameType;
@@ -48,7 +51,6 @@ public abstract class Frame implements Serializable {
 	 * Sets the header fields of a packet with the provided values.
 	 * 
 	 * @param id         the unique identifier of the packet
-	 * @param timeToLive the time to live value of the packet
 	 * @param sourceIp   the source IP address of the packet
 	 * @param targetIp   the target IP address of the packet
 	 */

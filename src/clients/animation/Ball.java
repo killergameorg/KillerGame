@@ -11,7 +11,7 @@ import javax.swing.Timer;
 
 public class Ball implements Serializable, ActionListener {
 
-	private static final long serialVersionUID = -4238822915986025242L;
+	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(Ball.class.getClass().getName());
