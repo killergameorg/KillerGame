@@ -98,9 +98,13 @@ public class MainGameModel {
         this.setVisualGameController();
         for (int i = 0; i < this.getAccounts().size(); i++) {
             Account account = this.getAccounts().get(i);
-            this.createVisualObjectControllableSpaceShip(
-                    account.getIdAccount(),
-                    account.getTeam()
+
+            account.setVisualObject(
+                    this.createVisualObjectControllableSpaceShip(
+                            account.getIdAccount(),
+                            account.getTeam()
+
+                    )
 
             );
         }
@@ -347,13 +351,12 @@ public class MainGameModel {
         this.getMainGameController().addVisualObject(visualObject, newPositionVisualObject);
     }
 
-
     private void setVisualGameController() {
         this.getMainGameController().setVisualGameController();
     }
 
-    private void createVisualObjectControllableSpaceShip(int accountId, Team team) {
-        this.getMainGameController().createVisualObjectControllableSpaceShip(accountId, team);
+    private SpaceShip createVisualObjectControllableSpaceShip(int accountId, Team team) {
+        return this.getMainGameController().createVisualObjectControllableSpaceShip(accountId, team);
     }
 
     // ! Getters and Setters

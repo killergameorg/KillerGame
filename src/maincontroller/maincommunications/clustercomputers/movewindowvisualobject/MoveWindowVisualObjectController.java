@@ -1,12 +1,15 @@
 package maincontroller.maincommunications.clustercomputers.movewindowvisualobject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import events.MoveWindowVisualObjectAction;
+import maincontroller.gameinfo.Team;
 import maincontroller.maincommunications.clustercomputers.ClusterCommunicationsController;
 import maincontroller.maincommunications.clustercomputers.movewindowvisualobject.packages.PackageMoveWindowVisualObject;
 import visual.Direction;
 import visual.Position;
+import visual.SpaceShip;
 import visual.VisualObject;
 
 public class MoveWindowVisualObjectController {
@@ -81,6 +84,29 @@ public class MoveWindowVisualObjectController {
 
         VisualObject visualObject = packageMoveWindowVisualObject.getVisualObject();
 
+        if (visualObject instanceof SpaceShip) {
+            SpaceShip spaceShip = (SpaceShip) visualObject;
+            ArrayList<Team> teams = this.getTeams();
+
+            boolean found = false;
+            int i = 0;
+            while (!found && i < teams.size()) {
+                if (teams.get(i).getTeamName().equals(spaceShip.getTeam().getTeamName())) {
+                    found = true;
+                    spaceShip.setTeam(teams.get(i));
+                }
+                i++;
+            }
+
+            if (found == false) {
+                try {
+                    throw new Exception("Don't found the team MovewindowVisualObjectController.onIncomingMessage()");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         Position newPositionVisualObject = this.getNewPositionVisualObject(
                 visualObject,
                 packageMoveWindowVisualObject.getDirectionFrom()
@@ -154,6 +180,10 @@ public class MoveWindowVisualObjectController {
                 visualObject, newPositionVisualObject
 
         );
+    }
+
+    private ArrayList<Team> getTeams() {
+        return this.getClusterCommunicationsController().getTeams();
     }
 
     // ! Getters and Setters
