@@ -2,15 +2,16 @@ package visual;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Animation {
 
     public Boolean isRunning;
-    public float durationSleep;
+    public double durationSleep;
     public BufferedImage[] framesList;
 
     // * Constructor
-    public Animation(Boolean isRunning, float durationSleep, BufferedImage[] framesList) {
+    public Animation(Boolean isRunning, double durationSleep, BufferedImage[] framesList) {
         this.isRunning = isRunning;
         this.durationSleep = durationSleep;
         this.framesList = framesList;
@@ -28,11 +29,11 @@ public class Animation {
         this.isRunning = isRunning;
     }
 
-    public float getDurationSleep() {
+    public double getDurationSleep() {
         return this.durationSleep;
     }
 
-    public void setDurationSleep(float durationSleep) {
+    public void setDurationSleep(double durationSleep) {
         this.durationSleep = durationSleep;
     }
 
@@ -44,28 +45,31 @@ public class Animation {
         this.framesList = framesList;
     }
 
-    /* public void playAnimation(VisualObject visualObject, BufferedImage[] frameList) {
+    public void playAnimation(VisualObject visualObject, Graphics g) {
         Thread animationThread = new Thread(() -> {
-            while (isRunning) {
-                for (int i = 0; i < frameList.length; i++) {
-                    BufferedImage frameToDraw = frameList[i];
-                    Graphics graphics = visualObject.getGraphics(); // Obtener el objeto Graphics del VisualObject
+
+            final AtomicBoolean running = new AtomicBoolean(isRunning); // Variable final para capturar el valor de
+            while (running.get()) { // Utilizar la variable capturada
+                for (int i = 0; i < framesList.length; i++) {
+                    BufferedImage frameToDraw = framesList[i];
 
                     // Dibujar la imagen en el objeto visual utilizando el objeto Graphics
-                    graphics.drawImage(frameToDraw, visualObject.getPosition().getxPos(),
-                            visualObject.getPosition().getyPos(), null);
+                    g.drawImage(frameToDraw, (int) visualObject.getPosition().getxPos(),
+                            (int) visualObject.getPosition().getyPos(), null);
 
                     // Actualizar la representación visual del objeto
-                    visualObject.repaint();
+                    // g.repaint();
 
                     try {
-                        Thread.sleep(durationSleep); // Pausa durante la duración específica
+                        Thread.sleep((long) durationSleep); // Pausa durante la duración específica
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                running.set(false);
             }
-        }).start();
-    } */
+        });
+        animationThread.start();
+    }
 
 }

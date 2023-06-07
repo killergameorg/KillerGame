@@ -1,6 +1,7 @@
 package visual;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import maincontroller.gameinfo.Team;
 import maincontroller.gameinfo.TeamName;
@@ -8,13 +9,15 @@ import maincontroller.gameinfo.TeamName;
 public class VisualGameModel {
 
     private VisualGameController visualGameController;
-
+    
     private ArrayList<VisualObject> visualObjectsList;
-
+    
     private PhysicsEngine physicsEngine;
     private Animation deadBulletAnim;
     private Animation spawnBulletAnim;
     private Animation deadShipAnim;
+
+    private Random random;
 
     // * Constructor
 
@@ -23,8 +26,11 @@ public class VisualGameModel {
         this.visualObjectsList = new ArrayList<>();
 
         this.physicsEngine = new PhysicsEngine();
-        // todo animations
-
+        this.random  = new Random();
+        
+        this.deadBulletAnim = new Animation(false, VisualConstants.impactexplosionduration, visualGameController.getAssetsManager().getBulletExplosionAnimation());
+        this.deadShipAnim = new Animation(false, VisualConstants.spaceshipexplosionduration, visualGameController.getAssetsManager().getSpaceShipExplosionAnimation());
+        this.spawnBulletAnim = new Animation(false, VisualConstants.shootbulletduration, visualGameController.getAssetsManager().getLaserSparkleAnimation());
     }
 
     // * Getters
@@ -81,7 +87,7 @@ public class VisualGameModel {
     }
 
     public void killObject(VisualObject visualObject) {
-        visualObject.kill();
+        visualObject.kill(visualGameController.getVisualGameView().getBufferStrategyGraphics());
         visualObjectsList.remove(visualObject);
     }
 
@@ -109,10 +115,15 @@ public class VisualGameModel {
 
     public SpaceShip createSpaceship(int accountId, Team team) {
 
+        double maxX = (double) visualGameController.getVisualGameView().getScreenWidth();
+        double maxY = (double) visualGameController.getVisualGameView().getScreenHeight();
+        double randomX = random.nextDouble(maxX);
+        double randomY = random.nextDouble(maxY);
+
         SpaceShip newSpaceShip = new SpaceShip(0,
                 team.getTeamName() == TeamName.RED ? visualGameController.getAssetsManager().getSpaceShipA()
                         : visualGameController.getAssetsManager().getSpaceShipB(),
-                new Position(0, 0), 100, accountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
+                new Position(randomX, randomY), 100, accountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
                 VisualConstants.velocitySpaceship, 0);
 
         addToVisualObjectList(newSpaceShip);
