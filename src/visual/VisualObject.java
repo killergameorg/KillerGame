@@ -134,6 +134,22 @@ public abstract class VisualObject implements Runnable {
         this.setLife(this.getLife()-damage);
     }
 
+    
+
+    /**
+     * @return the team
+     */
+    public Team getTeam() {
+        return team;
+    }
+
+    /**
+     * @param team the team to set
+     */
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
     @Override
     public void run() {
     }

@@ -1,6 +1,8 @@
 package lobby;
 
+import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.LobbyModel;
+import lobby.lobbyView.LobbyView;
 import maincontroller.gameinfo.Account;
 
 import java.lang.reflect.Field;
@@ -40,12 +42,13 @@ public class test_dinamico {
     }
 
     public static void main(String[] args) {
-        LobbyModel lobbyModel = new LobbyModel(null);
-        Account a = new Account(null, null);
-        lobbyModel.beforeGameRulePosition();
-        lobbyModel.nextGameRulePosition();
-        lobbyModel.nextGameRulePosition();
-        lobbyModel.nextGameRulePosition();
+        LobbyController lobbyController = new LobbyController();
+        LobbyView lobbyView = new LobbyView(lobbyController);
+        lobbyController.setLobbyView(lobbyView);
+        LobbyModel lobbyModel = new LobbyModel(lobbyController);
+        lobbyController.setLobbyModel(lobbyModel);
+        lobbyModel.minusGameRuleValue();
+        System.out.println(lobbyModel.getDinamicRules().toString());
     }
 
 }

@@ -10,7 +10,10 @@ public class ConfigurationFileController {
 
     // ! Attributes
     private String path;
+
     private int id;
+    private int sleepWhileKnowConnections;
+    private int timeToWaitForVotesFromConfig;
 
     // ! Constructor
     public ConfigurationFileController(String path) throws FileNotFoundException, IOException {
@@ -27,7 +30,8 @@ public class ConfigurationFileController {
         properties.load(new FileInputStream(new File(this.getPath())));
 
         this.setId(Integer.parseInt(properties.getProperty("id")));
-        // Add more properties here if needed
+        this.setSleepWhileKnowConnections(Integer.parseInt(properties.getProperty("sleepWhileKnowConnections")));
+        this.setTimeToWaitForVotesFromConfig(Integer.parseInt(properties.getProperty("timeToWaitForVotesFromConfig")));
 
     }
 
@@ -58,6 +62,34 @@ public class ConfigurationFileController {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return the sleepWhileKnowConnections
+     */
+    public int getSleepWhileKnowConnections() {
+        return sleepWhileKnowConnections;
+    }
+
+    /**
+     * @param sleepWhileKnowConnections the sleepWhileKnowConnections to set
+     */
+    public void setSleepWhileKnowConnections(int sleepWhileKnowConnections) {
+        this.sleepWhileKnowConnections = sleepWhileKnowConnections;
+    }
+
+    /**
+     * @return the timeToWaitForVotesFromConfig
+     */
+    public int getTimeToWaitForVotesFromConfig() {
+        return timeToWaitForVotesFromConfig;
+    }
+
+    /**
+     * @param timeToWaitForVotesFromConfig the timeToWaitForVotesFromConfig to set
+     */
+    public void setTimeToWaitForVotesFromConfig(int timeToWaitForVotesFromConfig) {
+        this.timeToWaitForVotesFromConfig = timeToWaitForVotesFromConfig;
     }
 
 }
