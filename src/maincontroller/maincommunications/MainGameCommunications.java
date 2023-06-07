@@ -173,6 +173,7 @@ public class MainGameCommunications implements P2PCommListener {
 
             } else if (packageMainCommunications instanceof Action) {
                 Action action = (Action) packageMainCommunications;
+
                 // TODO: Hacer una controladora para estas cosas
                 if (action instanceof PointWinAction) {
                     PointWinAction pointWinAction = (PointWinAction) action;
@@ -313,6 +314,18 @@ public class MainGameCommunications implements P2PCommListener {
 
     public ArrayList<Team> getTeams() {
         return this.getMainGameModel().getTeams();
+    }
+
+    public void startEndGame() {
+        this.getMainGameModel().startEndGame();
+    }
+
+    public int getScreenHeight() {
+        return this.getMainGameModel().getScreenHeight();
+    }
+
+    public int getScreenWidth() {
+        return this.getMainGameModel().getScreenWidth();
     }
 
     // ! Getters and Setters

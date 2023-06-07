@@ -130,22 +130,16 @@ public class MoveWindowVisualObjectController {
         );
 
         if (directionFrom == Direction.UP) {
-            // TODO: Tengo dudas de si aquí deberías ser 0 o el size de la pantalla
-            position.setyPos(0);
+            position.setyPos(1);
 
         } else if (directionFrom == Direction.DOWN) {
-            // TODO: Misma duda que arriba, el departamento visual me tiene que decir el
-            // TODO: método para coger el tamaño de la pantalla (Alto y ancho)
-            position.setyPos(100);
+            position.setyPos(this.getScreenHeight());
 
         } else if (directionFrom == Direction.LEFT) {
-            position.setxPos(0);
+            position.setxPos(1);
 
         } else if (directionFrom == Direction.RIGHT) {
-            // TODO: El departamento visual me tiene que decir el método para coger el
-            // TODO: tamaño de la pantalla (Alto y ancho)
-            position.setxPos(100);
-
+            position.setxPos(this.getScreenWidth());
         }
 
         return position;
@@ -184,6 +178,14 @@ public class MoveWindowVisualObjectController {
 
     private ArrayList<Team> getTeams() {
         return this.getClusterCommunicationsController().getTeams();
+    }
+
+    private int getScreenHeight() {
+        return this.getClusterCommunicationsController().getScreenHeight();
+    }
+
+    private int getScreenWidth() {
+        return this.getClusterCommunicationsController().getScreenWidth();
     }
 
     // ! Getters and Setters

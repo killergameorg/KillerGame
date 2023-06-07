@@ -41,14 +41,6 @@ public class SoundServerConnectionController {
         );
     }
 
-    public void onIncomingMessage(String ip, Object object) {
-
-        // TODO: Preguntar a Sergio si me va a enviar algo en algún momento (OJO, esto
-        // TODO: puedo usarlo para el envío de atributos en el proceso de conocerse
-        // TODO: entre conexiones)
-
-    }
-
     public boolean removeConnection(String ip) {
 
         boolean found = false;

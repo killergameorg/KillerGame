@@ -2,7 +2,7 @@ package maincontroller.maincommunications.soundserver.packages;
 
 public enum MusicType {
     COMBAT("combat.mp3"),
-    CALMA("calma.wav");
+    CALMA("calma.mp3");
 
     // MUSIC3(SoundFile.SOUND3);
     private final String fileName;

@@ -10,6 +10,8 @@ import events.MoveWindowVisualObjectAction;
 import events.PointWinAction;
 import events.TeamActions;
 import events.VisualObjectAction;
+import maincontroller.gameinfo.GameState;
+import maincontroller.maincommunications.soundserver.packages.SoundType;
 import visual.VisualObject;
 
 public class NotificationsActionsProcessor {
@@ -74,9 +76,7 @@ public class NotificationsActionsProcessor {
      * @throws Exception
      */
     private void processActionLifeDecrease(LifeDecreaseAction lifeDecreaseAction) throws Exception {
-
-        // TODO: Sonido que no existe y podría molar this.playSound(SoundType.???)
-
+        this.playSound(SoundType.HIT);
         this.decreaseLifeVisualObject(
                 lifeDecreaseAction.getVisualObject(),
                 lifeDecreaseAction.getLifeDowngrade()
@@ -101,7 +101,6 @@ public class NotificationsActionsProcessor {
      * @param explosionAction The action to process
      */
     private void processActionExplosion(ExplosionAction explosionAction) {
-        // TODO: Ask to the visual department about the kill visual object
         this.getNotificationsManager().processActionExplosion(explosionAction);
     }
 
@@ -112,6 +111,18 @@ public class NotificationsActionsProcessor {
 
     private void updateVisualObjectPosition(VisualObject visualObject) {
         this.getNotificationsManager().updateVisualObjectPosition(visualObject);
+    }
+
+    private void setGameState(GameState gameState) {
+        this.getNotificationsManager().setGameState(gameState);
+    }
+
+    private void tryApplyingToMaster() {
+        this.getNotificationsManager().tryApplyingToMaster();
+    }
+
+    private void playSound(SoundType soundType) {
+        this.getNotificationsManager().playSound(soundType);
     }
 
     // ! ProcessActionsTeams
@@ -136,7 +147,8 @@ public class NotificationsActionsProcessor {
     }
 
     private void processActionGameWin(GameWinAction gameWinAction) {
-        // TODO
+        this.setGameState(GameState.GAME_END);
+        this.tryApplyingToMaster();
     }
 
     // ! Getters and Setters

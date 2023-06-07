@@ -75,9 +75,6 @@ public class KnowNewConnectionController {
 
                 this.setSoundServer(ip);
 
-                // TODO: Tengo que hablar con Sergio por si quisiera que le enviara algún
-                // TODO: atributo al principio de la conexión o no
-
                 this.getKnownConnections().remove(ip);
 
             } else if (packageSendType.getTypeNewConnection() == TypeNewConnection.CLUSTER) {

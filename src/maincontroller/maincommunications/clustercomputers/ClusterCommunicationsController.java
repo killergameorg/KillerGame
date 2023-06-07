@@ -166,6 +166,22 @@ public class ClusterCommunicationsController {
         return this.getMainGameCommunications().getTeams();
     }
 
+    public GameState getGameState() {
+        return this.getMainGameCommunications().getGameState();
+    }
+
+    public void startEndGame() {
+        this.getMainGameCommunications().startEndGame();
+    }
+
+    public int getScreenHeight() {
+        return this.getMainGameCommunications().getScreenHeight();
+    }
+
+    public int getScreenWidth() {
+        return this.getMainGameCommunications().getScreenWidth();
+    }
+
     // ! Getters and Setters
 
     /**
