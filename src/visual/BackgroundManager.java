@@ -58,7 +58,7 @@ public class BackgroundManager {
 
     }
     private void obtainScreenID() {
-        screenID = visualGameView.getVisualGameController().getMainGameController().getScreenID();
+        screenID = String.valueOf(visualGameView.getVisualGameController().getMainGameController().getConfigurationFileId());
         //screenID = 1;
     }
     // ! Getters and Setters

@@ -3,9 +3,6 @@ package visual;
 import java.awt.geom.AffineTransform;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
-import visual.Direction;
-import visual.VisualObject;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import maincontroller.gameinfo.Team;
 

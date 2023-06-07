@@ -5,7 +5,11 @@ import java.util.HashMap;
 
 import events.Action;
 import events.ExplosionAction;
+import events.MoveWindowVisualObjectAction;
+import events.PointWinAction;
 import maincontroller.MainGameModel;
+import maincontroller.gameinfo.GameState;
+import maincontroller.maincommunications.soundserver.packages.SoundType;
 import visual.NotificationMsg;
 import visual.NotificationType;
 import visual.VisualObject;
@@ -29,7 +33,7 @@ public class NotificationsManager {
         HashMap<NotificationType, NotificationProcessor> notificationHashMap = new HashMap<NotificationType, NotificationProcessor>();
 
         notificationHashMap.put(
-                NotificationType.POSITION_UPDATE,
+                NotificationType.positionUpdate,
                 new NotificationProcessorPositionUpdate(this.getMainGameModel()));
 
         // Can add more notifications here if needed in the future
@@ -43,8 +47,9 @@ public class NotificationsManager {
      * Process a notification
      * 
      * @param notificationMsg The notification to process
+     * @throws Exception
      */
-    public void processNotification(NotificationMsg notificationMsg) {
+    public void processNotification(NotificationMsg notificationMsg) throws Exception {
 
         VisualObject visualObject = notificationMsg.getVisualObject();
         NotificationType notificationType = notificationMsg.getNotificationType();
@@ -64,12 +69,32 @@ public class NotificationsManager {
         this.getMainGameModel().updateVisualObjectPosition(visualObject);
     }
 
-    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) {
+    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) throws Exception {
         this.getMainGameModel().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 
     public void processActionExplosion(ExplosionAction explosionAction) {
         this.getMainGameModel().processActionExplosion(explosionAction);
+    }
+
+    public void processActionMoveWindowVisualObject(MoveWindowVisualObjectAction moveWindowVisualObjectAction) {
+        this.getMainGameModel().processActionMoveWindowVisualObject(moveWindowVisualObjectAction);
+    }
+
+    public void processActionPointWin(PointWinAction pointWinAction) {
+        this.getMainGameModel().processActionPointWin(pointWinAction);
+    }
+
+    public void setGameState(GameState gameState) {
+        this.getMainGameModel().setGameState(gameState);
+    }
+
+    public void tryApplyingToMaster() {
+        this.getMainGameModel().tryApplyingToMaster();
+    }
+
+    public void playSound(SoundType soundType) {
+        this.getMainGameModel().playSound(soundType);
     }
 
     // ! Getters and Setters

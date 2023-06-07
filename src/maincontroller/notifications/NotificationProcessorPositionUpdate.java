@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import events.Action;
 import events.Colision;
+import events.MoveWindowVisualObjectAction;
 import maincontroller.MainGameModel;
+import visual.Direction;
 import visual.DynamicVisualObject;
 import visual.Position;
 import visual.VisualObject;
@@ -22,9 +24,21 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
     // ! NotificationsProcessor methods
     @Override
     public ArrayList<Action> processNotification(VisualObject visualObject) {
+
+        if (!(visualObject instanceof DynamicVisualObject)) {
+            /*
+             * This should never be true, the visual department should
+             * not send an object other than DynamicVisualObject
+             */
+            throw new IllegalArgumentException("The visual object must be dynamic");
+        }
+
+        DynamicVisualObject dynamicVisualObject = (DynamicVisualObject) visualObject;
+
         ArrayList<Action> actions = new ArrayList<Action>();
 
-        actions.addAll(this.checkCollision(visualObject));
+        actions.addAll(this.checkCollision(dynamicVisualObject));
+        actions.addAll(this.checkWindowLimits(dynamicVisualObject));
 
         return actions;
     }
@@ -36,37 +50,80 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
      * @param visualObject The visual object to check the collision
      * @return ArrayList<Action> with all the actions to process after the check
      */
-    private ArrayList<Action> checkCollision(VisualObject visualObject) {
+    private ArrayList<Action> checkCollision(DynamicVisualObject dynamicVisualObject) {
         ArrayList<Action> actions = new ArrayList<Action>();
 
-        if (!(visualObject instanceof DynamicVisualObject)) {
-            /*
-             * This should never be true, the visual department should
-             * not send an object other than DynamicVisualObject
-             */
-            throw new IllegalArgumentException("The visual object must be dynamic");
+        int heightPrimaryVisualObject = dynamicVisualObject.getSkin().getHeight();
+        int widthPrimaryVisualObject = dynamicVisualObject.getSkin().getWidth();
 
-        } else {
-            Position positionFuture = ((DynamicVisualObject) visualObject).getPositionFuture();
-            ArrayList<VisualObject> visualObjects = this.getVisualObjects();
+        Position positionFuture = dynamicVisualObject.getFuturePosition();
+        ArrayList<VisualObject> visualObjects = this.getVisualObjects();
 
-            for (int i = 0; i < visualObjects.size(); i++) {
+        for (int i = 0; i < visualObjects.size(); i++) {
 
-                // TODO: Check the collision using the size of the objects, i need to know the
-                // TODO: size of the objects to do this (Ask to the visual department)
-                if (!visualObjects.get(i).equals(visualObject) &&
-                        visualObjects.get(i).getPosition().getxPos() == positionFuture.getxPos() &&
-                        visualObjects.get(i).getPosition().getyPos() == positionFuture.getyPos()) {
+            int heightSecondaryVisualObject = visualObjects.get(i).getSkin().getHeight();
+            int widthSecondaryVisualObject = visualObjects.get(i).getSkin().getWidth();
 
-                    Colision colision = new Colision(visualObject, visualObjects.get(i));
-                    actions.addAll(this.processEvent(colision));
-                }
+            // TODO: --------------------------------------------------------------------
 
+            if (!visualObjects.get(i).equals(dynamicVisualObject) &&
+                    visualObjects.get(i).getPosition().getxPos() == positionFuture.getxPos() &&
+                    visualObjects.get(i).getPosition().getyPos() == positionFuture.getyPos()) {
+
+                Colision colision = new Colision(dynamicVisualObject, visualObjects.get(i));
+                actions.addAll(this.processEvent(colision));
             }
 
         }
 
         return actions;
+    }
+
+    private ArrayList<Action> checkWindowLimits(DynamicVisualObject dynamicVisualObject) {
+        ArrayList<Action> actions = new ArrayList<Action>();
+
+        Position positionFuture = dynamicVisualObject.getFuturePosition();
+
+        if (positionFuture.getyPos() > this.getScreenHeight()) {
+
+            actions.add(new MoveWindowVisualObjectAction(
+                    dynamicVisualObject,
+                    Direction.DOWN,
+                    Direction.UP
+
+            ));
+
+        } else if (positionFuture.getyPos() < 1) {
+
+            actions.add(new MoveWindowVisualObjectAction(
+                    dynamicVisualObject,
+                    Direction.UP,
+                    Direction.DOWN
+
+            ));
+
+        } else if (positionFuture.getxPos() > this.getScreenWidth()) {
+
+            actions.add(new MoveWindowVisualObjectAction(
+                    dynamicVisualObject,
+                    Direction.LEFT,
+                    Direction.RIGHT
+
+            ));
+
+        } else if (positionFuture.getxPos() < 0) {
+
+            actions.add(new MoveWindowVisualObjectAction(
+                    dynamicVisualObject,
+                    Direction.RIGHT,
+                    Direction.LEFT
+
+            ));
+
+        }
+
+        return actions;
+
     }
 
     private ArrayList<Action> processEvent(Colision colision) {
@@ -80,6 +137,14 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
      */
     private ArrayList<VisualObject> getVisualObjects() {
         return this.getMainGameModel().getVisualObjects();
+    }
+
+    private int getScreenHeight() {
+        return this.getMainGameModel().getScreenHeight();
+    }
+
+    private int getScreenWidth() {
+        return this.getMainGameModel().getScreenWidth();
     }
 
     // ! Getters and Setters
