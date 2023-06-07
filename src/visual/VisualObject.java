@@ -124,9 +124,8 @@ public abstract class VisualObject implements Runnable {
 
     public abstract void calculateNewPosition();
 
-    public void kill() {
-        // todo
-        // deadAnim.play(this, );
+    public void kill(Graphics g) {
+        deadAnim.playAnimation(this, g);
         setIsAlive(false);
     }
 
