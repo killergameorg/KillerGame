@@ -1,5 +1,6 @@
 package visual;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
