@@ -161,8 +161,6 @@ public class MainGameModel {
                 );
 
             } else if (packageJoystick.isShoot()) {
-
-                // TODO: Preguntar a ver que les parece usar los sonidos así
                 this.playSound(SoundType.LASER);
                 this.getMainGameController().createVisualObjectBullet(
                         idAccount
@@ -303,7 +301,7 @@ public class MainGameModel {
         this.getMainGameController().setSlave();
     }
 
-    private void playSound(SoundType soundType) {
+    public void playSound(SoundType soundType) {
         this.getMainGameCommunications().playSound(soundType);
     }
 
@@ -358,6 +356,34 @@ public class MainGameModel {
     private SpaceShip createVisualObjectControllableSpaceShip(int accountId, Team team) {
         return this.getMainGameController().createVisualObjectControllableSpaceShip(accountId, team);
     }
+
+    public void startEndGame() {
+
+        Team team1 = null;
+        Team team2 = null;
+        for (int i = 0; i < this.getTeams().size(); i++) {
+            Team team = this.getTeams().get(i);
+            if (team.getTeamName() != TeamName.MACHINE) {
+                if (team1 == null) {
+                    team1 = team;
+                } else if (team2 == null) {
+                    team2 = team;
+                }
+            }
+        }
+
+
+        this.getMainGameController().startEndGame(team1, team2);
+    }
+
+    public int getScreenHeight() {
+        return this.getMainGameController().getScreenHeight();
+    }
+
+    public int getScreenWidth() {
+        return this.getMainGameController().getScreenWidth();
+    }
+
 
     // ! Getters and Setters
     /**

@@ -53,13 +53,19 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
     private ArrayList<Action> checkCollision(DynamicVisualObject dynamicVisualObject) {
         ArrayList<Action> actions = new ArrayList<Action>();
 
+        int heightPrimaryVisualObject = dynamicVisualObject.getSkin().getHeight();
+        int widthPrimaryVisualObject = dynamicVisualObject.getSkin().getWidth();
+
         Position positionFuture = dynamicVisualObject.getFuturePosition();
         ArrayList<VisualObject> visualObjects = this.getVisualObjects();
 
         for (int i = 0; i < visualObjects.size(); i++) {
 
-            // TODO: Check the collision using the size of the objects, i need to know the
-            // TODO: size of the objects to do this (Ask to the visual department)
+            int heightSecondaryVisualObject = visualObjects.get(i).getSkin().getHeight();
+            int widthSecondaryVisualObject = visualObjects.get(i).getSkin().getWidth();
+
+            // TODO: --------------------------------------------------------------------
+
             if (!visualObjects.get(i).equals(dynamicVisualObject) &&
                     visualObjects.get(i).getPosition().getxPos() == positionFuture.getxPos() &&
                     visualObjects.get(i).getPosition().getyPos() == positionFuture.getyPos()) {
@@ -78,8 +84,7 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
 
         Position positionFuture = dynamicVisualObject.getFuturePosition();
 
-        // TODO: El departamento Visual me tiene que decir el tamaño de la ventana
-        if (positionFuture.getyPos() > 100) {
+        if (positionFuture.getyPos() > this.getScreenHeight()) {
 
             actions.add(new MoveWindowVisualObjectAction(
                     dynamicVisualObject,
@@ -88,7 +93,7 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
 
             ));
 
-        } else if (positionFuture.getyPos() < 0) {
+        } else if (positionFuture.getyPos() < 1) {
 
             actions.add(new MoveWindowVisualObjectAction(
                     dynamicVisualObject,
@@ -97,7 +102,7 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
 
             ));
 
-        } else if (positionFuture.getxPos() > 100) {
+        } else if (positionFuture.getxPos() > this.getScreenWidth()) {
 
             actions.add(new MoveWindowVisualObjectAction(
                     dynamicVisualObject,
@@ -132,6 +137,14 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
      */
     private ArrayList<VisualObject> getVisualObjects() {
         return this.getMainGameModel().getVisualObjects();
+    }
+
+    private int getScreenHeight() {
+        return this.getMainGameModel().getScreenHeight();
+    }
+
+    private int getScreenWidth() {
+        return this.getMainGameModel().getScreenWidth();
     }
 
     // ! Getters and Setters

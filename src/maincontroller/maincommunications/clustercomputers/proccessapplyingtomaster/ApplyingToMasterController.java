@@ -59,8 +59,13 @@ public class ApplyingToMasterController implements Runnable {
 
         if (idMaster == this.getMyId()) {
             this.setMaster();
-            this.createTeams();
-            this.startLobby();
+
+            if (this.getGameState() == GameState.UNDEFINED) {
+                this.createTeams();
+                this.startLobby();
+            } else if (this.getGameState() == GameState.GAME_END) {
+                this.startEndGame();
+            }
 
         } else {
             this.setSlave();
@@ -174,6 +179,14 @@ public class ApplyingToMasterController implements Runnable {
 
     private void setGameState(GameState gameState) {
         this.getClusterCommunicationsController().setGameState(gameState);
+    }
+
+    private GameState getGameState() {
+        return this.getClusterCommunicationsController().getGameState();
+    }
+
+    private void startEndGame() {
+        this.getClusterCommunicationsController().startEndGame();
     }
 
     // ! Getters and Setters
