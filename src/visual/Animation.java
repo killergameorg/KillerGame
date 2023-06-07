@@ -100,6 +100,7 @@ public class Animation {
      * }
      * }
      * }
+     * 
      * });
      * animationThread.start();
      * }
