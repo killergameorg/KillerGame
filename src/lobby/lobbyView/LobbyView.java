@@ -3,10 +3,15 @@ package lobby.lobbyView;
 import lobby.lobbyController.LobbyController;
 import lobby.lobbyModel.GameRules;
 import lobby.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class LobbyView extends JFrame implements ActionListener {
 
@@ -15,6 +20,8 @@ public class LobbyView extends JFrame implements ActionListener {
     private Image image;
     private Timer timer;
     private int y;
+    private BufferedImage backgroundImage;
+    private Image[] backgroundImages;
 
     /**
      * Frame for the Lobby
@@ -23,6 +30,16 @@ public class LobbyView extends JFrame implements ActionListener {
      * 
      */
     public LobbyView(LobbyController lobbyController) {
+        backgroundImages = new Image[4];
+        try {
+            backgroundImages[0] = ImageIO.read(new File("src/visual/img/backgrounds/theme1/background5.png"));
+            backgroundImages[1] = ImageIO.read(new File("src/visual/img/backgrounds/theme2/background5.png"));
+            backgroundImages[2] = ImageIO.read(new File("src/visual/img/backgrounds/theme3/background5.png"));
+            backgroundImages[3] = ImageIO.read(new File("src/visual/img/backgrounds/theme4/background5.png"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         timer = new Timer(50, this);
         this.lobbyController = lobbyController;
         viewer = new Viewer();
@@ -78,14 +95,18 @@ public class LobbyView extends JFrame implements ActionListener {
      * 
      */
     public void addComponents() {
+
+        this.backgroundImage = (BufferedImage) backgroundImages[0];
+
         JPanel background = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(new ImageIcon("src/lobby/gameAssets/2space.jpg").getImage(), 0, 0, getWidth(), getHeight(),
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(),
                         this);
             }
         };
+
         background.setLayout(new BorderLayout());
 
         JPanel centerPanel = new JPanel();
@@ -105,6 +126,11 @@ public class LobbyView extends JFrame implements ActionListener {
         this.setContentPane(background);
     }
 
+    public void chageBaground(Image imagen) {
+        this.backgroundImage = (BufferedImage) imagen;
+        repaint();
+    }
+
     /**
      * @param players
      *                refresh number of players in game
@@ -117,6 +143,10 @@ public class LobbyView extends JFrame implements ActionListener {
         viewer.getLifesnum().setText(String.valueOf(gameRules.getDinamicGameRule().getLife()));
         viewer.getBulletDamagenum().setText(String.valueOf(gameRules.getDinamicGameRule().getBulletDamage()));
         viewer.getMapnum().setText(String.valueOf(gameRules.getDinamicGameRule().getMap()));
+
+        int indexMap = Maps.valueOf(gameRules.getDinamicGameRule().getMap().toString()).ordinal();
+        chageBaground(backgroundImages[indexMap]);
+
     }
 
     private void KillDemon() {
@@ -151,4 +181,5 @@ public class LobbyView extends JFrame implements ActionListener {
             KillDemon();
         }
     }
+
 }

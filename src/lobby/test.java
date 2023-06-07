@@ -18,12 +18,13 @@ public class test {
         lobbyController.setLobbyView(lobbyView);
         LobbyModel lobbyModel = new LobbyModel(lobbyController);
         lobbyController.setLobbyModel(lobbyModel);
+        
 
-        Team t1= new Team(TeamName.RED);
-        t1.setScore(100);
-        Team t2= new Team(TeamName.BLUE);
-        t2.setScore(500);
-        lobbyController.startEndView(t1,t2);
+        // Team t1= new Team(TeamName.RED);
+        // t1.setScore(100);
+        // Team t2= new Team(TeamName.BLUE);
+        // t2.setScore(500);
+        // lobbyController.startEndView(t1,t2);
 
         lobbyView.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
