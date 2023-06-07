@@ -41,9 +41,8 @@ public class MainGameController {
 
         this.setMainGameModel(new MainGameModel(this, pathConfigurationFile));
 
-        this.setLobbyController(new LobbyController());
+        this.setLobbyController(new LobbyController(this));
         this.setEventsGameController(new EventsGameController(this));
-        this.setVisualGameController(new VisualGameController(this));
 
     }
 

@@ -28,9 +28,9 @@ public class VisualGameModel {
         this.physicsEngine = new PhysicsEngine();
         this.random  = new Random();
         
-        this.deadBulletAnim = new Animation(false, VisualConstants.impactexplosionduration, visualGameController.getAssetsManager().getBulletExplosionAnimation());
-        this.deadShipAnim = new Animation(false, VisualConstants.spaceshipexplosionduration, visualGameController.getAssetsManager().getSpaceShipExplosionAnimation());
-        this.spawnBulletAnim = new Animation(false, VisualConstants.shootbulletduration, visualGameController.getAssetsManager().getLaserSparkleAnimation());
+        this.deadBulletAnim = new Animation(false, VisualConstants.impactexplosionduration, this.visualGameController.getAssetsManager().getBulletExplosionAnimation());
+        this.deadShipAnim = new Animation(false, VisualConstants.spaceshipexplosionduration, this.visualGameController.getAssetsManager().getSpaceShipExplosionAnimation());
+        this.spawnBulletAnim = new Animation(false, VisualConstants.shootbulletduration, this.visualGameController.getAssetsManager().getLaserSparkleAnimation());
     }
 
     // * Getters

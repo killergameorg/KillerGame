@@ -20,8 +20,8 @@ public class LobbyController {
 
     // Constructor
     // When created, it asks the maincontroller to apply the master
-    public LobbyController() {
-        this.mainGameController.applyingToMaster();
+    public LobbyController(MainGameController mainGameController) {
+        this.mainGameController = mainGameController;
         System.out.println("Pedir ser master");
         this.status = MasterStatus.ApplyingToMaster;
     }
@@ -91,10 +91,12 @@ public class LobbyController {
      * by using one of these thwo method.
      */
     public void setSlave() {
+        System.out.println("Soy Slave");
         this.status = MasterStatus.LobbySlave;
     }
 
     public void setMaster() {
+        System.out.println("Soy Master");
         this.status = MasterStatus.LobbyMaster;
     }
 

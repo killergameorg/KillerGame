@@ -19,11 +19,11 @@ public class VisualGameController {
 
     public VisualGameController(MainGameController mainGameController) {
         this.mainGameController = mainGameController;
+        
+        this.assetsManager = new AssetsManager();
 
         this.visualGameModel = new VisualGameModel(this);
         this.visualGameView = new VisualGameView(this);
-
-        this.assetsManager = new AssetsManager();
     }
 
     // * Getters & Setters
