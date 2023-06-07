@@ -31,7 +31,7 @@ public class NotificationsManager {
         HashMap<NotificationType, NotificationProcessor> notificationHashMap = new HashMap<NotificationType, NotificationProcessor>();
 
         notificationHashMap.put(
-                NotificationType.POSITION_UPDATE,
+                NotificationType.positionUpdate,
                 new NotificationProcessorPositionUpdate(this.getMainGameModel()));
 
         // Can add more notifications here if needed in the future
@@ -67,7 +67,7 @@ public class NotificationsManager {
         this.getMainGameModel().updateVisualObjectPosition(visualObject);
     }
 
-    public void decreaseLifeVisualObject(VisualObject visualObject, int lifeDowngrade) throws Exception {
+    public void decreaseLifeVisualObject(VisualObject visualObject, float lifeDowngrade) throws Exception {
         this.getMainGameModel().decreaseLifeVisualObject(visualObject, lifeDowngrade);
     }
 

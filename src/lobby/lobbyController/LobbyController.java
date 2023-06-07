@@ -8,7 +8,6 @@ import lobby.lobbyModel.LobbyModel;
 import lobby.lobbyView.LobbyView;
 import maincontroller.MainGameController;
 import maincontroller.gameinfo.Team;
-import maincontroller.gameinfo.TeamName;
 
 public class LobbyController {
 

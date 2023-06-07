@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import events.MoveWindowVisualObjectAction;
 import maincontroller.gameinfo.GameState;
+import maincontroller.gameinfo.Team;
 import maincontroller.maincommunications.MainGameCommunications;
 import maincontroller.maincommunications.clustercomputers.movewindowvisualobject.MoveWindowVisualObjectController;
 import maincontroller.maincommunications.clustercomputers.movewindowvisualobject.packages.PackageMoveWindowVisualObject;
@@ -159,6 +160,10 @@ public class ClusterCommunicationsController {
 
     public void loadIdClusterDirection(int idNewCluster) {
         this.getMoveWindowVisualObjectController().loadIdClusterDirection(idNewCluster);
+    }
+
+    public ArrayList<Team> getTeams() {
+        return this.getMainGameCommunications().getTeams();
     }
 
     // ! Getters and Setters

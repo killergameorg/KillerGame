@@ -10,6 +10,7 @@ import events.PointWinAction;
 import lobby.lobbyModel.GameRules;
 import maincontroller.MainGameModel;
 import maincontroller.gameinfo.GameState;
+import maincontroller.gameinfo.Team;
 import maincontroller.maincommunications.clustercomputers.ClusterCommunicationsController;
 import maincontroller.maincommunications.clustercomputers.packages.PackageClusterCommunications;
 import maincontroller.maincommunications.mobiles.MobileCommunicationsController;
@@ -308,6 +309,10 @@ public class MainGameCommunications implements P2PCommListener {
 
     public void setGameRules(GameRules gameRules) {
         this.getMainGameModel().setGameRules(gameRules);
+    }
+
+    public ArrayList<Team> getTeams() {
+        return this.getMainGameModel().getTeams();
     }
 
     // ! Getters and Setters

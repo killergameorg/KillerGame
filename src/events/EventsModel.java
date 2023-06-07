@@ -1,15 +1,13 @@
 package events;
 
 import java.util.ArrayList;
-import java.util.Map;
 
+import lobby.Maps;
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Team;
 import maincontroller.gameinfo.TeamName;
 import visual.Bullet;
-import visual.Maps;
-import visual.PowerUp;
-import visual.Ship;
+import visual.SpaceShip;
 import visual.VisualObject;
 
 public class EventsModel {
@@ -63,7 +61,7 @@ public class EventsModel {
 
         ArrayList<Action> actions = new ArrayList<>();
 
-        if (visualObject2 instanceof Ship || visualObject2 instanceof Bullet) {
+        if (visualObject2 instanceof SpaceShip || visualObject2 instanceof Bullet) {
             if (!visualObject1.getTeam().equals(visualObject2.getTeam())) {
                 actions.addAll(processLifeDecrease(visualObject2, visualObject1));
             }
@@ -72,7 +70,7 @@ public class EventsModel {
             actions.addAll(processLifeDecrease(visualObject2, visualObject1));
         }
 
-        if (visualObject1 instanceof Ship || visualObject1 instanceof Bullet) {
+        if (visualObject1 instanceof SpaceShip || visualObject1 instanceof Bullet) {
             if (!visualObject2.getTeam().equals(visualObject1.getTeam())) {
                 actions.addAll(processLifeDecrease(visualObject1, visualObject2));
             }
@@ -95,13 +93,13 @@ public class EventsModel {
     public ArrayList<Action> processLifeDecrease(VisualObject emisor, VisualObject receiver) {
         ArrayList<Action> actions = new ArrayList<>();
 
-        if (emisor instanceof Ship) {
-            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getColisionDamage()));
+        if (emisor instanceof SpaceShip) {
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getStaticGameRule().getColisionDamage()));
 
-            if ((receiver.getLife() - this.gameRules.getColisionDamage()) <= 0) {
+            if ((receiver.getLife() - this.gameRules.getStaticGameRule().getColisionDamage()) <= 0) {
                 actions.addAll((processDeath(receiver)));
 
-                if (receiver instanceof Ship) {
+                if (receiver instanceof SpaceShip) {
                     Team teamEmisor = emisor.getTeam();
                     if (teamEmisor.getTeamName() == TeamName.MACHINE) {
                         if (receiver.getTeam().getTeamName() == TeamName.BLUE) {
@@ -116,12 +114,12 @@ public class EventsModel {
             }
 
         } else if (emisor instanceof Bullet) {
-            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getBulletDamage()));
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getDinamicGameRule().getBulletDamage()));
 
-            if ((receiver.getLife() - this.gameRules.getBulletDamage()) <= 0) {
+            if ((receiver.getLife() - this.gameRules.getDinamicGameRule().getBulletDamage()) <= 0) {
                 actions.addAll((processDeath(receiver)));
 
-                if (receiver instanceof Ship) {
+                if (receiver instanceof SpaceShip) {
                     Team teamEmisor = emisor.getTeam();
                     if (teamEmisor.getTeamName() == TeamName.MACHINE) {
                         if (receiver.getTeam().getTeamName() == TeamName.BLUE) {
@@ -139,12 +137,12 @@ public class EventsModel {
             actions.addAll((processDeath(emisor)));
 
         } else {
-            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getColisionDamage()));
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getStaticGameRule().getColisionDamage()));
 
-            if ((receiver.getLife() - this.gameRules.getColisionDamage()) <= 0) {
+            if ((receiver.getLife() - this.gameRules.getStaticGameRule().getColisionDamage()) <= 0) {
                 actions.addAll((processDeath(receiver)));
 
-                if (receiver instanceof Ship) {
+                if (receiver instanceof SpaceShip) {
                     Team teamContraryReceiver = null;
                     if (receiver.getTeam().getTeamName() == TeamName.BLUE) {
                         teamContraryReceiver = this.contraryTeam(TeamName.BLUE);
@@ -203,7 +201,7 @@ public class EventsModel {
         ArrayList<Action> actions = new ArrayList<>();
         actions.add(new PointWinAction(team));
 
-        if ((team.getScore() + 1) == this.gameRules.getWinScore().get(team.getTeamName())) {
+        if ((team.getScore() + 1) == this.gameRules.getStaticGameRule().getWinScore().get(team.getTeamName())) {
             actions.addAll(processGameWin(team));
         }
         return actions;
@@ -221,7 +219,7 @@ public class EventsModel {
     }
 
     public Maps getMap() {
-        return this.gameRules.getMap();
+        return this.gameRules.getDinamicGameRule().getMap();
     }
 
     private Team contraryTeam(TeamName teamName) {

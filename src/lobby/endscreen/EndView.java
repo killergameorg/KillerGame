@@ -2,11 +2,8 @@ package lobby.endscreen;
 
 import javax.swing.*;
 
-import lobby.endscreen.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class EndView extends JFrame {
     Viewer viewer;

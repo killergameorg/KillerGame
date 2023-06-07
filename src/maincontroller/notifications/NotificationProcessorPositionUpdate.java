@@ -53,7 +53,7 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
     private ArrayList<Action> checkCollision(DynamicVisualObject dynamicVisualObject) {
         ArrayList<Action> actions = new ArrayList<Action>();
 
-        Position positionFuture = dynamicVisualObject.getPositionFuture();
+        Position positionFuture = dynamicVisualObject.getFuturePosition();
         ArrayList<VisualObject> visualObjects = this.getVisualObjects();
 
         for (int i = 0; i < visualObjects.size(); i++) {
@@ -76,7 +76,7 @@ public class NotificationProcessorPositionUpdate implements NotificationProcesso
     private ArrayList<Action> checkWindowLimits(DynamicVisualObject dynamicVisualObject) {
         ArrayList<Action> actions = new ArrayList<Action>();
 
-        Position positionFuture = dynamicVisualObject.getPositionFuture();
+        Position positionFuture = dynamicVisualObject.getFuturePosition();
 
         // TODO: El departamento Visual me tiene que decir el tamaño de la ventana
         if (positionFuture.getyPos() > 100) {

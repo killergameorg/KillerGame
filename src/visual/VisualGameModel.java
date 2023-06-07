@@ -98,7 +98,7 @@ public class VisualGameModel {
 
         Bullet newBullet = new Bullet(0, visualGameController.getAssetsManager().getBullet(),
                 spaceShipParent.getPosition(), 1, acountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
-                VisualConstants.velocityBullet, spaceShipParent.getAngle());
+                spaceShipParent.getTeam(), VisualConstants.velocityBullet, spaceShipParent.getAngle());
 
         addToVisualObjectList(newBullet);
     }
@@ -113,7 +113,7 @@ public class VisualGameModel {
                 team.getTeamName() == TeamName.RED ? visualGameController.getAssetsManager().getSpaceShipA()
                         : visualGameController.getAssetsManager().getSpaceShipB(),
                 new Position(0, 0), 100, accountId, this, 0, getDeadBulletAnim(), getSpawnBulletAnim(),
-                VisualConstants.velocitySpaceship, 0);
+                team, VisualConstants.velocitySpaceship, 0);
 
         addToVisualObjectList(newSpaceShip);
 

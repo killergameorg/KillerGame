@@ -3,7 +3,6 @@ package lobby.endscreen;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * All the components for the LobbyView
