@@ -19,6 +19,10 @@ public class NotificationsActionsProcessor {
     // ! Attributes
     private NotificationsManager notificationsManager;
 
+    public NotificationsActionsProcessor(NotificationsManager notificationsManager) {
+        this.setNotificationsManager(notificationsManager);
+    }
+
     // ! ProcessActions
 
     /**

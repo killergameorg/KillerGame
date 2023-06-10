@@ -25,7 +25,7 @@ public class NotificationsManager {
     public NotificationsManager(MainGameModel mainGameModel) {
         this.setMainGameModel(mainGameModel);
         this.setNotificationHashMap(this.createNotificationHashMap());
-        this.setNotificationsActionsProcessor(new NotificationsActionsProcessor());
+        this.setNotificationsActionsProcessor(new NotificationsActionsProcessor(this));
     }
 
     // ! Constructor methods

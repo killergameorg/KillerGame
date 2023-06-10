@@ -21,10 +21,6 @@ public class SoundServerConnectionController {
     }
 
     // ! Methods
-
-    // TODO: Tengo que comentarle a Sergio que será casi obligatorio hacer esta
-    // TODO: herencia y poner los ENUMs como atributos para que las condiciones en
-    // TODO: comunicaciones se hagan correctamente
     public void playMusic(MusicType musicType) {
         this.sendPrivate(
                 this.getSoundServer().getIp(),
