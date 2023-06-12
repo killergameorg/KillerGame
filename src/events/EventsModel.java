@@ -16,13 +16,16 @@ import visual.VisualObject;
  */
 public class EventsModel {
 
+    // Attributes
     private EventsGameController eventsGameController;
     private GameRules gameRules;
 
+    // Constructor
     public EventsModel(EventsGameController eventsGameController) {
         this.eventsGameController = eventsGameController;
     }
 
+    // Getters and Setters
     public GameRules getGameRules() {
         return gameRules;
     }
@@ -44,12 +47,6 @@ public class EventsModel {
 
         if (event instanceof Collision) {
             actions.addAll(processCollision(event.getFirstObject(), event.getSecondObject()));
-        }
-
-        else if (event instanceof GetPowerUp) {
-            // Aquí calló un héroe
-            // actions.addAll(processPowerUp(event.getFirstObject(),
-            // event.getSecondObject()));
         }
 
         return actions;
@@ -179,30 +176,6 @@ public class EventsModel {
     }
 
     /**
-     * Processes a power-up event for a visual object and returns a list of actions
-     * resulting from the power-up obtain.
-     *
-     * @param powerUp  The power-up object.
-     * @param receiver The visual object receiving the power-up.
-     * @return An ArrayList of Action objects resulting from the power-up.
-     */
-    /*
-     * public ArrayList<Action> processPowerUp(VisualObject powerUp, VisualObject
-     * receiver) {
-     * ArrayList<Action> actions = new ArrayList<>();
-     * if (receiver instanceof Ship && powerUp instanceof PowerUp) {
-     * if ((receiver.getLife() + this.gameRules.getPowerUpUpgrade() <= 100)) {
-     * actions.add(new LifeIncreaseAction(powerUp,
-     * this.gameRules.getPowerUpUpgrade()));
-     * } else if ((receiver.getLife() + this.gameRules.getPowerUpUpgrade() > 100)) {
-     * actions.add(new LifeIncreaseAction(powerUp, 100 - receiver.getLife()));
-     * }
-     * }
-     * return actions;
-     * }
-     */
-
-    /**
      * Processes a point win event for a team and returns a list of actions
      * resulting from the point win.
      *
@@ -236,6 +209,12 @@ public class EventsModel {
         return this.gameRules.getDinamicGameRule().getMap();
     }
 
+    /**
+     * Returns the team contrary to the given team.
+     *
+     * @param teamName The name of the team.
+     * @return The Team object representing the contrary team.
+     */
     private Team contraryTeam(TeamName teamName) {
         return this.eventsGameController.contraryTeam(teamName);
     }

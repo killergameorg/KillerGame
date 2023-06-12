@@ -8,13 +8,8 @@ import visual.VisualObject;
  * It extends the {@link VisualObjectAction} class.
  */
 public class ExplosionAction extends VisualObjectAction {
-    /**
-     * Creates a new instance of the ExplosionAction class with the specified
-     * visual object.
-     *
-     * @param visualObject The visual object on which the explosion action will be
-     *                     triggered.
-     */
+    
+    // Constructor
     public ExplosionAction(VisualObject visualObject) {
         super(visualObject);
     }

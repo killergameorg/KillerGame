@@ -9,23 +9,16 @@ import maincontroller.gameinfo.Team;
  */
 
 public abstract class TeamActions extends Action {
+
+    // Attributes
     private Team team;
 
-    /**
-     * Constructs a new TeamActions object with the specified team.
-     *
-     * @param team the team associated with the actions
-     */
-
+    // Constructor
     public TeamActions(Team team) {
         this.team = team;
     }
 
-    /**
-     * Returns the team associated with the actions.
-     *
-     * @return the team associated with the actions
-     */
+    // Getters and Setters
     public Team getTeam() {
         return team;
     }

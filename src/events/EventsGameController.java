@@ -13,29 +13,32 @@ import maincontroller.gameinfo.TeamName;
  * the game.
  */
 public class EventsGameController {
-    
+
+    // Attributes
     private MainGameController mainGameController;
     private EventsModel eventsModel;
-    
 
-    public EventsGameController(MainGameController mainGameController){
+    // Constructor
+    public EventsGameController(MainGameController mainGameController) {
         this.mainGameController = mainGameController;
         this.eventsModel = new EventsModel(this);
     }
 
-
-
-
+    /**
+     * Returns the team contrary to the given team.
+     *
+     * @param teamName The name of the team.
+     * @return The Team object representing the contrary team.
+     */
     public Team contraryTeam(TeamName teamName) {
         return this.mainGameController.contraryTeam(teamName);
     }
-
 
     /*
      * @param gameRules : The game rules defined at the lobby
      * 
      * Calls the model's setter method to define which are
-     * gonna be the game rules, to decide depending the event 
+     * gonna be the game rules, to decide depending the event
      * which rule take in account
      */
 
@@ -56,8 +59,8 @@ public class EventsGameController {
         return this.eventsModel.processEvent(event);
     }
 
-
     public Maps getMap(){
         return this.eventsModel.getMap();
     }
+
 }

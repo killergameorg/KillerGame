@@ -8,13 +8,17 @@ import visual.VisualObject;
  * It extends the {@link VisualObjectAction} class.
  */
 public class LifeDecreaseAction extends VisualObjectAction {
+
+    // Attributes
     private float lifeDowngrade;
 
+    // Constructor
     public LifeDecreaseAction(VisualObject visualObject,float lifeDowngrade) {
         super(visualObject);
         this.lifeDowngrade = lifeDowngrade;
     }
 
+    // Getters and Setters
     public float getLifeDowngrade() {
         return lifeDowngrade;
     }
@@ -23,11 +27,6 @@ public class LifeDecreaseAction extends VisualObjectAction {
         this.lifeDowngrade = lifeDowngrade;
     }
 
-    /**
-     * Retrieves the visual object associated with the action.
-     *
-     * @return The visual object associated with the action.
-     */
     public VisualObject getVisualObject() {
         return super.getVisualObject();
     }
