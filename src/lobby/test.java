@@ -10,23 +10,6 @@
 // import maincontroller.gameinfo.Team;
 // import maincontroller.gameinfo.TeamName;
 
-<<<<<<< HEAD
-public class test {
-    public static void main(String[] args) {
-        // Para que funcione necesita quitar applingtomaster en el constructor;
-        LobbyController lobbyController = new LobbyController();
-        LobbyView lobbyView = new LobbyView(lobbyController);
-        lobbyController.setLobbyView(lobbyView);
-        LobbyModel lobbyModel = new LobbyModel(lobbyController);
-        lobbyController.setLobbyModel(lobbyModel);
-        
-
-        // Team t1= new Team(TeamName.RED);
-        // t1.setScore(100);
-        // Team t2= new Team(TeamName.BLUE);
-        // t2.setScore(500);
-        // lobbyController.startEndView(t1,t2);
-=======
 // public class test {
 //     public static void main(String[] args) {
 //         // Para que funcione necesita quitar applingtomaster en el constructor;
@@ -41,7 +24,6 @@ public class test {
 //         Team t2= new Team(TeamName.BLUE);
 //         t2.setScore(500);
 //         lobbyController.startEndView(t1,t2);
->>>>>>> 32b5d0029ecf278e1bff8dec88642f02f69eda06
 
 //         lobbyView.addKeyListener(new KeyAdapter() {
 //             public void keyPressed(KeyEvent e) {
