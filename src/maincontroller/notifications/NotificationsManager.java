@@ -8,6 +8,8 @@ import events.ExplosionAction;
 import events.MoveWindowVisualObjectAction;
 import events.PointWinAction;
 import maincontroller.MainGameModel;
+import maincontroller.gameinfo.GameState;
+import maincontroller.maincommunications.soundserver.packages.SoundType;
 import visual.NotificationMsg;
 import visual.NotificationType;
 import visual.VisualObject;
@@ -23,7 +25,7 @@ public class NotificationsManager {
     public NotificationsManager(MainGameModel mainGameModel) {
         this.setMainGameModel(mainGameModel);
         this.setNotificationHashMap(this.createNotificationHashMap());
-        this.setNotificationsActionsProcessor(new NotificationsActionsProcessor());
+        this.setNotificationsActionsProcessor(new NotificationsActionsProcessor(this));
     }
 
     // ! Constructor methods
@@ -81,6 +83,18 @@ public class NotificationsManager {
 
     public void processActionPointWin(PointWinAction pointWinAction) {
         this.getMainGameModel().processActionPointWin(pointWinAction);
+    }
+
+    public void setGameState(GameState gameState) {
+        this.getMainGameModel().setGameState(gameState);
+    }
+
+    public void tryApplyingToMaster() {
+        this.getMainGameModel().tryApplyingToMaster();
+    }
+
+    public void playSound(SoundType soundType) {
+        this.getMainGameModel().playSound(soundType);
     }
 
     // ! Getters and Setters

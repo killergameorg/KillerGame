@@ -41,9 +41,8 @@ public class MainGameController {
 
         this.setMainGameModel(new MainGameModel(this, pathConfigurationFile));
 
-        this.setLobbyController(new LobbyController());
+        this.setLobbyController(new LobbyController(this));
         this.setEventsGameController(new EventsGameController(this));
-        this.setVisualGameController(new VisualGameController(this));
 
     }
 
@@ -213,12 +212,19 @@ public class MainGameController {
      * @param explosionAction The action to process
      */
     public void processActionExplosion(ExplosionAction explosionAction) {
-        // TODO: Ask to the visual department about the kill visual object
         this.killVisualObject(explosionAction.getVisualObject());
     }
 
     public void removeVisualObject(VisualObject visualObject) {
         this.getVisualGameController().removeVisualObject(visualObject);
+    }
+
+    public int getScreenHeight() {
+        return this.getVisualGameController().getVisualGameView().getScreenHeight();
+    }
+
+    public int getScreenWidth() {
+        return this.getVisualGameController().getVisualGameView().getScreenWidth();
     }
 
     // ! EventsGame
@@ -236,6 +242,10 @@ public class MainGameController {
 
     private VisualObject getVisualObjectById(int id) {
         return this.getMainGameModel().getVisualObjectById(id);
+    }
+
+    public void startEndGame(Team team1, Team team2) {
+        this.getLobbyController().startEndView(team1, team2);
     }
 
     // ! Getters and Setters

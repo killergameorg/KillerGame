@@ -13,6 +13,8 @@ public class Main {
 
             mainGameController.initializeConnectionController();
 
+            mainGameController.applyingToMaster();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

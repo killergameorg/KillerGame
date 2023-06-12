@@ -42,13 +42,13 @@ public class test_dinamico {
     }
 
     public static void main(String[] args) {
-        LobbyController lobbyController = new LobbyController();
-        LobbyView lobbyView = new LobbyView(lobbyController);
-        lobbyController.setLobbyView(lobbyView);
-        LobbyModel lobbyModel = new LobbyModel(lobbyController);
-        lobbyController.setLobbyModel(lobbyModel);
-        lobbyModel.minusGameRuleValue();
-        System.out.println(lobbyModel.getDinamicRules().toString());
+        // LobbyController lobbyController = new LobbyController();
+        // LobbyView lobbyView = new LobbyView(lobbyController);
+        // lobbyController.setLobbyView(lobbyView);
+        // LobbyModel lobbyModel = new LobbyModel(lobbyController);
+        // lobbyController.setLobbyModel(lobbyModel);
+        // lobbyModel.minusGameRuleValue();
+        // System.out.println(lobbyModel.getDinamicRules().toString());
     }
 
 }
