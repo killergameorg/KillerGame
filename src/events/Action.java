@@ -1,10 +1,11 @@
 package events;
 
-/**
- * The Action class is an abstract class for defining actions that can be
- * performed in the game.
- */
+import maincontroller.maincommunications.packages.PackageMainCommunications;
 
-public abstract class Action {
+/**
+ * An abstract class that represents an action.
+ * Implements the PackageMainCommunications interface.
+ */
+public abstract class Action implements PackageMainCommunications {
 
 }

@@ -8,12 +8,8 @@ import maincontroller.gameinfo.Team;
  * It extends the {@link TeamActions} class.
  */
 public class GameWinAction extends TeamActions {
-    /**
-     * Creates a new instance of the GameWinAction class with the specified team.
-     *
-     * @param team The team on which the game win action will be
-     *             executed.
-     */
+    
+    // Constructor 
     public GameWinAction(Team team) {
         super(team);
     }

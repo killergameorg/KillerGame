@@ -2,11 +2,12 @@ package events;
 
 import java.util.ArrayList;
 
+import lobby.Maps;
 import lobby.lobbyModel.GameRules;
 import maincontroller.gameinfo.Team;
+import maincontroller.gameinfo.TeamName;
 import visual.Bullet;
-import visual.PowerUp;
-import visual.Ship;
+import visual.SpaceShip;
 import visual.VisualObject;
 
 /**
@@ -14,13 +15,17 @@ import visual.VisualObject;
  * processing events in the game.
  */
 public class EventsModel {
+
+    // Attributes
+    private EventsGameController eventsGameController;
     private GameRules gameRules;
 
-    /**
-     * Retrieves the game rules defined at the lobby.
-     *
-     * @return The GameRules object representing the game rules.
-     */
+    // Constructor
+    public EventsModel(EventsGameController eventsGameController) {
+        this.eventsGameController = eventsGameController;
+    }
+
+    // Getters and Setters
     public GameRules getGameRules() {
         return gameRules;
     }
@@ -44,10 +49,6 @@ public class EventsModel {
             actions.addAll(processCollision(event.getFirstObject(), event.getSecondObject()));
         }
 
-        else if (event instanceof GetPowerUp) {
-            actions.addAll(processPowerUp(event.getFirstObject(), event.getSecondObject()));
-        }
-
         return actions;
     }
 
@@ -63,17 +64,23 @@ public class EventsModel {
 
         ArrayList<Action> actions = new ArrayList<>();
 
-        if (!visualObject1.getTeam().equals(visualObject2.getTeam())) {
-            if (visualObject1 instanceof Ship) {
-
-                actions.addAll(processLifeDecrease(visualObject1, visualObject2));
-
-            }
-
-            if (visualObject2 instanceof Ship) {
-
+        if (visualObject2 instanceof SpaceShip || visualObject2 instanceof Bullet) {
+            if (!visualObject1.getTeam().equals(visualObject2.getTeam())) {
                 actions.addAll(processLifeDecrease(visualObject2, visualObject1));
             }
+
+        } else {
+            actions.addAll(processLifeDecrease(visualObject2, visualObject1));
+        }
+
+        if (visualObject1 instanceof SpaceShip || visualObject1 instanceof Bullet) {
+            if (!visualObject2.getTeam().equals(visualObject1.getTeam())) {
+                actions.addAll(processLifeDecrease(visualObject1, visualObject2));
+            }
+
+        } else {
+            actions.addAll(processLifeDecrease(visualObject1, visualObject2));
+
         }
 
         return actions;
@@ -90,23 +97,66 @@ public class EventsModel {
     public ArrayList<Action> processLifeDecrease(VisualObject emisor, VisualObject receiver) {
         ArrayList<Action> actions = new ArrayList<>();
 
-        if (emisor instanceof Ship) {
-            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getCollisionDamage()));
+        if (emisor instanceof SpaceShip) {
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getStaticGameRule().getColisionDamage()));
 
-            if ((receiver.getLife() - this.gameRules.getCollisionDamage()) <= 0) {
+            if ((receiver.getLife() - this.gameRules.getStaticGameRule().getColisionDamage()) <= 0) {
                 actions.addAll((processDeath(receiver)));
-                actions.addAll(processPointWin(emisor.getTeam()));
+
+                if (receiver instanceof SpaceShip) {
+                    Team teamEmisor = emisor.getTeam();
+                    if (teamEmisor.getTeamName() == TeamName.MACHINE) {
+                        if (receiver.getTeam().getTeamName() == TeamName.BLUE) {
+                            teamEmisor = this.contraryTeam(TeamName.BLUE);
+                        } else if (receiver.getTeam().getTeamName() == TeamName.RED) {
+                            teamEmisor = this.contraryTeam(TeamName.RED);
+                        }
+                    }
+
+                    actions.addAll(processPointWin(teamEmisor));
+                }
             }
 
         } else if (emisor instanceof Bullet) {
-            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getBulletDamage()));
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getDinamicGameRule().getBulletDamage()));
 
-            if ((receiver.getLife() - this.gameRules.getBulletDamage()) <= 0) {
+            if ((receiver.getLife() - this.gameRules.getDinamicGameRule().getBulletDamage()) <= 0) {
                 actions.addAll((processDeath(receiver)));
-                actions.addAll(processPointWin(emisor.getTeam()));
+
+                if (receiver instanceof SpaceShip) {
+                    Team teamEmisor = emisor.getTeam();
+                    if (teamEmisor.getTeamName() == TeamName.MACHINE) {
+                        if (receiver.getTeam().getTeamName() == TeamName.BLUE) {
+                            teamEmisor = this.contraryTeam(TeamName.BLUE);
+                        } else if (receiver.getTeam().getTeamName() == TeamName.RED) {
+                            teamEmisor = this.contraryTeam(TeamName.RED);
+                        }
+                    }
+
+                    actions.addAll(processPointWin(teamEmisor));
+                }
+
             }
 
             actions.addAll((processDeath(emisor)));
+
+        } else {
+            actions.add(new LifeDecreaseAction(receiver, this.gameRules.getStaticGameRule().getColisionDamage()));
+
+            if ((receiver.getLife() - this.gameRules.getStaticGameRule().getColisionDamage()) <= 0) {
+                actions.addAll((processDeath(receiver)));
+
+                if (receiver instanceof SpaceShip) {
+                    Team teamContraryReceiver = null;
+                    if (receiver.getTeam().getTeamName() == TeamName.BLUE) {
+                        teamContraryReceiver = this.contraryTeam(TeamName.BLUE);
+                    } else if (receiver.getTeam().getTeamName() == TeamName.RED) {
+                        teamContraryReceiver = this.contraryTeam(TeamName.RED);
+                    }
+
+                    actions.addAll(processPointWin(teamContraryReceiver));
+                }
+            }
         }
 
         return actions;
@@ -126,26 +176,6 @@ public class EventsModel {
     }
 
     /**
-     * Processes a power-up event for a visual object and returns a list of actions
-     * resulting from the power-up obtain.
-     *
-     * @param powerUp  The power-up object.
-     * @param receiver The visual object receiving the power-up.
-     * @return An ArrayList of Action objects resulting from the power-up.
-     */
-    public ArrayList<Action> processPowerUp(VisualObject powerUp, VisualObject receiver) {
-        ArrayList<Action> actions = new ArrayList<>();
-        if (receiver instanceof Ship && powerUp instanceof PowerUp) {
-            if ((receiver.getLife() + this.gameRules.getPowerUpUpgrade() <= 100)) {
-                actions.add(new LifeIncreaseAction(powerUp, this.gameRules.getPowerUpUpgrade()));
-            } else if ((receiver.getLife() + this.gameRules.getPowerUpUpgrade() > 100)) {
-                actions.add(new LifeIncreaseAction(powerUp, 100 - receiver.getLife()));
-            }
-        }
-        return actions;
-    }
-
-    /**
      * Processes a point win event for a team and returns a list of actions
      * resulting from the point win.
      *
@@ -156,7 +186,7 @@ public class EventsModel {
         ArrayList<Action> actions = new ArrayList<>();
         actions.add(new PointWinAction(team));
 
-        if ((team.getScore() + 1) == this.gameRules.getWinScore()) {
+        if ((team.getScore() + 1) == this.gameRules.getStaticGameRule().getWinScore().get(team.getTeamName())) {
             actions.addAll(processGameWin(team));
         }
         return actions;
@@ -175,4 +205,17 @@ public class EventsModel {
         return actions;
     }
 
+    public Maps getMap() {
+        return this.gameRules.getDinamicGameRule().getMap();
+    }
+
+    /**
+     * Returns the team contrary to the given team.
+     *
+     * @param teamName The name of the team.
+     * @return The Team object representing the contrary team.
+     */
+    private Team contraryTeam(TeamName teamName) {
+        return this.eventsGameController.contraryTeam(teamName);
+    }
 }

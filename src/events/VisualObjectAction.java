@@ -11,22 +11,15 @@ import visual.VisualObject;
 
 public abstract class VisualObjectAction extends Action {
 
+    // Attributes
     private VisualObject visualObject;
 
-    /**
-     * Constructs a new VisualObjectAction object with the specified visual object.
-     *
-     * @param visualObject the visualObject associated with the actions
-     */
+    // Constructor
     public VisualObjectAction(VisualObject visualObject) {
         this.visualObject = visualObject;
     }
 
-    /**
-     * Returns the team associated with the actions.
-     *
-     * @return the team associated with the actions
-     */
+    // Getters and Setters
     public VisualObject getVisualObject() {
         return visualObject;
     }
